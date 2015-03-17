@@ -39,16 +39,16 @@
 
 \begin{abstract}
     Although a main feature of Leon is to provide counterexamples to invalid programs, it can remain difficult when provided with a counterexample to understand how the input breaks the program.
-    We propose to integrate Scala.js with Leon and implement ideas from Bret Victor's essay on ``Learnable Programming''\footnote{See \url{http://worrydream.com/#!/LearnableProgramming}} to improve experience for users when presented with a counterexample.
+    We propose to integrate Scala.js with Leon and implement ideas from Bret Victor's essay on ``Learnable Programming'' \footnote{See \url{http://worrydream.com/\#!/LearnableProgramming}} to improve experience for users when presented with a counterexample.
 
 \end{abstract}
 
 \section{Introduction} % (fold)
 \label{sec:introduction}
 
-Currently the Leon web interface shows counterexamples in a dialog, or in a tip when user hovers the pointer over a variable. This is unfriendly, as the programmer has to remember the variable values and do substitution in mind in order to reason where the problem lies.
+Currently the Leon web interface shows counterexamples in a dialog, or in a tip when user hovers the pointer over a variable. This is unfriendly, as the programmer has to remember the variable values and do substitution and execution in mind in order to reason where the problem lies.
 
-Why not just annotate(or substitute) the variables in the buggy function with the counter example as input value? This way, user can easily figure out which line goes incorrectly by following the execution in an interactive and visual way.
+Why not just annotate(or substitute) the variables in the buggy function with the counterexample as input values? This way, user can easily figure out which line goes wrong by following the execution in an interactive and visual way.
 
 The detailed solution is as follows:
 
