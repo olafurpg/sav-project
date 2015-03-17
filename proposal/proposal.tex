@@ -29,8 +29,8 @@
 \title{Scala.js integration with Leon to improve counterexample presentation in the web interface}
 
 \author{
-    Liu Fengyun \\
-    Ólafur Páll Geirsson
+    Ólafur Páll Geirsson \\
+    Liu Fengyun
   }
 
 \date{}
@@ -43,10 +43,43 @@
 
 \end{abstract}
 
-\section{Foobar} % (fold)
-\label{sec:Foobar}
+\section{Introduction} % (fold)
+\label{sec:introduction}
 
-% section Foobar (end)
+Currently the Leon web interface shows counterexamples in a dialog, or in a tip when user hovers the pointer over a variable. This is unfriendly, as the programmer has to remember the variable values and do substitution in mind in order to reason where the problem lies.
+
+Why not just annotate(or substitute) the variables in the buggy function with the counter example as input value? This way, user can easily figure out which line goes incorrectly by following the execution in an interactive and visual way.
+
+The detailed solution is as follows:
+
+\begin{itemize}
+\item When user clicks \textit{debug} button in the counterexample dialog, a debug box appears, with all the formal parameters in the function being annotated(or substituted) by the counterexample values.
+\item \textit{Function calls} are annotated by their return values. If user clicks a function call in a debug box, another debug box will overlay current debug box. User can close a debug box by clicking [x] in the up-right corner of the debug box.
+\item \textit{Local variables} are annotated by the values they hold. The value of \textit{this} will be shown as environment in each debug box. \textit{Free variables}(closure variables) in a function are correctly handled and annotated as well.
+\end{itemize}
+
+Advanced features we consider(but may beyond current scope of the project):
+
+\begin{itemize}
+\item User can modify the annotated program in debug box and check if current counterexample passes or not.
+\item User can try different values of function formal parameters in debug box, and check if the postcondition holds or not.
+\end{itemize}
+
+% section introduction (end)
+
+\section{Technical Details}
+
+This project has three technical aspects:
+
+\begin{itemize}
+\item Front-end web programming in order to implement the GUI for end users
+\item Parsing of Leon programs using JavaScript in order to do correct annotation(or substitution) of program for display.
+\item Interpret Leon programs using JavaScript in order to annotate function return values correctly.
+\end{itemize}
+
+Front-end programming is a manageable task, given that the GUI is not complex, and there are plenty of open source GUI libraries. Parsing of Leon programs in JavaScript requires some work, but it's doable.
+
+Writing a Leon interpreter in JavaScript for our special purpose is a real challenge. However, given that we can write the interpreter in Scala, and then use Scala.js to compile the interpreter to JavaScript, this task is promising. But currently we're unable to estimate how much work is needed for this task.
 
 \end{document}
 
