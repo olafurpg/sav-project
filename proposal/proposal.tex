@@ -39,14 +39,17 @@
 
 \begin{abstract}
     Although a main feature of Leon is to provide counterexamples to invalid programs, it can remain difficult when provided with a counterexample to understand how the input breaks the program.
-    We propose to integrate Scala.js with Leon and implement ideas from Bret Victor's essay on ``Learnable Programming'' \footnote{See \url{http://worrydream.com/\#!/LearnableProgramming}} to improve experience for users when presented with a counterexample.
+    We propose to integrate Scala.js with Leon and implement ideas from Bret Victor's essay on ``Learnable Programming'' \footnote{\url{http://worrydream.com/\#!/LearnableProgramming}} to improve experience for users when presented with a counterexample.
 
 \end{abstract}
 
 \section{Introduction} % (fold)
 \label{sec:introduction}
 
-Currently the Leon web interface shows counterexamples in a dialog, or in a tip when user hovers the pointer over a variable. This is unfriendly, as the programmer has to remember the variable values and do substitution and execution in mind in order to reason where the problem lies.
+Currently the Leon web interface shows counterexamples in a dialog, or in a tip
+when user hovers the pointer over a variable. This can be unfriendly, as the
+programmer has to remember the variable values and do substitution and
+execution in mind in order to reason where the problem lies.
 
 Why not just annotate(or substitute) the variables in the buggy function with the counterexample as input values? This way, user can easily figure out which line goes wrong by following the execution in an interactive and visual way.
 
@@ -72,14 +75,17 @@ Advanced features we consider(but may beyond current scope of the project):
 This project has three technical aspects:
 
 \begin{itemize}
-\item Front-end web programming in order to implement the GUI for end users
-\item Parsing of Leon programs using JavaScript in order to do correct annotation(or substitution) of program for display.
-\item Interpret Leon programs using JavaScript in order to annotate function return values correctly.
+    \item Implement the user interface using a front-end reactive library, such as \emph{scalajs-react}\footnote{\url{https://github.com/japgolly/scalajs-react}}
+\item Parse Leon programs into an AST in order to perform correct annotation (or substitution) of Leon programs.
+\item Interpret the execution trace of a Leon functions given an input counterexample
 \end{itemize}
 
-Front-end programming is a manageable task, given that the GUI is not complex, and there are plenty of open source GUI libraries. Parsing of Leon programs in JavaScript requires some work, but it's doable.
+We believe that the front-end programming is a manageable task, given that the
+user interface is not complicated. Likewise, the web interface seems to already parse
+Leon programs to some extent which may be useful
 
-Writing a Leon interpreter in JavaScript for our special purpose is a real challenge. However, given that we can write the interpreter in Scala, and then use Scala.js to compile the interpreter to JavaScript, this task is promising. But currently we're unable to estimate how much work is needed for this task.
+We are not entirely sure how to best interpret the execution trace of Leon functions given an input.
+We would appreciate some feedback on the feasibility of this task.
 
 \end{document}
 
