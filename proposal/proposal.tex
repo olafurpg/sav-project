@@ -29,8 +29,8 @@
 \title{Scala.js integration with Leon to improve counterexample presentation in the web interface}
 
 \author{
-    Ólafur Páll Geirsson \\
-    Liu Fengyun
+    Liu Fengyun \\
+    Ólafur Páll Geirsson
   }
 
 \date{}
@@ -38,8 +38,10 @@
 
 
 \begin{abstract}
-    Although a main feature of Leon is to provide counterexamples to invalid programs, it can remain difficult when provided with a counterexample to understand how the input breaks the program.
-    We propose to integrate Scala.js with Leon and implement ideas from Bret Victor's essay on ``Learnable Programming'' \footnote{\url{http://worrydream.com/\#!/LearnableProgramming}} to improve experience for users when presented with a counterexample.
+    Although a main feature of Leon is to provide counterexamples to invalid programs, it can remain difficult to reason about why a counterexample breaks a program.
+    In this project, we seek to answer the following question: given a Leon program and a counterexample input, can we present the error in the code in such a way that makes it easy for the programmer to reason about why the program fails.
+    To aid us in answering this question, we propose to integrate Scala.js with Leon and use heavily the substitution model of evaluation.
+    Moreover, we aim to borrow ideas developed in Bret Victor's excellent essay on ``Learnable Programming'' \footnote{\url{http://worrydream.com/\#!/LearnableProgramming}}.
 
 \end{abstract}
 
