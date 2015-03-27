@@ -184,7 +184,7 @@
 
   \begin{columns}[onlytextwidth]
 
-    \begin{column}{0.7\textwidth}
+    \begin{column}{0.5\textwidth}
       \begin{equation*}
         B[n] =
         \begin{cases}
@@ -201,23 +201,25 @@
       \end{itemize}
     \end{column}
 
-    \begin{column}{0.3\textwidth}
-      \begin{tikzpicture}[node distance = 2cm, auto, every text node part/.style={align=left}]
-          % Place nodes
-        \node [block, label=above:$n_0$] (n0) {$A = 1$};
-        \node [value, right of=n0, node distance=1.1cm] (s0) {\tiny \{A=1\}};
-        \node [block, below left of=n0, label=above:$n_1$] (n1) {$A = 2$\\$B = 3$};
-        \node [value, above of=n1, node distance=0.8cm, xshift=-0.4cm] (s1) {\tiny 1};
-        \node [block, below right of=n0, label=above:$n_2$] (n2) {$A = 3$\\$B = 2$};
-        \node [value, left of=n2, node distance=0.9cm] (s2) {\tiny 1};
-        \node [block, below right of=n1, label=above:$n_3$] (n3) {$C = A + B$};
-        \node [value, right of=n3, node distance=1.3cm] (s3) {\tiny 1};
-        % Draw edges
-        \path [line] (n0) -- (n1);
-        \path [line] (n0) -- (n2);
-        \path [line] (n1) -- (n3);
-        \path [line] (n2) -- (n3);
-      \end{tikzpicture}
+    \begin{column}{0.5\textwidth}
+        \begin{center}
+            \begin{tikzpicture}[node distance = 2cm, auto, every text node part/.style={align=left}]
+                % Place nodes
+                \node [block, label=above:$n_0$] (n0) {$A = 1$};
+                \node [value, right of=n0, node distance=1.1cm] (s0) {\tiny \{A=1\}};
+                \node [block, below left of=n0, label=above:$n_1$] (n1) {$A = 2$\\$B = 3$};
+                \node [value, above of=n1, node distance=0.8cm, xshift=-0.4cm] (s1) {\tiny 1};
+                \node [block, below right of=n0, label=above:$n_2$] (n2) {$A = 3$\\$B = 2$};
+                \node [value, left of=n2, node distance=0.9cm] (s2) {\tiny 1};
+                \node [block, below right of=n1, label=above:$n_3$] (n3) {$C = A + B$};
+                \node [value, right of=n3, node distance=1.3cm] (s3) {\tiny 1};
+                % Draw edges
+                \path [line] (n0) -- (n1);
+                \path [line] (n0) -- (n2);
+                \path [line] (n1) -- (n3);
+                \path [line] (n2) -- (n3);
+            \end{tikzpicture}
+        \end{center}
     \end{column}
 
   \end{columns}
