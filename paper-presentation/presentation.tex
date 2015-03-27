@@ -14,14 +14,13 @@
 \usepackage{tikz}
 
 \newcommand{\fancyh}{\mathcal{H}}
-\newcommand{\gangle}[1]{\langle #1 \rangle}
+\newcommand{\gangle}[1]{\langle{} #1 \rangle{}}
 \newcommand{\myd}{\mathrm{d}}
 \newcommand{\NN}{\mathbb{N}}
 \newcommand{\ZZ}{\mathbb{Z}}
 
 \mode<presentation>
-{
-    % \setbeamertemplate{navigation symbols}{}
+{% \setbeamertemplate{navigation symbols}{}
     % \setbeamertemplate{items}[ball]
     % \setbeamertemplate{blocks}[rounded][shadow=true]
     \usecolortheme[named=Sepia]{structure}
@@ -29,9 +28,8 @@
     \setbeamercovered{transparent}
 }
 
-\lstset
-{
-    language = [LaTeX]TeX,
+\lstset{}
+{language = [LaTeX]TeX,
     % captionpos=b,
     basicstyle= \small \ttfamily,
     keywordstyle = \bfseries \color{blue},
@@ -41,15 +39,14 @@
 \title[Monotone Data Flow Analysis Frameworks]{Monotone Data Flow Analysis Frameworks}
 \author{Fengyun Liu, Ólafur Páll Geirsson}
 \institute[EPFL]
-{ }
+{}
 \date{\today}
 
 
 % Delete this, if you do not want the table of contents to pop up at
 % the beginning of each subsection:
 \AtBeginSection[]
-{
-    \begin{frame}<beamer>{Overview}
+{\begin{frame}<beamer>{Overview}
         \tableofcontents[currentsection,
             currentsubsection,
             hideothersubsections,
@@ -64,7 +61,7 @@
 % 0. Titlepage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-    \titlepage
+    \titlepage{}
 \end{frame}
 \begin{frame}{Today's agenda}
     \tableofcontents[hideallsubsections]
@@ -119,7 +116,7 @@
 \begin{frame}[fragile]{$\wedge$ defines an order on $L$}
     \begin{align*}
         a & \leqq b & \text{iff } a \wedge b = b \\
-        a < b & = b \wedge a & \text{iff } a \wedge b = b \text{ and } a \neq b
+        a < b & = b \wedge a & \text{iff } a \wedge b = b \text{\ and } a \neq b
     \end{align*}
 \end{frame}
 \subsection{Semilattice: 0 and 1}
