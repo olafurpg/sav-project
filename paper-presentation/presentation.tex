@@ -23,8 +23,7 @@
 \newcommand{\ZZ}{\mathbb{Z}}
 
 \mode<presentation>
-{
-    % \setbeamertemplate{navigation symbols}{}
+{% \setbeamertemplate{navigation symbols}{}
     % \setbeamertemplate{items}[ball]
     % \setbeamertemplate{blocks}[rounded][shadow=true]
     \beamertemplatenavigationsymbolsempty
@@ -45,8 +44,7 @@
 
 \title[Monotone Data Flow Analysis Frameworks]{Monotone Data Flow Analysis Frameworks}
 \author{Fengyun Liu, Ólafur Páll Geirsson}
-\institute[EPFL]
-{}
+\institute[EPFL]{}
 \date{\today}
 
 
@@ -85,7 +83,7 @@
 \section{Background} % (fold)
 \label{sec:Background}
 
-\subsection{Flow graph}
+\subsection{Flow graph}\label{sec:flowgraph}
 \begin{frame}[fragile]{Triple $G = (N, E, n_0)$}
     \begin{center}
         \begin{tikzpicture}[scale=0.2]
@@ -117,7 +115,7 @@
     \end{center}
 \end{frame}
 \subsection{Semilattice}
-\begin{frame}[fragile]{Set $L$ with \emph{meet} operation $\wedge$}
+\begin{frame}[fragile]{Set $L$ with \alert{meet} operation $\wedge$}
     \begin{align*}
         a \wedge a & = a & (idempotent) \\
         a \wedge b & = b \wedge a & (commutative) \\
@@ -133,26 +131,44 @@
 \end{frame}
 \subsection{Semilattice: 0 and 1}
 \begin{frame}[fragile]{}
-    \begin{block}{Zero element (bottom?): 0}
-        Element $e \in L$ is called zero, labeled 0, if
+    \begin{definition}
+        Element $e \in L$ is called \alert{zero}, labeled 0 (analogous to $\bot$), if
         \[
             e \wedge x = e \qquad \forall x \in L
         \]
-    \end{block}
-    \begin{block}{One element (top?): 1}
-        Element $e \in L$ is called one, labeled 1, if
+    \end{definition}
+    \pause
+    \begin{definition}
+        Element $e \in L$ is called \alert{one}, labeled 1(analogous to $\top$), if
         \[
             e \wedge x = x \qquad \forall x \in L
         \]
+    \end{definition}
+    \pause
+    \begin{block}{Example}
+        $L = \{1,2\}$\\
+        $A \wedge B = A \cap B$
+
+        Example 0: $\{\}$\\
+        Example 1: $\{1, 2\}$
     \end{block}
 \end{frame}
 \subsection{Semilattice: bounded chains}
 \begin{frame}[fragile]{} % {Chain $x_1, x_2, \ldots, x_n$}
-    \begin{block}{Chain}
-        A sequence $x_1, x_2, \ldots, x_n$ forms a \emph{chain} if $x_i > x_{i + 1}$ for $1 \leqq i < n$.
-    \end{block}
-    \begin{block}{Bounded chain}
-        A chain is said to be \emph{bounded} if for each $x \in L$ there is a constant $b_x$ such that each chain beginning with $x$ has length at most $b_x$.
+    \begin{definition}
+        A sequence $x_1, x_2, \ldots, x_n$ forms a \alert{chain} if $x_i > x_{i + 1}$ for $1 \leqq i < n$.
+    \end{definition}
+    \pause
+    \begin{definition}
+        The set $L$ is said to be \alert{bounded} if for each $x \in L$ there is a constant $b_x$ such that each chain beginning with $x$ has length at most $b_x$.
+    \end{definition}
+    \pause
+    \begin{block}{Example}
+        $L = \{1,2\}$\\
+        $A \wedge B = A \cap B$
+
+        Example chain: $\{1, 2\}, \{1\}, \{\}$\\
+        Any finite set is bounded.
     \end{block}
 \end{frame}
 
@@ -161,12 +177,51 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Monotone Data Flow Analysis Frameworks} % (fold)
 \label{sec:mdfaf}
+\subsection{Monotone function space}
+\begin{frame}[fragile]{Monotone function space} % {Chain $x_1, x_2, \ldots, x_n$}
+    \begin{definition}
+        Given a bounded semilattice $L$, a set of functions $F$ on $L$ is said
+        to be a monotone function space associated with $L$ if the
+        following conditions are satisfied:
+        \begin{enumerate}
+            \item[M1] Each $f \in F$ satisfies the \alert{monotonicity condition},
+                \[
+                    (\forall x, y \in L)(\forall f \in F) [f (x \wedge y) \leqq f(x) \wedge f(y)]
+                \]
+            \item[M2] There exists an \alert{identity function} $i$ in $F$.
+            \item[M3] $F$ is \alert{closed under composition}.
+            \item[M4] $L$ is equal to the closure of $\{0\}$ under the meet
+                operation and application of functions in $F$.
+        \end{enumerate}
+    \end{definition}
+\end{frame}
+\subsection{Monotone data flow analysis framework}
+\begin{frame}[fragile]{Monotone data flow analysis framework} % {Chain $x_1, x_2, \ldots, x_n$}
+    \begin{definition}
+        A Monotone data flow analysis framework (from here on \emph{framework}) is a triple \alert{$D = (L, \wedge, F)$}, where
+        \begin{enumerate}[(1)]
+            \item $L$ is a bounded semilattice with meet $\wedge$
+            \item $F$ is a monotone function space associated with $L$
+        \end{enumerate}
+    \end{definition}
+\end{frame}
+\begin{frame}[fragile]{Framework instance} % {Chain $x_1, x_2, \ldots, x_n$}
+    \begin{definition}
+        A particular instance of a framework is a pair \alert{$I = (G, M)$}, where
+        \begin{enumerate}[(1)]
+            \item $G = (N, E, n_0)$ is a flow graph.
+            \item $F$ is a monotone function space associated with $L$
+            \item $F$ is a monotone function space associated with $L$
+        \end{enumerate}
+    \end{definition}
+\end{frame}
+\subsection{}
 
 % section Monotone Data Flow Analysis Frameworks (end)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 3. Approaches to solving Monotone Data Flow Analysis Frameworks
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Approaches to solving MDFAF} % (fold)
+\section{Approaches to solving frameworks} % (fold)
 \label{sec:approaches}
 
 % section approaches
@@ -255,7 +310,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 5. Undecidability
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Undecidability of MOP Problem for MDFAF} % (fold)
+\section{Undecidability of MOP Problem for frameworks} % (fold)
 \label{sec:undecidability}
 
 % section undecidability (end)
