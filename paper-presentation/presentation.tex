@@ -20,16 +20,18 @@
 \newcommand{\ZZ}{\mathbb{Z}}
 
 \mode<presentation>
-{% \setbeamertemplate{navigation symbols}{}
+{
+    % \setbeamertemplate{navigation symbols}{}
     % \setbeamertemplate{items}[ball]
     % \setbeamertemplate{blocks}[rounded][shadow=true]
+    \beamertemplatenavigationsymbolsempty
     \usecolortheme[named=Sepia]{structure}
     \usetheme{Malmoe}
+    \useoutertheme{infolines}
     \setbeamercovered{transparent}
 }
 
-\lstset{}
-{language = [LaTeX]TeX,
+\lstset{language = [LaTeX]TeX,
     % captionpos=b,
     basicstyle= \small \ttfamily,
     keywordstyle = \bfseries \color{blue},
@@ -79,7 +81,7 @@
         \begin{tikzpicture}[scale=0.2]
             \tikzstyle{every node}+=[inner sep=0pt]
             \draw [black] (24.7,-14) circle (3);
-            \draw (24.7,-14) node {$n_0$};
+            \draw(24.7,-14) node {$n_0$};
             \draw [black] (24.7,-23.6) circle (3);
             \draw (24.7,-23.6) node {$n_1$};
             \draw [black] (18.4,-34.9) circle (3);
@@ -121,17 +123,26 @@
 \end{frame}
 \subsection{Semilattice: 0 and 1}
 \begin{frame}[fragile]{}
-    \begin{block}{Zero element: 0}
+    \begin{block}{Zero element (bottom?): 0}
         Element $e \in L$ is called zero, labeled 0, if
         \[
             e \wedge x = e \qquad \forall x \in L
         \]
     \end{block}
-    \begin{block}{One element: 1}
+    \begin{block}{One element (top?): 1}
         Element $e \in L$ is called one, labeled 1, if
         \[
             e \wedge x = x \qquad \forall x \in L
         \]
+    \end{block}
+\end{frame}
+\subsection{Semilattice: bounded chains}
+\begin{frame}[fragile]{} % {Chain $x_1, x_2, \ldots, x_n$}
+    \begin{block}{Chain}
+        A sequence $x_1, x_2, \ldots, x_n$ forms a \emph{chain} if $x_i > x_{i + 1}$ for $1 \leqq i < n$.
+    \end{block}
+    \begin{block}{Bounded chain}
+        A chain is said to be \emph{bounded} if for each $x \in L$ there is a constant $b_x$ such that each chain beginning with $x$ has length at most $b_x$.
     \end{block}
 \end{frame}
 
