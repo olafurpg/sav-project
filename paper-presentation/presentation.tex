@@ -41,6 +41,8 @@
     commentstyle = \color{green}
 }
 
+\definecolor{mygreen}{rgb}{0, 178, 115}
+
 \title[Monotone Data Flow Analysis Frameworks]{Monotone Data Flow Analysis Frameworks}
 \author{Fengyun Liu, Ólafur Páll Geirsson}
 \institute[EPFL]
@@ -50,19 +52,19 @@
 
 % Delete this, if you do not want the table of contents to pop up at
 % the beginning of each subsection:
-\AtBeginSection[]
-{\begin{frame}<beamer>{Overview}
-        \tableofcontents[currentsection,
-            currentsubsection,
-            hideothersubsections,
-            sectionstyle=show/shaded,
-        subsectionstyle=show/shaded/hide]
-    \end{frame}
-}
+% \AtBeginSection[]
+% {\begin{frame}<beamer>{Overview}
+%         \tableofcontents[currentsection,
+%             currentsubsection,
+%             hideothersubsections,
+%             sectionstyle=show/shaded,
+%         subsectionstyle=show/shaded/hide]
+%     \end{frame}
+% }
 
 \begin{document}
 
-\tikzstyle{block} = [rectangle, draw, fill=blue!20, text centered, rounded corners, minimum height=1em]
+\tikzstyle{block} = [rectangle, draw, fill=mygreen!20, text centered, rounded corners, minimum height=1em]
 \tikzstyle{line} = [draw, -latex']
 \tikzstyle{value} = [rectangle, draw, fill=red!80, text centered, node distance=1.2cm]
 
@@ -220,7 +222,6 @@
             \end{tikzpicture}
         \end{center}
     \end{column}
-
   \end{columns}
 \end{frame}
 
