@@ -71,10 +71,10 @@
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 1. Intro
+% 1. Background
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Introduction} % (fold)
-\label{sec:Introduction}
+\section{Background} % (fold)
+\label{sec:Background}
 
 \subsection{Flow graph}
 \begin{frame}[fragile]{Triple $G = (N, E, n_0)$}
@@ -108,6 +108,64 @@
     \end{center}
 \end{frame}
 \subsection{Semilattice}
+\begin{frame}[fragile]{Set $L$ with \emph{meet} operation $\wedge$}
+    \begin{align*}
+        a \wedge a & = a & (idempotent) \\
+        a \wedge b & = b \wedge a & (commutative) \\
+        a \wedge (b \wedge c) & = (a \wedge b) \wedge c & (associative)
+    \end{align*}
+\end{frame}
+\subsection{Semilattice: ordering}
+\begin{frame}[fragile]{$\wedge$ defines an order on $L$}
+    \begin{align*}
+        a & \leqq b & \text{iff } a \wedge b = b \\
+        a < b & = b \wedge a & \text{iff } a \wedge b = b \text{ and } a \neq b
+    \end{align*}
+\end{frame}
+\subsection{Semilattice: 0 and 1}
+\begin{frame}[fragile]{}
+    \begin{block}{Zero element: 0}
+        Element $e \in L$ is called zero, labeled 0, if
+        \[
+            e \wedge x = e \qquad \forall x \in L
+        \]
+    \end{block}
+    \begin{block}{One element: 1}
+        Element $e \in L$ is called one, labeled 1, if
+        \[
+            e \wedge x = x \qquad \forall x \in L
+        \]
+    \end{block}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 2. Monotone Data Flow Analysis Frameworks
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Monotone Data Flow Analysis Frameworks} % (fold)
+\label{sec:mdfaf}
+
+% section Monotone Data Flow Analysis Frameworks (end)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 3. Approaches to solving Monotone Data Flow Analysis Frameworks
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Approaches to solving MDFAF} % (fold)
+\label{sec:approaches}
+
+% section approaches
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 4. A Variant of Kildall's Algorithm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{A Variant of Kildall's Algorithm} % (fold)
+\label{sec:variant}
+
+% section A Variant of Kildall's Algorithm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 5. Undecidability
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Undecidability of MOP Problem for MDFAF} % (fold)
+\label{sec:undecidability}
+
+% section undecidability (end)
 \begin{frame}[fragile]{Example usage of blocks and columns}
     \begin{columns}
         \begin{column}{0.5\textwidth}
@@ -122,50 +180,12 @@
         \begin{column}{0.5\textwidth}
             \begin{block}{Block 2}
                 \begin{itemize}
-                    \item b
+                    \item<4> b
+                    \item<5> b
+                    \item<6> b
                 \end{itemize}
             \end{block}
         \end{column}
     \end{columns}
 \end{frame}
-
-\subsection{Semilattice: ordering}
-\subsection{Semilattice: 0 and 1}
-
-% section Introduction (end)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 2. Background
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Background} % (fold)
-\label{sec:background}
-
-% section Background (end)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 3. Monotone Data Flow Analysis Frameworks
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Monotone Data Flow Analysis Frameworks} % (fold)
-\label{sec:mdfaf}
-
-% section Monotone Data Flow Analysis Frameworks (end)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 4. Approaches to solving Monotone Data Flow Analysis Frameworks
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Approaches to solving MDFAF} % (fold)
-\label{sec:approaches}
-
-% section approaches
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 5. A Variant of Kildall's Algorithm
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{A Variant of Kildall's Algorithm} % (fold)
-\label{sec:variant}
-
-% section A Variant of Kildall's Algorithm
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 6. Undecidability
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Undecidability of MOP Problem for MDFAF} % (fold)
-\label{sec:undecidability}
-
-% section undecidability (end)
 \end{document}
