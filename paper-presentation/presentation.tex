@@ -11,6 +11,7 @@
 \usepackage{color}
 \usepackage{hyperref}
 \usepackage{booktabs}
+\usepackage{tikz}
 
 \newcommand{\fancyh}{\mathcal{H}}
 \newcommand{\gangle}[1]{\langle #1 \rangle}
@@ -76,17 +77,56 @@
 \label{sec:Introduction}
 
 \subsection{Flow graph}
-\begin{frame}[fragile]{$G = (N,\ldots)$}
+\begin{frame}[fragile]{Triple $G = (N, E, n_0)$}
     \begin{center}
-        \large \emph{Cool center}
+        \begin{tikzpicture}[scale=0.2]
+            \tikzstyle{every node}+=[inner sep=0pt]
+            \draw [black] (24.7,-14) circle (3);
+            \draw (24.7,-14) node {$n_0$};
+            \draw [black] (24.7,-23.6) circle (3);
+            \draw (24.7,-23.6) node {$n_1$};
+            \draw [black] (18.4,-34.9) circle (3);
+            \draw (18.4,-34.9) node {$n_2$};
+            \draw [black] (31.1,-34.9) circle (3);
+            \draw (31.1,-34.9) node {$n_3$};
+            \draw [black] (15.682,-33.688) arc (-126.68179:-291.59948:6.793);
+            \fill [black] (22.24,-21.93) -- (21.68,-21.17) -- (21.31,-22.1);
+            \draw (13.14,-23.73) node [left] {$(n_2,\mbox{ }n_1)$};
+            \draw [black] (27.192,-21.975) arc (110.40413:-51.35216:6.765);
+            \fill [black] (27.19,-21.97) -- (28.12,-22.16) -- (27.77,-21.23);
+            \draw (36.1,-23.76) node [right] {$(n_3,\mbox{ }n_1)$};
+            \draw [black] (23.24,-26.22) -- (19.86,-32.28);
+            \fill [black] (19.86,-32.28) -- (20.69,-31.82) -- (19.81,-31.34);
+            \draw (20.89,-28.05) node [left] {$(n_1,\mbox{ }n_2)$};
+            \draw [black] (26.18,-26.21) -- (29.62,-32.29);
+            \fill [black] (29.62,-32.29) -- (29.66,-31.35) -- (28.79,-31.84);
+            \draw (28.56,-28.03) node [right] {$(n_1,\mbox{ }n_3)$};
+            \draw [black] (24.7,-17) -- (24.7,-20.6);
+            \fill [black] (24.7,-20.6) -- (25.2,-19.8) -- (24.2,-19.8);
+            \draw (24.2,-18.8) node [left] {$(n_0,\mbox{ }n_1)$};
+        \end{tikzpicture}
     \end{center}
-    \begin{itemize}
-        \item Symmetric?
-        \item Negative?
-        \item Content.
-    \end{itemize}
 \end{frame}
 \subsection{Semilattice}
+\begin{frame}[fragile]{Example usage of blocks and columns}
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \begin{block}{Block 1}
+                \begin{itemize}
+                    \item Cool
+                \end{itemize}
+            \end{block}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{block}{Block 2}
+                \begin{itemize}
+                    \item b
+                \end{itemize}
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
 \subsection{Semilattice: ordering}
 \subsection{Semilattice: 0 and 1}
 
