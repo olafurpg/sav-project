@@ -12,6 +12,9 @@
 \usepackage{hyperref}
 \usepackage{booktabs}
 \usepackage{tikz}
+\usetikzlibrary{arrows}
+\usetikzlibrary{positioning}
+\usetikzlibrary{shapes.multipart}
 
 \newcommand{\fancyh}{\mathcal{H}}
 \newcommand{\gangle}[1]{\langle{} #1 \rangle{}}
@@ -58,6 +61,11 @@
 }
 
 \begin{document}
+
+\tikzstyle{block} = [rectangle, draw, fill=blue!20, text centered, rounded corners, minimum height=1em]
+\tikzstyle{line} = [draw, -latex']
+\tikzstyle{value} = [rectangle, draw, fill=red!80, text centered, node distance=1.2cm]
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 0. Titlepage
@@ -167,6 +175,82 @@
 \label{sec:variant}
 
 % section A Variant of Kildall's Algorithm
+
+
+\subsection{A Variant of Kildall's Algorithm}
+
+\begin{frame}
+  \frametitle{A Variant of Kildall's Algorithm - Initialization}
+
+  \begin{columns}[onlytextwidth]
+
+    \begin{column}{0.7\textwidth}
+      \begin{equation*}
+        B[n] =
+        \begin{cases}
+          f_{n_0}(0) & \text{if } n = n_0\\
+          1 & otherwise
+        \end{cases}
+      \end{equation*}
+
+      \begin{itemize}
+      % \item \textit{Initialization}
+      \item 0 - zero element of the lattice
+      \item 1 - one element of the lattice
+      \item $f_{n_0}$ - the function that $n_0$ corresponds to
+      \end{itemize}
+    \end{column}
+
+    \begin{column}{0.3\textwidth}
+      \begin{tikzpicture}[node distance = 2cm, auto, every text node part/.style={align=left}]
+          % Place nodes
+        \node [block, label=above:$n_0$] (n0) {$A = 1$};
+        \node [value, right of=n0, node distance=1.1cm] (s0) {\tiny \{A=1\}};
+        \node [block, below left of=n0, label=above:$n_1$] (n1) {$A = 2$\\$B = 3$};
+        \node [value, above of=n1, node distance=0.8cm, xshift=-0.4cm] (s1) {\tiny 1};
+        \node [block, below right of=n0, label=above:$n_2$] (n2) {$A = 3$\\$B = 2$};
+        \node [value, left of=n2, node distance=0.9cm] (s2) {\tiny 1};
+        \node [block, below right of=n1, label=above:$n_3$] (n3) {$C = A + B$};
+        \node [value, right of=n3, node distance=1.3cm] (s3) {\tiny 1};
+        % Draw edges
+        \path [line] (n0) -- (n1);
+        \path [line] (n0) -- (n2);
+        \path [line] (n1) -- (n3);
+        \path [line] (n2) -- (n3);
+      \end{tikzpicture}
+    \end{column}
+
+  \end{columns}
+\end{frame}
+
+\subsection{Step 2}
+
+\begin{frame}
+  \frametitle{A Variant of Kildall's Algorithm - Iteration Step}
+  \begin{itemize}
+  \item \textit{Iteration Step}. Visit nodes other than $n_0$ in order $n_1, n_2, ...$, (not fixed in advance and with repetitions). We visit node $n$ by setting \\
+    \begin{equation*}
+      B[n] = \bigwedge_{p \in PRED(n)} f_n(B[p])
+    \end{equation*}
+  \end{itemize}
+\end{frame}
+
+\subsection{Step 3}
+
+\begin{frame}
+  \frametitle{A Variant of Kildall's Algorithm - Final Step}
+  \begin{itemize}
+  \item \textit{Final Step}. Set \\
+    \begin{equation*}
+      H[n] =
+      \begin{cases}
+        0 & \text{if } n = n_0\\
+        \bigwedge_{p \in PRED(n)} B[p] & otherwise
+      \end{cases}
+    \end{equation*}
+  \end{itemize}
+\end{frame}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 5. Undecidability
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
