@@ -177,13 +177,12 @@
 % section A Variant of Kildall's Algorithm
 
 
-\subsection{A Variant of Kildall's Algorithm}
+\subsection{The Algorithm}
 
 \begin{frame}
-  \frametitle{A Variant of Kildall's Algorithm - Initialization}
+  \frametitle{Initialization}
 
   \begin{columns}[onlytextwidth]
-
     \begin{column}{0.5\textwidth}
       \begin{equation*}
         B[n] =
@@ -208,9 +207,9 @@
                 \node [block, label=above:$n_0$] (n0) {$A = 1$};
                 \node [value, right of=n0, node distance=1.1cm] (s0) {\tiny \{A=1\}};
                 \node [block, below left of=n0, label=above:$n_1$] (n1) {$A = 2$\\$B = 3$};
-                \node [value, above of=n1, node distance=0.8cm, xshift=-0.4cm] (s1) {\tiny 1};
+                \node [value, left of=n1, node distance=0.9cm] (s1) {\tiny 1};
                 \node [block, below right of=n0, label=above:$n_2$] (n2) {$A = 3$\\$B = 2$};
-                \node [value, left of=n2, node distance=0.9cm] (s2) {\tiny 1};
+                \node [value, right of=n2, node distance=0.9cm] (s2) {\tiny 1};
                 \node [block, below right of=n1, label=above:$n_3$] (n3) {$C = A + B$};
                 \node [value, right of=n3, node distance=1.3cm] (s3) {\tiny 1};
                 % Draw edges
@@ -229,12 +228,35 @@
 
 \begin{frame}
   \frametitle{A Variant of Kildall's Algorithm - Iteration Step}
-  \begin{itemize}
-  \item \textit{Iteration Step}. Visit nodes other than $n_0$ in order $n_1, n_2, ...$, (not fixed in advance and with repetitions). We visit node $n$ by setting \\
-    \begin{equation*}
-      B[n] = \bigwedge_{p \in PRED(n)} f_n(B[p])
-    \end{equation*}
-  \end{itemize}
+  \begin{columns}
+    \begin{column}
+      \begin{itemize}
+      \item \textit{Iteration Step}. Visit nodes other than $n_0$ in order $n_1, n_2, ...$, (not fixed in advance and with repetitions). We visit node $n$ by setting \\
+        \begin{equation*}
+          B[n] = \bigwedge_{p \in PRED(n)} f_n(B[p])
+        \end{equation*}
+      \end{itemize}
+    \end{column}
+
+    \begin{column}
+      \begin{tikzpicture}[node distance = 2cm, auto, every text node part/.style={align=left}]
+          % Place nodes
+        \node [block, label=above:$n_0$] (n0) {$A = 1$};
+        \node [value, right of=n0, node distance=1.1cm] (s0) {\tiny \{A=1\}};
+        \node [block, below left of=n0, label=above:$n_1$] (n1) {$A = 2$\\$B = 3$};
+        \node [value, above of=n1, node distance=0.8cm, xshift=-0.4cm] (s1) {\tiny 1};
+        \node [block, below right of=n0, label=above:$n_2$] (n2) {$A = 3$\\$B = 2$};
+        \node [value, left of=n2, node distance=0.9cm] (s2) {\tiny 1};
+        \node [block, below right of=n1, label=above:$n_3$] (n3) {$C = A + B$};
+        \node [value, right of=n3, node distance=1.3cm] (s3) {\tiny 1};
+        % Draw edges
+        \path [line] (n0) -- (n1);
+        \path [line] (n0) -- (n2);
+        \path [line] (n1) -- (n3);
+        \path [line] (n2) -- (n3);
+      \end{tikzpicture}
+    \end{column}
+  \end{columns}
 \end{frame}
 
 \subsection{Step 3}
