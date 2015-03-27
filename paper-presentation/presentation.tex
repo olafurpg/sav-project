@@ -28,7 +28,7 @@
     % \setbeamertemplate{blocks}[rounded][shadow=true]
     \beamertemplatenavigationsymbolsempty
     \usecolortheme[named=Sepia]{structure}
-    \usetheme{Malmoe}
+    \usetheme{Warsaw}
     \useoutertheme{infolines}
     \setbeamercovered{transparent}
 }
@@ -125,25 +125,27 @@
 \subsection{Semilattice: ordering}
 \begin{frame}[fragile]{$\wedge$ defines an order on $L$}
     \begin{align*}
-        a & \leqq b & \text{iff } a \wedge b = b \\
-        a < b & = b \wedge a & \text{iff } a \wedge b = b \text{\ and } a \neq b
+        a & \geqq b & \text{iff } a \wedge b = b \\
+        a > b & = b \wedge a & \text{iff } a \wedge b = b \text{\ and } a \neq b
     \end{align*}
 \end{frame}
 \subsection{Semilattice: 0 and 1}
 \begin{frame}[fragile]{}
     \begin{definition}
-        Element $e \in L$ is called \alert{zero}, labeled 0 (analogous to $\bot$), if
+        Element $e \in L$ is called \alert{zero}, labeled 0, if
         \[
             e \wedge x = e \qquad \forall x \in L
         \]
     \end{definition}
+    Analogous to $\bot$ from last lecture.
     \pause
     \begin{definition}
-        Element $e \in L$ is called \alert{one}, labeled 1(analogous to $\top$), if
+        Element $e \in L$ is called \alert{one}, labeled 1, if
         \[
             e \wedge x = x \qquad \forall x \in L
         \]
     \end{definition}
+    Analogous to $\bot$ from last lecture.
     \pause
     \begin{block}{Example}
         $L = \{1,2\}$\\
