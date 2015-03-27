@@ -1,0 +1,88 @@
+\documentclass[xcolor=dvipsnames]{beamer}
+
+\usepackage{amsmath, amssymb, graphicx}
+\usepackage[english]{babel}
+\usepackage{times}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage[norelsize,ruled,vlined]{algorithm2e}
+\usepackage{color}
+\usepackage{hyperref}
+\usepackage{booktabs}
+
+\newcommand{\fancyh}{\mathcal{H}}
+\newcommand{\gangle}[1]{\langle #1 \rangle}
+\newcommand{\myd}{\mathrm{d}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\ZZ}{\mathbb{Z}}
+
+\mode<presentation>
+{
+    % \setbeamertemplate{navigation symbols}{}
+    % \setbeamertemplate{items}[ball]
+    % \setbeamertemplate{blocks}[rounded][shadow=true]
+    \usecolortheme[named=Sepia]{structure}
+    \usetheme{Malmoe}
+    \setbeamercovered{transparent}
+}
+
+\lstset
+{
+    language = [LaTeX]TeX,
+    % captionpos=b,
+    basicstyle= \small \ttfamily,
+    keywordstyle = \bfseries \color{blue},
+    commentstyle = \color{green}
+}
+
+\title[Monotone Data Flow Analysis Frameworks]{Monotone Data Flow Analysis Frameworks}
+\author{Fengyun Liu, Ólafur Páll Geirsson}
+\institute[EPFL]
+{ }
+\date{\today}
+
+
+% Delete this, if you do not want the table of contents to pop up at
+% the beginning of each subsection:
+\AtBeginSection[]
+{
+    \begin{frame}<beamer>{Overview}
+        \tableofcontents[currentsection,
+            currentsubsection,
+            hideothersubsections,
+            sectionstyle=show/shaded,
+        subsectionstyle=show/shaded/hide]
+    \end{frame}
+}
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 0. Titlepage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+    \titlepage
+\end{frame}
+\begin{frame}{Today's agenda}
+    \tableofcontents[hideallsubsections]
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 1. Intro
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}
+\subsection{Flow graph}
+\begin{frame}[fragile]{$G = (N,\ldots)$}
+    \begin{center}
+        \large \emph{Cool center}
+    \end{center}
+    \begin{itemize}
+        \item Symmetric?
+        \item Negative?
+        \item Content.
+    \end{itemize}
+\end{frame}
+\section{My section 2}
+\end{document}
