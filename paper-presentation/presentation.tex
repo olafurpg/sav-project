@@ -493,7 +493,7 @@
             \node [block, below of=n0, label=above:$n_1$, xshift=-0.8cm] (n1) {$A = 2$\\$B = 3$};
             \node [value, left of=n1, node distance=0.6cm] (s1) {1};
             \node [block, fill=red, below of=n0, label=above:$n_2$, xshift=0.8cm] (n2) {$A = 3$\\$B = 2$};
-            \node [value, right of=n2, node distance=0.6cm] (s2) {0};
+            \node [value, text=red, right of=n2, node distance=0.6cm] (s2) {0};
             \node [block, below of=n1, label=130:$n_3$, xshift=0.85cm] (n3) {$C = A + B$};
             \node [value, right of=n3, node distance=0.8cm] (s3) {1};
             \node [block, below of=n3, label=100:$n_4$] (n4) {$i$};
@@ -514,7 +514,7 @@
             \node [block, label=above:$n_0$] (n0) {$A = 1$};
             \node [value, right of=n0, node distance=0.6cm] (s0) {0};
             \node [block, fill=red, below of=n0, label=above:$n_1$, xshift=-0.8cm] (n1) {$A = 2$\\$B = 3$};
-            \node [value, left of=n1, node distance=0.6cm] (s1) {0};
+            \node [value, text=red, left of=n1, node distance=0.6cm] (s1) {0};
             \node [block, below of=n0, label=above:$n_2$, xshift=0.8cm] (n2) {$A = 3$\\$B = 2$};
             \node [value, right of=n2, node distance=0.6cm] (s2) {0};
             \node [block, below of=n1, label=130:$n_3$, xshift=0.85cm] (n3) {$C = A + B$};
@@ -541,7 +541,7 @@
             \node [block, below of=n0, label=above:$n_2$, xshift=0.8cm] (n2) {$A = 3$\\$B = 2$};
             \node [value, right of=n2, node distance=0.6cm] (s2) {0};
             \node [block, fill=red, below of=n1, label=130:$n_3$, xshift=0.85cm] (n3) {$C = A + B$};
-            \node [value, right of=n3, node distance=0.8cm] (s3) {0};
+            \node [value, text=red, right of=n3, node distance=0.8cm] (s3) {0};
             \node [block, below of=n3, label=100:$n_4$] (n4) {$i$};
             \node [value, right of=n4, node distance=0.5cm] (s3) {1};
             % Draw edges
@@ -562,7 +562,7 @@
             \node [block, below of=n0, label=above:$n_1$, xshift=-0.8cm] (n1) {$A = 2$\\$B = 3$};
             \node [value, left of=n1, node distance=0.6cm] (s1) {0};
             \node [block, fill=red, below of=n0, label=above:$n_2$, xshift=0.8cm] (n2) {$A = 3$\\$B = 2$};
-            \node [value, right of=n2, node distance=0.6cm] (s2) {0};
+            \node [value, text=red, right of=n2, node distance=0.6cm] (s2) {0};
             \node [block, below of=n1, label=130:$n_3$, xshift=0.85cm] (n3) {$C = A + B$};
             \node [value, right of=n3, node distance=0.8cm] (s3) {0};
             \node [block, below of=n3, label=100:$n_4$] (n4) {$i$};
@@ -589,7 +589,7 @@
             \node [block, below of=n1, label=130:$n_3$, xshift=0.85cm] (n3) {$C = A + B$};
             \node [value, right of=n3, node distance=0.8cm] (s3) {0};
             \node [block, fill=red, below of=n3, label=100:$n_4$] (n4) {$i$};
-            \node [value, right of=n4, node distance=0.5cm] (s3) {0};
+            \node [value, text=red, right of=n4, node distance=0.5cm] (s3) {0};
             % Draw edges
             \path [line] (n0) -- (n1);
             \path [line] (n0) -- (n2);
@@ -736,7 +736,7 @@
             \node [block, below of=n0, label=above:$n_1$, xshift=-0.8cm] (n1) {$A = 2$\\$B = 3$};
             \node [value, left of=n1, node distance=0.6cm] (s1) {1};
             \node [block, fill=red, below of=n0, label=above:$n_2$, xshift=0.8cm] (n2) {$A = 3$\\$B = 2$};
-            \node [value, right of=n2, node distance=1.2cm] (s2) {\{(A, 3), (B, 2)\}};
+            \node [value, text=red, right of=n2, node distance=1.2cm] (s2) {\{(A, 3), (B, 2)\}};
             \node [block, below of=n1, label=130:$n_3$, xshift=0.85cm] (n3) {$C = A + B$};
             \node [value, right of=n3, node distance=0.8cm] (s3) {1};
             \node [block, below of=n3, label=100:$n_4$] (n4) {$i$};
@@ -757,7 +757,7 @@
             \node [block, label=above:$n_0$] (n0) {$A = 1$};
             \node [value, right of=n0, node distance=0.8cm] (s0) {\{(A, 1)\}};
             \node [block, fill=red, below of=n0, label=above:$n_1$, xshift=-0.8cm] (n1) {$A = 2$\\$B = 3$};
-            \node [value, left of=n1, node distance=1.2cm] (s1) {\{(A, 2), (B, 3)\}};
+            \node [value, text=red, left of=n1, node distance=1.2cm] (s1) {\{(A, 2), (B, 3)\}};
             \node [block, below of=n0, label=above:$n_2$, xshift=0.8cm] (n2) {$A = 3$\\$B = 2$};
             \node [value, right of=n2, node distance=1.2cm] (s2) {\{(A, 3), (B, 2)\}};
             \node [block, below of=n1, label=130:$n_3$, xshift=0.85cm] (n3) {$C = A + B$};
@@ -784,7 +784,7 @@
             \node [block, below of=n0, label=above:$n_2$, xshift=0.8cm] (n2) {$A = 3$\\$B = 2$};
             \node [value, right of=n2, node distance=1.2cm] (s2) {\{(A, 3), (B, 2)\}};
             \node [block, fill=red, below of=n1, label=130:$n_3$, xshift=0.85cm] (n3) {$C = A + B$};
-            \node [value, right of=n3, node distance=1.2cm] (s3) {\{(C, 5)\}};
+            \node [value, text=red, right of=n3, node distance=1.2cm] (s3) {\{(C, 5)\}};
             \node [block, below of=n3, label=100:$n_4$] (n4) {$i$};
             \node [value, right of=n4, node distance=0.5cm] (s3) {1};
             % Draw edges
@@ -805,7 +805,7 @@
             \node [block, below of=n0, label=above:$n_1$, xshift=-0.8cm] (n1) {$A = 2$\\$B = 3$};
             \node [value, left of=n1, node distance=1.2cm] (s1) {\{(A, 2), (B, 3)\}};
             \node [block, fill=red, below of=n0, label=above:$n_2$, xshift=0.8cm] (n2) {$A = 3$\\$B = 2$};
-            \node [value, right of=n2, node distance=1.2cm] (s2) {\{(A, 3), (B, 2)\}};
+            \node [value, text=red, right of=n2, node distance=1.2cm] (s2) {\{(A, 3), (B, 2)\}};
             \node [block, below of=n1, label=130:$n_3$, xshift=0.85cm] (n3) {$C = A + B$};
             \node [value, right of=n3, node distance=1.2cm] (s3) {\{(C, 5)\}};
             \node [block, below of=n3, label=100:$n_4$] (n4) {$i$};
@@ -832,7 +832,7 @@
             \node [block, below of=n1, label=130:$n_3$, xshift=0.85cm] (n3) {$C = A + B$};
             \node [value, right of=n3, node distance=1.2cm] (s3) {\{(C, 5)\}};
             \node [block, fill=red, below of=n3, label=100:$n_4$] (n4) {$i$};
-            \node [value, right of=n4, node distance=0.9cm] (s3) {\{(C, 5)\}};
+            \node [value, text=red, right of=n4, node distance=0.9cm] (s3) {\{(C, 5)\}};
             % Draw edges
             \path [line] (n0) -- (n1);
             \path [line] (n0) -- (n2);
