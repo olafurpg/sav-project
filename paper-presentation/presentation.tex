@@ -73,7 +73,7 @@
 
 \definecolor{mygreen}{rgb}{0, 178, 115}
 
-\tikzstyle{block} = [rectangle, draw, font=\tiny, text centered, rounded corners, minimum height=1em]
+\tikzstyle{block} = [rectangle, draw, font=\tiny, text centered, rounded corners, minimum height=1em, node distance=1.5cm, minimum width=2em]
 \tikzstyle{line} = [draw, -latex']
 \tikzstyle{value} = [label, red, font=\tiny, thick, node distance=0.4cm]
 
@@ -299,7 +299,45 @@
 \end{frame}
 \begin{frame}[fragile]
     \frametitle{Constant propagation is not distributive}
-    
+    \begin{definition}
+        \begin{equation*}
+            (\forall x, y \in L)(\forall f \in F)[f(x \wedge y) = f(x) \wedge f(y)] \quad (distributivity)
+        \end{equation*}
+    \end{definition}
+    \begin{columns}
+        \begin{column}{0.4\textwidth}
+            \begin{itemize}
+                \item $f(x \wedge y) =$ \\$\{(A, 2), (B, 3)\} \cap \{(A, 3), (B, 2)\} = \emptyset$
+                \item $f(x) \wedge f(y) =$ \\$\{(A, 2), (B, 3), (C, 5)\} \cap \{(A, 3), (B, 2), (C, 5)\} = \{(C, 5)\}$
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.6\textwidth}
+            \begin{figure}
+                \newcommand{\ndistance}{0.8cm}
+                \centering
+                \begin{tikzpicture}[node distance = 1cm, auto, every text node part/.style={align=left}]
+                    % Place nodes
+                    \node [block, label=above:] (n0) {$i$};
+                    \node [value, right of=n0, node distance=0.8cm] (s0) {};
+                    \node [block, below of=n0, label=above:, xshift=-0.8cm, node distance = \ndistance] (n1) {$A = 2$\\$B = 3$};
+                    \node [value, left of=n1, node distance=1.5cm] (s1) {$z = \{(A, 2), (B, 3)\}$};
+                    \node [block, below of=n0, label=above:, xshift=0.8cm,  node distance = \ndistance] (n2) {$A = 3$\\$B = 2$};
+                    \node [value, right of=n2, node distance=1.5cm] (s2) {$z' = \{(A, 3), (B, 2)\}$};
+                    \node [block, below of=n1, label=130:, xshift=0.85cm, node distance = \ndistance] (n3) {$C = A + B$};
+                    \node [value, right of=n3, node distance=0.8cm] (s3) {};
+                    \node [block, below of=n3, label=100:, node distance = \ndistance] (n4) {};
+                    \node [value, right of=n4, node distance=0.5cm] (s3) {};
+                    % Draw edges
+                    \path [line] (n0) -- (n1);
+                    \path [line] (n0) -- (n2);
+                    \path [line] (n1) -- (n3);
+                    \path [line] (n2) -- (n3);
+                    \path [line] (n3) -- (n4);
+                \end{tikzpicture}
+                \caption{Counter example to distributivity of CONST}
+            \end{figure}
+        \end{column}
+    \end{columns}
 \end{frame}
 
 % section Monotone Data Flow Analysis Frameworks (end)
@@ -339,7 +377,7 @@
       \item 0 - zero element of the lattice
       \item 1 - one element of the lattice
       \item $f_{n_0}$ - the function that $n_0$ corresponds to
-      \item $\mathbf{L} = 2^{V x \mathbb{R}}$ where $V = {A, B, C}$
+      \item $L \subset 2^{V x \mathbb{R}}$ where $V = \{A, B, C\}$
       \end{itemize}
     \end{column}
 
@@ -355,11 +393,14 @@
             \node [value, right of=n2, node distance=0.6cm] (s2) {1};
             \node [block, below of=n1, label=130:$n_3$, xshift=0.85cm] (n3) {$C = A + B$};
             \node [value, right of=n3, node distance=0.8cm] (s3) {1};
+            \node [block, below of=n3, label=100:$n_4$] (n4) {$i$};
+            \node [value, right of=n4, node distance=0.5cm] (s3) {1};
             % Draw edges
             \path [line] (n0) -- (n1);
             \path [line] (n0) -- (n2);
             \path [line] (n1) -- (n3);
             \path [line] (n2) -- (n3);
+            \path [line] (n3) -- (n4);
             \end{tikzpicture}
         \end{center}
     \end{column}
@@ -400,11 +441,14 @@
             \node [value, right of=n2, node distance=0.6cm] (s2) {1};
             \node [block, below of=n1, label=130:$n_3$, xshift=0.85cm] (n3) {$C = A + B$};
             \node [value, right of=n3, node distance=0.8cm] (s3) {1};
+            \node [block, below of=n3, label=100:$n_4$] (n4) {$i$};
+            \node [value, right of=n4, node distance=0.5cm] (s3) {1};
             % Draw edges
             \path [line] (n0) -- (n1);
             \path [line] (n0) -- (n2);
             \path [line] (n1) -- (n3);
             \path [line] (n2) -- (n3);
+            \path [line] (n3) -- (n4);
           \end{tikzpicture}
         }
         \only<2>{
@@ -414,38 +458,44 @@
             \node [value, right of=n0, node distance=0.8cm] (s0) {\{(A, 1)\}};
             \node [block, below of=n0, label=above:$n_1$, xshift=-0.8cm] (n1) {$A = 2$\\$B = 3$};
             \node [value, left of=n1, node distance=0.6cm] (s1) {1};
-            \node [block, below of=n0, label=above:$n_2$, xshift=0.8cm] (n2) {$A = 3$\\$B = 2$};
+            \node [block, fill=red, below of=n0, label=above:$n_2$, xshift=0.8cm] (n2) {$A = 3$\\$B = 2$};
             \node [value, right of=n2, node distance=1.2cm] (s2) {\{(A, 3), (B, 2)\}};
             \node [block, below of=n1, label=130:$n_3$, xshift=0.85cm] (n3) {$C = A + B$};
             \node [value, right of=n3, node distance=0.8cm] (s3) {1};
+            \node [block, below of=n3, label=100:$n_4$] (n4) {$i$};
+            \node [value, right of=n4, node distance=0.5cm] (s3) {1};
             % Draw edges
             \path [line] (n0) -- (n1);
             \path [line] (n0) -- (n2);
             \path [line] (n1) -- (n3);
             \path [line] (n2) -- (n3);
+            \path [line] (n3) -- (n4);
           \end{tikzpicture}
 
-          \alert{$n_2$}, $n_1, n_3, n_2, n_3$
+          \alert{$n_2$}, $n_1, n_3, n_2, n_4$
         }
         \only<3>{
           \begin{tikzpicture}[node distance = 2cm, auto, every text node part/.style={align=left}]
             % Place nodes
             \node [block, label=above:$n_0$] (n0) {$A = 1$};
             \node [value, right of=n0, node distance=0.8cm] (s0) {\{(A, 1)\}};
-            \node [block, below of=n0, label=above:$n_1$, xshift=-0.8cm] (n1) {$A = 2$\\$B = 3$};
+            \node [block, fill=red, below of=n0, label=above:$n_1$, xshift=-0.8cm] (n1) {$A = 2$\\$B = 3$};
             \node [value, left of=n1, node distance=1.2cm] (s1) {\{(A, 2), (B, 3)\}};
             \node [block, below of=n0, label=above:$n_2$, xshift=0.8cm] (n2) {$A = 3$\\$B = 2$};
             \node [value, right of=n2, node distance=1.2cm] (s2) {\{(A, 3), (B, 2)\}};
             \node [block, below of=n1, label=130:$n_3$, xshift=0.85cm] (n3) {$C = A + B$};
             \node [value, right of=n3, node distance=0.8cm] (s3) {1};
+            \node [block, below of=n3, label=100:$n_4$] (n4) {$i$};
+            \node [value, right of=n4, node distance=0.5cm] (s3) {1};
             % Draw edges
             \path [line] (n0) -- (n1);
             \path [line] (n0) -- (n2);
             \path [line] (n1) -- (n3);
             \path [line] (n2) -- (n3);
+            \path [line] (n3) -- (n4);
           \end{tikzpicture}
 
-          $n_2$, \alert{$n_1$}, $n_3, n_2, n_3$
+          $n_2$, \alert{$n_1$}, $n_3, n_2, n_4$
         }
         \only<4>{
           \begin{tikzpicture}[node distance = 2cm, auto, every text node part/.style={align=left}]
@@ -456,37 +506,110 @@
             \node [value, left of=n1, node distance=1.2cm] (s1) {\{(A, 2), (B, 3)\}};
             \node [block, below of=n0, label=above:$n_2$, xshift=0.8cm] (n2) {$A = 3$\\$B = 2$};
             \node [value, right of=n2, node distance=1.2cm] (s2) {\{(A, 3), (B, 2)\}};
-            \node [block, below of=n1, label=130:$n_3$, xshift=0.85cm] (n3) {$C = A + B$};
+            \node [block, fill=red, below of=n1, label=130:$n_3$, xshift=0.85cm] (n3) {$C = A + B$};
             \node [value, right of=n3, node distance=1.2cm] (s3) {\{(C, 5)\}};
+            \node [block, below of=n3, label=100:$n_4$] (n4) {$i$};
+            \node [value, right of=n4, node distance=0.5cm] (s3) {1};
             % Draw edges
             \path [line] (n0) -- (n1);
             \path [line] (n0) -- (n2);
             \path [line] (n1) -- (n3);
             \path [line] (n2) -- (n3);
+            \path [line] (n3) -- (n4);
           \end{tikzpicture}
 
-          $n_2$, $n_1$, \alert{$n_3$}, $n_2, n_3$ \\
-          \textit{B[n] stablize now}
+          $n_2$, $n_1$, \alert{$n_3$}, $n_2, n_4$
+        }
+        \only<5>{
+          \begin{tikzpicture}[node distance = 2cm, auto, every text node part/.style={align=left}]
+            % Place nodes
+            \node [block, label=above:$n_0$] (n0) {$A = 1$};
+            \node [value, right of=n0, node distance=0.8cm] (s0) {\{(A, 1)\}};
+            \node [block, below of=n0, label=above:$n_1$, xshift=-0.8cm] (n1) {$A = 2$\\$B = 3$};
+            \node [value, left of=n1, node distance=1.2cm] (s1) {\{(A, 2), (B, 3)\}};
+            \node [block, fill=red, below of=n0, label=above:$n_2$, xshift=0.8cm] (n2) {$A = 3$\\$B = 2$};
+            \node [value, right of=n2, node distance=1.2cm] (s2) {\{(A, 3), (B, 2)\}};
+            \node [block, below of=n1, label=130:$n_3$, xshift=0.85cm] (n3) {$C = A + B$};
+            \node [value, right of=n3, node distance=1.2cm] (s3) {\{(C, 5)\}};
+            \node [block, below of=n3, label=100:$n_4$] (n4) {$i$};
+            \node [value, right of=n4, node distance=0.5cm] (s3) {1};
+            % Draw edges
+            \path [line] (n0) -- (n1);
+            \path [line] (n0) -- (n2);
+            \path [line] (n1) -- (n3);
+            \path [line] (n2) -- (n3);
+            \path [line] (n3) -- (n4);
+          \end{tikzpicture}
+
+          $n_2$, $n_1$, $n_3$, \alert{$n_2$}, $n_4$
+        }
+        \only<6>{
+          \begin{tikzpicture}[node distance = 2cm, auto, every text node part/.style={align=left}]
+            % Place nodes
+            \node [block, label=above:$n_0$] (n0) {$A = 1$};
+            \node [value, right of=n0, node distance=0.8cm] (s0) {\{(A, 1)\}};
+            \node [block, below of=n0, label=above:$n_1$, xshift=-0.8cm] (n1) {$A = 2$\\$B = 3$};
+            \node [value, left of=n1, node distance=1.2cm] (s1) {\{(A, 2), (B, 3)\}};
+            \node [block, below of=n0, label=above:$n_2$, xshift=0.8cm] (n2) {$A = 3$\\$B = 2$};
+            \node [value, right of=n2, node distance=1.2cm] (s2) {\{(A, 3), (B, 2)\}};
+            \node [block, below of=n1, label=130:$n_3$, xshift=0.85cm] (n3) {$C = A + B$};
+            \node [value, right of=n3, node distance=1.2cm] (s3) {\{(C, 5)\}};
+            \node [block, fill=red, below of=n3, label=100:$n_4$] (n4) {$i$};
+            \node [value, right of=n4, node distance=0.9cm] (s3) {\{(C, 5)\}};
+            % Draw edges
+            \path [line] (n0) -- (n1);
+            \path [line] (n0) -- (n2);
+            \path [line] (n1) -- (n3);
+            \path [line] (n2) -- (n3);
+            \path [line] (n3) -- (n4);
+          \end{tikzpicture}
+
+          $n_2$, $n_1$, $n_3$, $n_2$, \alert{$n_4$}
         }
       \end{center}
     \end{column}
   \end{columns}
 \end{frame}
 
-\subsection{Step 3}
-
 \begin{frame}
-  \frametitle{A Variant of Kildall's Algorithm - Final Step}
-  \begin{itemize}
-  \item \textit{Final Step}. Set \\
-    \begin{equation*}
-      H[n] =
-      \begin{cases}
-        0 & \text{if } n = n_0\\
-        \bigwedge_{p \in PRED(n)} B[p] & otherwise
-      \end{cases}
-    \end{equation*}
-  \end{itemize}
+  \frametitle{Final Step}
+  \begin{columns}[onlytextwidth]
+    \begin{column}{0.55\textwidth}
+      \begin{itemize}
+      \item \textit{Final Step}. Set \\
+        \begin{equation*}
+          H[n] =
+          \begin{cases}
+            0 & \text{if } n = n_0\\
+            \bigwedge_{p \in PRED(n)} B[p] & otherwise
+          \end{cases}
+        \end{equation*}
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.55\textwidth}
+      \begin{center}
+        \begin{tikzpicture}[node distance = 2cm, auto, every text node part/.style={align=left}]
+          % Place nodes
+          \node [block, label=above:$n_0$] (n0) {$A = 1$};
+          \node [value, right of=n0, node distance=0.8cm] (s0) {\{(A, 1)\}};
+          \node [block, below of=n0, label=above:$n_1$, xshift=-0.8cm] (n1) {$A = 2$\\$B = 3$};
+          \node [value, left of=n1, node distance=1.2cm] (s1) {\{(A, 2), (B, 3)\}};
+          \node [block, below of=n0, label=above:$n_2$, xshift=0.8cm] (n2) {$A = 3$\\$B = 2$};
+          \node [value, right of=n2, node distance=1.2cm] (s2) {\{(A, 3), (B, 2)\}};
+          \node [block, below of=n1, label=130:$n_3$, xshift=0.85cm] (n3) {$C = A + B$};
+          \node [value, right of=n3, node distance=1.2cm] (s3) {\{(C, 5)\}};
+          \node [block, fill=red, below of=n3, label=100:$n_4$] (n4) {$i$};
+          \node [value, right of=n4, node distance=0.9cm] (s3) {\{(C, 5)\}};
+          % Draw edges
+          \path [line] (n0) -- (n1);
+          \path [line] (n0) -- (n2);
+          \path [line] (n1) -- (n3);
+          \path [line] (n2) -- (n3);
+          \path [line] (n3) -- (n4);
+        \end{tikzpicture}
+      \end{center}
+    \end{column}
+  \end{columns}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
