@@ -72,6 +72,10 @@
 
 \definecolor{mygreen}{rgb}{0, 178, 115}
 
+\tikzstyle{block} = [rectangle, draw, font=\tiny, text centered, rounded corners, minimum height=1em]
+\tikzstyle{line} = [draw, -latex']
+\tikzstyle{value} = [label, red, font=\tiny, thick, node distance=0.4cm]
+
 \title[Monotone Data Flow Analysis Frameworks]{Monotone Data Flow Analysis Frameworks}
 \author{Fengyun Liu, Ólafur Páll Geirsson}
 \institute[EPFL]{}
@@ -91,10 +95,6 @@
 % }
 
 \begin{document}
-
-\tikzstyle{block} = [rectangle, draw, fill=mygreen!20, text centered, rounded corners, minimum height=1em]
-\tikzstyle{line} = [draw, -latex']
-\tikzstyle{value} = [rectangle, draw, fill=red!80, text centered, node distance=1.2cm]
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -304,7 +304,7 @@
   \frametitle{Initialization}
 
   \begin{columns}[onlytextwidth]
-    \begin{column}{0.5\textwidth}
+    \begin{column}{0.55\textwidth}
       \begin{equation*}
         B[n] =
         \begin{cases}
@@ -318,21 +318,22 @@
       \item 0 - zero element of the lattice
       \item 1 - one element of the lattice
       \item $f_{n_0}$ - the function that $n_0$ corresponds to
+      \item $\mathbf{L} = 2^{V x \mathbb{R}}$ where $V = {A, B, C}$
       \end{itemize}
     \end{column}
 
-    \begin{column}{0.5\textwidth}
+    \begin{column}{0.45\textwidth}
         \begin{center}
             \begin{tikzpicture}[node distance = 2cm, auto, every text node part/.style={align=left}]
             % Place nodes
-            \node [block, label=above:$n_0$] (n0) {$A = 1$};
-            \node [value, right of=n0, node distance=1.1cm] (s0) {\tiny A=1};
+            \node [block, label=above:$n_0$] (n0) {$(A, 1)$};
+            \node [value, right of=n0, node distance=0.8cm] (s0) {\{(A, 1)\}};
             \node [block, below of=n0, label=above:$n_1$, xshift=-0.8cm] (n1) {$A = 2$\\$B = 3$};
-            \node [value, left of=n1, node distance=0.9cm] (s1) {\tiny 1};
+            \node [value, left of=n1, node distance=0.6cm] (s1) {1};
             \node [block, below of=n0, label=above:$n_2$, xshift=0.8cm] (n2) {$A = 3$\\$B = 2$};
-            \node [value, right of=n2, node distance=0.9cm] (s2) {\tiny 1};
-            \node [block, below of=n1, label=130:$n_3$, xshift=1cm] (n3) {$C = A + B$};
-            \node [value, right of=n3, node distance=1.3cm] (s3) {\tiny 1};
+            \node [value, right of=n2, node distance=0.6cm] (s2) {1};
+            \node [block, below of=n1, label=130:$n_3$, xshift=0.85cm] (n3) {$C = A + B$};
+            \node [value, right of=n3, node distance=0.8cm] (s3) {1};
             % Draw edges
             \path [line] (n0) -- (n1);
             \path [line] (n0) -- (n2);
@@ -371,13 +372,13 @@
           \begin{tikzpicture}[node distance = 2cm, auto, every text node part/.style={align=left}]
             % Place nodes
             \node [block, label=above:$n_0$] (n0) {$A = 1$};
-            \node [value, right of=n0, node distance=1.1cm] (s0) {\tiny A=1};
+            \node [value, right of=n0, node distance=0.8cm] (s0) {\{(A, 1)\}};
             \node [block, below of=n0, label=above:$n_1$, xshift=-0.8cm] (n1) {$A = 2$\\$B = 3$};
-            \node [value, left of=n1, node distance=0.9cm] (s1) {\tiny 1};
+            \node [value, left of=n1, node distance=0.6cm] (s1) {1};
             \node [block, below of=n0, label=above:$n_2$, xshift=0.8cm] (n2) {$A = 3$\\$B = 2$};
-            \node [value, right of=n2, node distance=0.9cm] (s2) {\tiny 1};
-            \node [block, below of=n1, label=130:$n_3$, xshift=1cm] (n3) {$C = A + B$};
-            \node [value, right of=n3, node distance=1.3cm] (s3) {\tiny 1};
+            \node [value, right of=n2, node distance=0.6cm] (s2) {1};
+            \node [block, below of=n1, label=130:$n_3$, xshift=0.85cm] (n3) {$C = A + B$};
+            \node [value, right of=n3, node distance=0.8cm] (s3) {1};
             % Draw edges
             \path [line] (n0) -- (n1);
             \path [line] (n0) -- (n2);
@@ -389,13 +390,13 @@
           \begin{tikzpicture}[node distance = 2cm, auto, every text node part/.style={align=left}]
             % Place nodes
             \node [block, label=above:$n_0$] (n0) {$A = 1$};
-            \node [value, right of=n0, node distance=1.1cm] (s0) {\tiny A=1};
+            \node [value, right of=n0, node distance=0.8cm] (s0) {\{(A, 1)\}};
             \node [block, below of=n0, label=above:$n_1$, xshift=-0.8cm] (n1) {$A = 2$\\$B = 3$};
-            \node [value, left of=n1, node distance=0.9cm] (s1) {\tiny 1};
+            \node [value, left of=n1, node distance=0.6cm] (s1) {1};
             \node [block, below of=n0, label=above:$n_2$, xshift=0.8cm] (n2) {$A = 3$\\$B = 2$};
-            \node [value, right of=n2, node distance=1.3cm] (s2) {\tiny A=3,  B=2};
-            \node [block, below of=n1, label=130:$n_3$, xshift=1cm] (n3) {$C = A + B$};
-            \node [value, right of=n3, node distance=1.3cm] (s3) {\tiny 1};
+            \node [value, right of=n2, node distance=1.2cm] (s2) {\{(A, 3), (B, 2)\}};
+            \node [block, below of=n1, label=130:$n_3$, xshift=0.85cm] (n3) {$C = A + B$};
+            \node [value, right of=n3, node distance=0.8cm] (s3) {1};
             % Draw edges
             \path [line] (n0) -- (n1);
             \path [line] (n0) -- (n2);
@@ -409,13 +410,13 @@
           \begin{tikzpicture}[node distance = 2cm, auto, every text node part/.style={align=left}]
             % Place nodes
             \node [block, label=above:$n_0$] (n0) {$A = 1$};
-            \node [value, right of=n0, node distance=1.1cm] (s0) {\tiny A=1};
+            \node [value, right of=n0, node distance=0.8cm] (s0) {\{(A, 1)\}};
             \node [block, below of=n0, label=above:$n_1$, xshift=-0.8cm] (n1) {$A = 2$\\$B = 3$};
-            \node [value, left of=n1, node distance=1.3cm] (s1) {\tiny A=2, B=3};
+            \node [value, left of=n1, node distance=1.2cm] (s1) {\{(A, 2), (B, 3)\}};
             \node [block, below of=n0, label=above:$n_2$, xshift=0.8cm] (n2) {$A = 3$\\$B = 2$};
-            \node [value, right of=n2, node distance=1.3cm] (s2) {\tiny A=3,  B=2};
-            \node [block, below of=n1, label=130:$n_3$, xshift=1cm] (n3) {$C = A + B$};
-            \node [value, right of=n3, node distance=1.3cm] (s3) {\tiny 1};
+            \node [value, right of=n2, node distance=1.2cm] (s2) {\{(A, 3), (B, 2)\}};
+            \node [block, below of=n1, label=130:$n_3$, xshift=0.85cm] (n3) {$C = A + B$};
+            \node [value, right of=n3, node distance=0.8cm] (s3) {1};
             % Draw edges
             \path [line] (n0) -- (n1);
             \path [line] (n0) -- (n2);
@@ -429,13 +430,13 @@
           \begin{tikzpicture}[node distance = 2cm, auto, every text node part/.style={align=left}]
             % Place nodes
             \node [block, label=above:$n_0$] (n0) {$A = 1$};
-            \node [value, right of=n0, node distance=1.1cm] (s0) {\tiny A=1};
+            \node [value, right of=n0, node distance=0.8cm] (s0) {\{(A, 1)\}};
             \node [block, below of=n0, label=above:$n_1$, xshift=-0.8cm] (n1) {$A = 2$\\$B = 3$};
-            \node [value, left of=n1, node distance=1.3cm] (s1) {\tiny A=2, B=3};
+            \node [value, left of=n1, node distance=1.2cm] (s1) {\{(A, 2), (B, 3)\}};
             \node [block, below of=n0, label=above:$n_2$, xshift=0.8cm] (n2) {$A = 3$\\$B = 2$};
-            \node [value, right of=n2, node distance=1.3cm] (s2) {\tiny A=3,  B=2};
-            \node [block, below of=n1, label=130:$n_3$, xshift=1cm] (n3) {$C = A + B$};
-            \node [value, right of=n3, node distance=1.5cm] (s3) {\tiny C=5};
+            \node [value, right of=n2, node distance=1.2cm] (s2) {\{(A, 3), (B, 2)\}};
+            \node [block, below of=n1, label=130:$n_3$, xshift=0.85cm] (n3) {$C = A + B$};
+            \node [value, right of=n3, node distance=1.2cm] (s3) {\{(C, 5)\}};
             % Draw edges
             \path [line] (n0) -- (n1);
             \path [line] (n0) -- (n2);
