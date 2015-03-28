@@ -113,7 +113,7 @@
 \end{frame}
 \begin{frame}{Today's agenda}
 \tableofcontents[hideallsubsections,
-    sections={2-6}
+    sections={1-6}
 ]
 \end{frame}
 
@@ -146,7 +146,7 @@
 \end{frame}
 \subsection{Semilattice}
 \begin{frame}[fragile]
-    \frametitle{Set $L$ with \alert{meet} operation $\wedge$}
+    \frametitle{Set $L$ with \emph{meet} operation $\wedge$}
     \begin{align*}
         a \wedge a & = a & (idempotent) \\
         a \wedge b & = b \wedge a & (commutative) \\
@@ -155,7 +155,7 @@
 \end{frame}
 \subsection{Semilattice: ordering}
 \begin{frame}[fragile]
-    \frametitle{The meet $\wedge$ defines an \alert{order} on $L$}
+    \frametitle{The meet $\wedge$ defines an \emph{order} on $L$}
     \begin{align*}
         a & \geqq b & \text{iff } a \wedge b = b \\
         a > b & = b \wedge a & \text{iff } a \wedge b = b \text{\ and } a \neq b
@@ -204,7 +204,7 @@
         $A \wedge B = A \cap B$
 
         Example chain: $\{1, 2\}, \{1\}, \{\}$\\
-        Any finite set is bounded, but can infinite sets be bounded?
+        Any finite set is bounded. Can infinite sets be bounded?
     \end{block}
 \end{frame}
 
@@ -221,9 +221,9 @@
         to be a \alert{monotone function space} associated with $L$ if the
         following conditions are satisfied:
         \begin{enumerate}
-            \item[M1] Each $f \in F$ satisfies the monotonicity condition,
+            \item[M1] Each $f \in F$ satisfies the \emph{monotonicity condition} if for all $x, y \in L$,
                 \[
-                    (\forall x, y \in L)(\forall f \in F) [f (x \wedge y) \leqq f(x) \wedge f(y)]
+                    f (x \wedge y) \leqq f(x) \wedge f(y)
                 \]
             \item[M2] There exists an identity function $i$ in $F$.
             \item[M3] $F$ is closed under composition.
