@@ -628,10 +628,15 @@
     Given an instance $I = (G, M)$ of a framework $D = (L, \wedge, F)$ as input to Algorithm 2:
 
     \begin{enumerate}[(i)]
-    \item Algorithm 2 will eventually halt. \alert{\scriptsize proof: B[n] decrease and L is bounded}.
-    \item The result we get is unique independent of the order in which the nodes are visited. \alert{\scriptsize proof: B[n] is the  maximal fix point of the set of equations}.
-    \item $(\forall n \in N) H[n] \leq \bigwedge_{P \in PATH(n)}f_P(0)$. \alert{\scriptsize proof: Induction on the length of P}.
-    \item If A[n] is the result of applying Algorithm 1 to $I = (G, M)$, then $A[n] \leq H[n]$. \alert{\scriptsize Let's prove this!}.
+    \item Algorithm 2 will eventually halt. \alert{\scriptsize proof: B[n]
+        decrease and L is bounded}.
+    \item The result we get is unique independent of the order in which the
+        nodes are visited. \alert{\scriptsize proof: B[n] is the  maximal fix
+        point of the set of equations}.
+    \item $(\forall n \in N) H[n] \leqq \bigwedge_{P \in PATH(n)}f_P(0)$.
+        \alert{\scriptsize proof: Induction on the length of P}.
+    \item If A[n] is the result of applying Algorithm 1 to $I = (G, M)$, then
+        $A[n] \leqq H[n]$. \only<2>{\alert{Let's prove thist!}}
     \end{enumerate}
   \end{theorem}
 \end{frame}
@@ -639,35 +644,33 @@
 \begin{frame}
   \frametitle{Property (iv) of Algorithm 2 - Proof}
   \begin{proposition}[$iv$]
-      If A[n] is the result of applying Algorithm 1 to $I = (G, M)$, then $A[n] \leq H[n]$.
+      If A[n] is the result of applying Algorithm 1 to $I = (G, M)$, then $A[n] \leqq H[n]$.
   \end{proposition}
 
   \begin{block}{Proof by induction on steps of algorithm 2}
-      The proposition is equivalent to the following proposition:
-      \[
-        (\forall p \in N) f_p(A[p]) \leq B[p] \Longleftarrow
-        \begin{cases}
-          A[n] = \bigwedge_{p \in PRED(n)} f_p(A[p]) \\
-          H[n] = \bigwedge_{p \in PRED(n)} B[p]
-        \end{cases}
-    \]
+      For node $n_0$, the property trivially holds because $A[n] = 0 \leqq e$ for any $e \in L$. % f_0(A[n_0] = 0) = 0 \leqq B[n_0] = f_{n_0}(0)$
+      For all other node $n \in N$, the proposition is equivalent to:
+      \alert{$f_n(A[n]) \leqq B[n]$} because
+      \begin{align*}
+          A[n] & = \bigwedge_{p \in PRED(n)} f_p(A[p]) \\
+          H[n] & = \bigwedge_{p \in PRED(n)} B[p]
+      \end{align*}
 
-      \alert{Base step}. Initially $B^0[n] = 1(\text{except }n_0), A[n_0] = 0$,
-      so we have for all $n \in N$, $f_n(A[n]) \leq B^0[n]$.
+    \emph{Base step ($m = 0$)}. $B^0[n] = 1$ and by definition $f_n(A[n]) \leqq 1$
   \end{block}
 \end{frame}
 \begin{frame}
     \begin{proof}[Proof by induction on steps of algorithm 2 (cont.)]
-        \alert{Induction step}. From the induction hypothesis(IH) we have:
+        \emph{Induction step ($m > 0$)}. Our induction hypothesis (IH) is:
         \[
-            (\forall n \in N) B^{m-1}[n] \geq f_n(A[n]) % \text{ for all n \in N}
+            B^{m-1}[n] \leqq f_n(A[n])
         \]
 
-      Then we have:
+      Then
       \begin{align*}
    B^m[n] & = \bigwedge_{p \in PRED(n)} f_n(B^{m-1}[p]) \\
           & = \bigwedge_{p \in PRED(n)} f_n(f_p(A[p]))  & \text{(monotonicity \& IH)} \\
-          & \geq f_n(\bigwedge_{p \in PRED(n)} f_p(A[p])) & \text{(monotonicity)} \\
+          & \leqq f_n(\bigwedge_{p \in PRED(n)} f_p(A[p])) & \text{(monotonicity)} \\
           & =  f_n(A[n])
       \end{align*}
   \end{proof}
@@ -679,9 +682,9 @@
   \frametitle{Infinite number of counterexamples}
   For the following constructed graph, for node $n$ we have:
 
-  \begin{equation}
-    MOP = \bigwedge_{P \in PATH(n)}f_P(0) \geq f(x) \wedge f(y) \geq f(x \wedge y) = H[n].
-  \end{equation}
+  \[
+      MOP = \bigwedge_{P \in PATH(n)}f_P(0) \leqq f(x) \wedge f(y) \leqq f(x \wedge y) = H[n].
+  \]
 
   \begin{figure}
     \centering
