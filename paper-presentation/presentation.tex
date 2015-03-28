@@ -12,6 +12,7 @@
 \usepackage{hyperref}
 \usepackage{booktabs}
 \usepackage{tikz}
+\usetikzlibrary{matrix}
 \usetikzlibrary{arrows}
 \usetikzlibrary{positioning}
 \usetikzlibrary{shapes.multipart}
@@ -21,6 +22,35 @@
 \newcommand{\myd}{\mathrm{d}}
 \newcommand{\NN}{\mathbb{N}}
 \newcommand{\ZZ}{\mathbb{Z}}
+
+\newsavebox{\flowgraph}
+\savebox{\flowgraph}{\begin{tikzpicture}[scale=0.2]
+        \tikzstyle{every node}+=[inner sep=0pt]
+        \draw [black] (24.7,-14) circle (3);
+        \draw(24.7,-14) node {$n_0$};
+        \draw [black] (24.7,-23.6) circle (3);
+        \draw (24.7,-23.6) node {$n_1$};
+        \draw [black] (18.4,-34.9) circle (3);
+        \draw (18.4,-34.9) node {$n_2$};
+        \draw [black] (31.1,-34.9) circle (3);
+        \draw (31.1,-34.9) node {$n_3$};
+        \draw [black] (15.682,-33.688) arc (-126.68179:-291.59948:6.793);
+        \fill [black] (22.24,-21.93) -- (21.68,-21.17) -- (21.31,-22.1);
+        \draw (13.14,-23.73) node [left] {$(n_2,\mbox{ }n_1)$};
+        \draw [black] (27.192,-21.975) arc (110.40413:-51.35216:6.765);
+        \fill [black] (27.19,-21.97) -- (28.12,-22.16) -- (27.77,-21.23);
+        \draw (36.1,-23.76) node [right] {$(n_3,\mbox{ }n_1)$};
+        \draw [black] (23.24,-26.22) -- (19.86,-32.28);
+        \fill [black] (19.86,-32.28) -- (20.69,-31.82) -- (19.81,-31.34);
+        \draw (20.89,-28.05) node [left] {$(n_1,\mbox{ }n_2)$};
+        \draw [black] (26.18,-26.21) -- (29.62,-32.29);
+        \fill [black] (29.62,-32.29) -- (29.66,-31.35) -- (28.79,-31.84);
+        \draw (28.56,-28.03) node [right] {$(n_1,\mbox{ }n_3)$};
+        \draw [black] (24.7,-17) -- (24.7,-20.6);
+        \fill [black] (24.7,-20.6) -- (25.2,-19.8) -- (24.2,-19.8);
+        \draw (24.2,-18.8) node [left] {$(n_0,\mbox{ }n_1)$};
+    \end{tikzpicture}
+}
 
 \mode<presentation>
 {% \setbeamertemplate{navigation symbols}{}
@@ -84,38 +114,28 @@
 \label{sec:Background}
 
 \subsection{Flow graph}\label{sec:flowgraph}
-\begin{frame}[fragile]{Triple $G = (N, E, n_0)$}
-    \begin{center}
-        \begin{tikzpicture}[scale=0.2]
-            \tikzstyle{every node}+=[inner sep=0pt]
-            \draw [black] (24.7,-14) circle (3);
-            \draw(24.7,-14) node {$n_0$};
-            \draw [black] (24.7,-23.6) circle (3);
-            \draw (24.7,-23.6) node {$n_1$};
-            \draw [black] (18.4,-34.9) circle (3);
-            \draw (18.4,-34.9) node {$n_2$};
-            \draw [black] (31.1,-34.9) circle (3);
-            \draw (31.1,-34.9) node {$n_3$};
-            \draw [black] (15.682,-33.688) arc (-126.68179:-291.59948:6.793);
-            \fill [black] (22.24,-21.93) -- (21.68,-21.17) -- (21.31,-22.1);
-            \draw (13.14,-23.73) node [left] {$(n_2,\mbox{ }n_1)$};
-            \draw [black] (27.192,-21.975) arc (110.40413:-51.35216:6.765);
-            \fill [black] (27.19,-21.97) -- (28.12,-22.16) -- (27.77,-21.23);
-            \draw (36.1,-23.76) node [right] {$(n_3,\mbox{ }n_1)$};
-            \draw [black] (23.24,-26.22) -- (19.86,-32.28);
-            \fill [black] (19.86,-32.28) -- (20.69,-31.82) -- (19.81,-31.34);
-            \draw (20.89,-28.05) node [left] {$(n_1,\mbox{ }n_2)$};
-            \draw [black] (26.18,-26.21) -- (29.62,-32.29);
-            \fill [black] (29.62,-32.29) -- (29.66,-31.35) -- (28.79,-31.84);
-            \draw (28.56,-28.03) node [right] {$(n_1,\mbox{ }n_3)$};
-            \draw [black] (24.7,-17) -- (24.7,-20.6);
-            \fill [black] (24.7,-20.6) -- (25.2,-19.8) -- (24.2,-19.8);
-            \draw (24.2,-18.8) node [left] {$(n_0,\mbox{ }n_1)$};
-        \end{tikzpicture}
-    \end{center}
+\begin{frame}[fragile]
+    \frametitle{Flow graph}
+    \begin{definition}
+        A flow graph is a triple \alert{$G = (N, E, n_0)$}.
+    \end{definition}
+    \begin{columns}
+        \begin{column}{0.3\textwidth}
+            Example:
+            $N = \{n_0, n_1, n_2, n_3\}$
+            $E = \{(n_0, n_1)$,\\
+            $(n_1, n_2),(n_1, n_3)$, $(n_2, n_1),(n_3, n_1)\}$
+        \end{column}
+        \begin{column}{0.7\textwidth}
+            \begin{center}
+                \usebox{\flowgraph}
+            \end{center}
+        \end{column}
+    \end{columns}
 \end{frame}
 \subsection{Semilattice}
-\begin{frame}[fragile]{Set $L$ with \alert{meet} operation $\wedge$}
+\begin{frame}[fragile]
+    \frametitle{Set $L$ with \alert{meet} operation $\wedge$}
     \begin{align*}
         a \wedge a & = a & (idempotent) \\
         a \wedge b & = b \wedge a & (commutative) \\
@@ -123,14 +143,16 @@
     \end{align*}
 \end{frame}
 \subsection{Semilattice: ordering}
-\begin{frame}[fragile]{$\wedge$ defines an order on $L$}
+\begin{frame}[fragile]
+    \frametitle{The meet $\wedge$ defines an \alert{order} on $L$}
     \begin{align*}
         a & \geqq b & \text{iff } a \wedge b = b \\
         a > b & = b \wedge a & \text{iff } a \wedge b = b \text{\ and } a \neq b
     \end{align*}
 \end{frame}
 \subsection{Semilattice: 0 and 1}
-\begin{frame}[fragile]{}
+\begin{frame}[fragile]
+    \frametitle{}
     \begin{definition}
         Element $e \in L$ is called \alert{zero}, labeled 0, if
         \[
@@ -145,7 +167,7 @@
             e \wedge x = x \qquad \forall x \in L
         \]
     \end{definition}
-    Analogous to $\bot$ from last lecture.
+    Analogous to $\top$ from last lecture.
     \pause
     \begin{block}{Example}
         $L = \{1,2\}$\\
@@ -156,7 +178,8 @@
     \end{block}
 \end{frame}
 \subsection{Semilattice: bounded chains}
-\begin{frame}[fragile]{} % {Chain $x_1, x_2, \ldots, x_n$}
+\begin{frame}[fragile]
+    \frametitle{}
     \begin{definition}
         A sequence $x_1, x_2, \ldots, x_n$ forms a \alert{chain} if $x_i > x_{i + 1}$ for $1 \leqq i < n$.
     \end{definition}
@@ -180,25 +203,45 @@
 \section{Monotone Data Flow Analysis Frameworks} % (fold)
 \label{sec:mdfaf}
 \subsection{Monotone function space}
-\begin{frame}[fragile]{Monotone function space} % {Chain $x_1, x_2, \ldots, x_n$}
+\begin{frame}[fragile]
+    \frametitle{Monotone function space}
     \begin{definition}
         Given a bounded semilattice $L$, a set of functions $F$ on $L$ is said
-        to be a monotone function space associated with $L$ if the
+        to be a \alert{monotone function space} associated with $L$ if the
         following conditions are satisfied:
         \begin{enumerate}
-            \item[M1] Each $f \in F$ satisfies the \alert{monotonicity condition},
+            \item[M1] Each $f \in F$ satisfies the monotonicity condition,
                 \[
                     (\forall x, y \in L)(\forall f \in F) [f (x \wedge y) \leqq f(x) \wedge f(y)]
                 \]
-            \item[M2] There exists an \alert{identity function} $i$ in $F$.
-            \item[M3] $F$ is \alert{closed under composition}.
+            \item[M2] There exists an identity function $i$ in $F$.
+            \item[M3] $F$ is closed under composition.
+            \item[M4] $L$ is equal to the closure of $\{0\}$ under the meet
+                operation and application of functions in $F$ (more on next slide).
+        \end{enumerate}
+    \end{definition}
+\end{frame}
+\begin{frame}[fragile]
+    \frametitle{Monotone function space (M4)}
+    \begin{definition}
+        \begin{enumerate}
             \item[M4] $L$ is equal to the closure of $\{0\}$ under the meet
                 operation and application of functions in $F$.
         \end{enumerate}
     \end{definition}
+    \begin{itemize}
+        \item Read: given $F$, $\{0\}$ and the meet operation, we can generate
+            all elements of $L$.
+        \item Alternatively: Any element in $L$ can be expressed as a sequence
+            of applications of functions in $F$ and the meet operation with
+            $\{0\}$.
+    \end{itemize}
+
 \end{frame}
+
 \subsection{Monotone data flow analysis framework}
-\begin{frame}[fragile]{Monotone data flow analysis framework} % {Chain $x_1, x_2, \ldots, x_n$}
+\begin{frame}[fragile]
+    \frametitle{Monotone data flow analysis framework}
     \begin{definition}
         A Monotone data flow analysis framework (from here on \emph{framework}) is a triple \alert{$D = (L, \wedge, F)$}, where
         \begin{enumerate}[(1)]
@@ -207,17 +250,36 @@
         \end{enumerate}
     \end{definition}
 \end{frame}
-\begin{frame}[fragile]{Framework instance} % {Chain $x_1, x_2, \ldots, x_n$}
+
+\begin{frame}[fragile]
+    \frametitle{Framework instance}
     \begin{definition}
         A particular instance of a framework is a pair \alert{$I = (G, M)$}, where
         \begin{enumerate}[(1)]
             \item $G = (N, E, n_0)$ is a flow graph.
-            \item $F$ is a monotone function space associated with $L$
-            \item $F$ is a monotone function space associated with $L$
+            \item $M: N \rightarrow F$ is a function which maps each node in $N$ to a function in $F$.
         \end{enumerate}
     \end{definition}
 \end{frame}
-\subsection{}
+\begin{frame}[fragile]
+    \frametitle{Putting it together}
+    \begin{columns}
+        \begin{column}{0.4\textwidth}
+            \begin{itemize}
+                \item Instance $I = (G, M)$
+                \item Framework $D = (L, \wedge, F)$
+                \item $M: N \rightarrow F$
+                \item $F: L \rightarrow L$
+                \item $\wedge: L \times L \rightarrow L$
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.6\textwidth}
+            \begin{center}
+                \usebox{\flowgraph}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
 
 % section Monotone Data Flow Analysis Frameworks (end)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -412,7 +474,8 @@
 \label{sec:undecidability}
 
 % section undecidability (end)
-\begin{frame}[fragile]{Example usage of blocks and columns}
+\begin{frame}[fragile]
+    \frametitle{Example usage of blocks and columns}
     \begin{columns}
         \begin{column}{0.5\textwidth}
             \begin{block}{Block 1}
