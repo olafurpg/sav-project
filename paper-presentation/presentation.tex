@@ -93,7 +93,7 @@
 \AtBeginSection[]
 {\begin{frame}<beamer>{Overview}
         \tableofcontents[
-            sections={1-6},
+            sections={2-6},
             currentsection,
             currentsubsection,
             hideothersubsections,
@@ -121,6 +121,14 @@
 % 1. Background
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction} % (fold)
+\subsection{Motivation} % (fold)
+\label{sub:Motivation}
+\begin{frame}[fragile]
+    \frametitle{Motivation}
+    CONST
+\end{frame}
+
+% subsection Motivation (end)
 \section{Background} % (fold)
 \label{sec:Background}
 
@@ -146,20 +154,27 @@
 \end{frame}
 \subsection{Semilattice}
 \begin{frame}[fragile]
-    \frametitle{Set $L$ with \emph{meet} operation $\wedge$}
-    \begin{align*}
-        a \wedge a & = a & (idempotent) \\
-        a \wedge b & = b \wedge a & (commutative) \\
-        a \wedge (b \wedge c) & = (a \wedge b) \wedge c & (associative)
-    \end{align*}
+    \frametitle{Semilattice}
+    \begin{definition}
+        A \alert{semilattice} is a set $L$ with \emph{meet} operation $\wedge$
+        where the meet operation satisfies the following properties:
+        \begin{align*}
+            a \wedge a & = a & (idempotent) \\
+            a \wedge b & = b \wedge a & (commutative) \\
+            a \wedge (b \wedge c) & = (a \wedge b) \wedge c & (associative)
+        \end{align*}
+    \end{definition}
 \end{frame}
 \subsection{Semilattice: ordering}
 \begin{frame}[fragile]
-    \frametitle{The meet $\wedge$ defines an \emph{order} on $L$}
+\frametitle{Semilattice: ordering}
+\begin{definition}
+    The meet $\wedge$ defines an \alert{order} on $L$
     \begin{align*}
         a & \geqq b & \text{iff } a \wedge b = b \\
         a > b & = b \wedge a & \text{iff } a \wedge b = b \text{\ and } a \neq b
     \end{align*}
+\end{definition}
 \end{frame}
 \subsection{Semilattice: 0 and 1}
 \begin{frame}[fragile]
@@ -218,15 +233,15 @@
     \frametitle{Monotone function space}
     \begin{definition}
         Given a bounded semilattice $L$, a set of functions $F$ on $L$ is said
-        to be a \alert{monotone function space} associated with $L$ if the
+        to be a \emph{monotone function space} associated with $L$ if the
         following conditions are satisfied:
         \begin{enumerate}
-            \item[M1] Each $f \in F$ satisfies the \emph{monotonicity condition} if for all $x, y \in L$,
+            \item[M1] Each $f \in F$ satisfies the \alert{monotonicity condition} if for all $x, y \in L$,
                 \[
                     f (x \wedge y) \leqq f(x) \wedge f(y)
                 \]
-            \item[M2] There exists an identity function $i$ in $F$.
-            \item[M3] $F$ is closed under composition.
+            \item[M2] There exists an \alert{identity function} $i$ in $F$.
+            \item[M3] $F$ is \alert{closed} under composition.
             \item[M4] $L$ is equal to the closure of $\{0\}$ under the meet
                 operation and application of functions in $F$ (more on next slide).
         \end{enumerate}
@@ -280,7 +295,7 @@
                 \item Instance $I = (G, M)$
                 \item Framework $D = (L, \wedge, F)$
                 \item $M: N \rightarrow F$
-                \item $F: L \rightarrow L$
+                \item $\forall f \in F, f: L \rightarrow L$
                 \item $\wedge: L \times L \rightarrow L$
             \end{itemize}
         \end{column}
@@ -301,6 +316,29 @@
         L      & \subset 2^{V \times \RR} & \text{possible variable assignments}\\
         \wedge & = \text{set intersection}
     \end{align*}
+    \begin{figure}
+        \newcommand{\ndistance}{0.8cm}
+        \centering
+        \begin{tikzpicture}[node distance = 1cm, auto, every text node part/.style={align=left}]
+            % Place nodes
+            \node [block, label=above:] (n0) {$i$};
+            \node [value, right of=n0, node distance=0.8cm] (s0) {};
+            \node [block, below of=n0, label=above:, xshift=-0.8cm, node distance = \ndistance] (n1) {$A = 2$\\$B = 3$};
+            \node [value, left of=n1, node distance=1.5cm] (s1) {$z = \{(A, 2), (B, 3)\}$};
+            \node [block, below of=n0, label=above:, xshift=0.8cm,  node distance = \ndistance] (n2) {$A = 3$\\$B = 2$};
+            \node [value, right of=n2, node distance=1.5cm] (s2) {$z' = \{(A, 3), (B, 2)\}$};
+            \node [block, below of=n1, label=130:, xshift=0.85cm, node distance = \ndistance] (n3) {$C = A + B$};
+            \node [value, right of=n3, node distance=0.8cm] (s3) {};
+            \node [block, below of=n3, label=100:, node distance = \ndistance] (n4) {};
+            \node [value, right of=n4, node distance=0.5cm] (s3) {};
+            % Draw edges
+            \path [line] (n0) -- (n1);
+            \path [line] (n0) -- (n2);
+            \path [line] (n1) -- (n3);
+            \path [line] (n2) -- (n3);
+            \path [line] (n3) -- (n4);
+        \end{tikzpicture}
+    \end{figure}
 \end{frame}
 \begin{frame}[fragile]
     \frametitle{Constant propagation is not distributive}
@@ -523,9 +561,9 @@
             \node [value, right of=n0, node distance=0.6cm] (s0) {0};
             \node [block, below of=n0, label=above:$n_1$, xshift=-0.8cm] (n1) {$A = 2$\\$B = 3$};
             \node [value, left of=n1, node distance=0.6cm] (s1) {0};
-            \node [block, below of=n0, label=above:$n_2$, xshift=0.8cm] (n2) {$A = 3$\\$B = 2$};
+            \node [block, fill=red, below of=n0, label=above:$n_2$, xshift=0.8cm] (n2) {$A = 3$\\$B = 2$};
             \node [value, right of=n2, node distance=0.6cm] (s2) {0};
-            \node [block, fill=red, below of=n1, label=130:$n_3$, xshift=0.85cm] (n3) {$C = A + B$};
+            \node [block, below of=n1, label=130:$n_3$, xshift=0.85cm] (n3) {$C = A + B$};
             \node [value, right of=n3, node distance=0.8cm] (s3) {0};
             \node [block, below of=n3, label=100:$n_4$] (n4) {$i$};
             \node [value, right of=n4, node distance=0.5cm] (s3) {1};
@@ -575,14 +613,14 @@
     Given an instance $I = (G, M)$ of a framework $D = (L, \wedge, F)$ as input to Algorithm 1:
 
     \begin{enumerate}[(i)]
-    \item Algorithm 2 will eventually halt. \alert{\scriptsize proof: A[n]
+    \item<1> Algorithm 1 will eventually halt. \alert{\scriptsize proof: A[n]
         decrease and L is bounded}.
-    \item $(\forall n \in N) A[n] \leqq \bigwedge_{P \in PATH(n)}f_P(0)$.
+    \item<2> $(\forall n \in N) A[n] \leqq \bigwedge_{P \in PATH(n)}f_P(0)$.
         \alert{\scriptsize proof: Induction on the length of P}.
-    \item The result we get is unique independent of the order in which the
+    \item<3> The result we get is unique independent of the order in which the
         nodes are visited. \alert{\scriptsize proof: A[n] is the  maximal fix
         point of the set of equations}.
-    \item There're cases where A[n] is strictly less than MOP when the data flow graph is monotone. \alert{\scriptsize proof: illustrated in the example}.
+    \item<4> There're cases where A[n] is strictly less than MOP when the data flow graph is monotone. \alert{\scriptsize proof: illustrated in the example}.
     \end{enumerate}
   \end{theorem}
 \end{frame}
@@ -654,15 +692,16 @@
         B[n] = \bigwedge_{p \in PRED(n)} f_{\alert{n}}(B[p])
       \end{equation*}
 
-      Conditions of the sequence($v_1, v_2, ...$):
-      \begin{itemize}
-      \item If a node doesn't satisfy the equation above, it should be visited again.
-      \item If all nodes satisfy the equation, the sequence eventually end.
-      \end{itemize}
-
-      \only<1>{
-        Example: \alert{$n_2, n_1, n_3, n_2, n_3$}
-      }
+      Same conditions for the sequence as in Algorithm 1.
+      % he sequence($v_1, v_2, ...$):
+      % \begin{itemize}
+      % \item If a node doesn't satisfy the equation above, it should be visited again.
+      % \item If all nodes satisfy the equation, the sequence eventually end.
+      % \end{itemize}
+      %
+      % \only<1>{
+      %   Example: \alert{$n_2, n_1, n_3, n_2, n_3$}
+      % }
 
     \end{column}
 
@@ -814,13 +853,13 @@
   \begin{columns}[onlytextwidth]
     \begin{column}{0.5\textwidth}
       For each node, set
-      \begin{equation*}
-        H[n] =
+      \begin{align*}
+          H[n] & =
         \begin{cases}
           0 & \text{if } n = n_0\\
           \bigwedge_{p \in PRED(n)} B[p] & otherwise
         \end{cases}
-      \end{equation*}
+      \end{align*}
     \end{column}
     \begin{column}{0.5\textwidth}
       \begin{center}
@@ -829,9 +868,9 @@
           \node [block, label=above:$n_0$] (n0) {$A=1$};
           \node [value, right of=n0, node distance=0.6cm] (s0) {0};
           \node [block, below of=n0, label=above:$n_1$, xshift=-0.8cm] (n1) {$A = 2$\\$B = 3$};
-          \node [value, left of=n1, node distance=0.6cm] (s1) {0};
+          \node [value, left of=n1, node distance=1cm] (s1) {$\{(A, 1)\}$};
           \node [block, below of=n0, label=above:$n_2$, xshift=0.8cm] (n2) {$A = 3$\\$B = 2$};
-          \node [value, right of=n2, node distance=0.6cm] (s2) {0};
+          \node [value, right of=n2, node distance=1cm] (s2) {$\{(A, 1)\}$};
           \node [block, below of=n1, label=130:$n_3$, xshift=0.85cm] (n3) {$C = A + B$};
           \node [value, right of=n3, node distance=0.8cm] (s3) {0};
           \node [block, below of=n3, label=100:$n_4$] (n4) {$i$};
@@ -856,15 +895,15 @@
     Given an instance $I = (G, M)$ of a framework $D = (L, \wedge, F)$ as input to Algorithm 2:
 
     \begin{enumerate}[(i)]
-    \item Algorithm 2 will eventually halt. \alert{\scriptsize proof: B[n]
+    \item<1> Algorithm 2 will eventually halt. \alert{\scriptsize proof: B[n]
         decrease and L is bounded}.
-    \item The result we get is unique independent of the order in which the
+    \item<2> The result we get is unique independent of the order in which the
         nodes are visited. \alert{\scriptsize proof: B[n] is the  maximal fix
         point of the set of equations}.
-    \item $(\forall n \in N) H[n] \leqq \bigwedge_{P \in PATH(n)}f_P(0)$.
+    \item<3> $(\forall n \in N) H[n] \leqq \bigwedge_{P \in PATH(n)}f_P(0)$.
         \alert{\scriptsize proof: Induction on the length of P}.
-    \item If A[n] is the result of applying Algorithm 1 to $I = (G, M)$, then
-        $A[n] \leqq H[n]$. \only<2>{\alert{Let's prove this!}}
+    \item<4-5> If A[n] is the result of applying Algorithm 1 to $I = (G, M)$, then
+        $A[n] \leqq H[n]$. \only<5>{\alert{Let's prove this!}}
     \end{enumerate}
   \end{theorem}
 \end{frame}
@@ -876,7 +915,7 @@
   \end{proposition}
 
   \begin{block}{Proof by induction on steps of algorithm 2}
-      For node $n_0$, the property trivially holds because $A[n] = 0 \leqq e$ for any $e \in L$. % f_0(A[n_0] = 0) = 0 \leqq B[n_0] = f_{n_0}(0)$
+      For node $n_0$, the property trivially holds because for any $e \in L$, $A[n_0] = 0 \leqq e$.
       For all other node $n \in N$, the proposition is equivalent to:
       \alert{$f_n(A[n]) \leqq B[n]$} because
       \begin{align*}
@@ -897,7 +936,7 @@
       Then
       \begin{align*}
    B^m[n] & = \bigwedge_{p \in PRED(n)} f_n(B^{m-1}[p]) \\
-          & = \bigwedge_{p \in PRED(n)} f_n(f_p(A[p]))  & \text{(monotonicity \& IH)} \\
+          & \leqq \bigwedge_{p \in PRED(n)} f_n(f_p(A[p]))  & \text{(IH)} \\
           & \leqq f_n(\bigwedge_{p \in PRED(n)} f_p(A[p])) & \text{(monotonicity)} \\
           & =  f_n(A[n])
       \end{align*}
@@ -907,18 +946,18 @@
 \subsection{Algorithm 2 is not Universal}
 
 \begin{frame}
-  \frametitle{Infinite number of counterexamples}
-  For the following constructed graph, for node $n$ we have:
-
-  \[
-      MOP = \bigwedge_{P \in PATH(n)}f_P(0) \leqq f(x) \wedge f(y) \leqq f(x \wedge y) = H[n].
-  \]
-
-  \begin{figure}
-    \centering
-    \includegraphics[width=0.4\textwidth]{img/not-universal.png}
-    \caption{Constructed counterexample where MOP and Algorithm 2 differs}
-  \end{figure}
+    \frametitle{Algorithm 2 is not Universal}
+    An infinite number of counterexamples exist. Consider the following
+    constructed instance of a \alert{non-distributive} monotone
+    framework:
+    \[
+        MOP = \bigwedge_{P \in PATH(n)}f_P(0) \geqq f(x) \wedge f(y) > f(x \wedge y) = H[n].
+    \]
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.4\textwidth]{img/not-universal.png}
+        % \caption{Constructed counterexample where MOP and Algorithm 2 differs}
+    \end{figure}
 \end{frame}
 
 
@@ -957,6 +996,22 @@
 
         If an algorithm to solve $D$ would exist, we could use $D$ to solve $AB$.
     \end{block}
+\end{frame}
+\begin{frame}[fragile]
+    \frametitle{WIP - MPCP example}
+    This following MPCP instance has a solution: 3, 2, 2, 4: $w_1w_3w_2w_2w_4 =
+    x_1x_3x_2x_2x_4$ = 1101111110
+    \begin{table}
+        \begin{tabular}{l|cc}
+            % & A     & B \\
+            $i$ & $w_i$ & $x_i$ \\
+            \hline
+            1   & 11    & 1   \\
+            2   & 1     & 111 \\
+            3   & 0111  & 10  \\
+            4   & 10    & 0
+        \end{tabular}
+    \end{table}
 \end{frame}
 \begin{frame}[fragile]
     \frametitle{Strengthened result (cont.)}
