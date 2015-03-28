@@ -80,15 +80,17 @@
 
 % Delete this, if you do not want the table of contents to pop up at
 % the beginning of each subsection:
-% \AtBeginSection[]
-% {\begin{frame}<beamer>{Overview}
-%         \tableofcontents[currentsection,
-%             currentsubsection,
-%             hideothersubsections,
-%             sectionstyle=show/shaded,
-%         subsectionstyle=show/shaded/hide]
-%     \end{frame}
-% }
+\AtBeginSection[]
+{\begin{frame}<beamer>{Overview}
+        \tableofcontents[
+            sections={1-6},
+            currentsection,
+            currentsubsection,
+            hideothersubsections,
+            sectionstyle=show/shaded,
+        subsectionstyle=show/shaded/hide]
+    \end{frame}
+}
 
 \begin{document}
 
@@ -104,12 +106,15 @@
     \titlepage{}
 \end{frame}
 \begin{frame}{Today's agenda}
-    \tableofcontents[hideallsubsections]
+\tableofcontents[hideallsubsections,
+    sections={2-6}
+]
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 1. Background
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction} % (fold)
 \section{Background} % (fold)
 \label{sec:Background}
 
@@ -193,7 +198,7 @@
         $A \wedge B = A \cap B$
 
         Example chain: $\{1, 2\}, \{1\}, \{\}$\\
-        Any finite set is bounded.
+        Any finite set is bounded, but can infinite sets be bounded?
     \end{block}
 \end{frame}
 
