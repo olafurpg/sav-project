@@ -627,48 +627,49 @@
   \begin{theorem}
     Given an instance $I = (G, M)$ of a framework $D = (L, \wedge, F)$ as input to Algorithm 2:
 
-    \begin{itemize}
+    \begin{enumerate}[(i)]
     \item Algorithm 2 will eventually halt. \alert{\scriptsize proof: B[n] decrease and L is bounded}.
     \item The result we get is unique independent of the order in which the nodes are visited. \alert{\scriptsize proof: B[n] is the  maximal fix point of the set of equations}.
     \item $(\forall n \in N) H[n] \leq \bigwedge_{P \in PATH(n)}f_P(0)$. \alert{\scriptsize proof: Induction on the length of P}.
-    \item If A[n] is the result of applying Algorithm 1 to $I = (G, M)$, then $A[n] \leq H[n]$. \alert{\scriptsize Let's prove this}.
-    \end{itemize}
+    \item If A[n] is the result of applying Algorithm 1 to $I = (G, M)$, then $A[n] \leq H[n]$. \alert{\scriptsize Let's prove this!}.
+    \end{enumerate}
   \end{theorem}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Properties of Algorithm - Proof}
-  Proposition: If A[n] is the result of applying Algorithm 1 to $I = (G, M)$, then $A[n] \leq H[n]$.
+  \frametitle{Property (iv) of Algorithm 2 - Proof}
+  \begin{proposition}[$iv$]
+      If A[n] is the result of applying Algorithm 1 to $I = (G, M)$, then $A[n] \leq H[n]$.
+  \end{proposition}
 
-  \begin{proof}[Proof by induction on steps of algorithm 2]
-    \only<1>{
-      It's equivalent to prove following proposition:
-      \begin{equation}
+  \begin{block}{Proof by induction on steps of algorithm 2}
+      The proposition is equivalent to the following proposition:
+      \[
         (\forall p \in N) f_p(A[p]) \leq B[p] \Longleftarrow
         \begin{cases}
-          A[n] = \bigwedge_{p \in PRED(n)}f_p(A[p]) \\
-          H[n] = \bigwedge_{p \in PRED(n)}B[p]
+          A[n] = \bigwedge_{p \in PRED(n)} f_p(A[p]) \\
+          H[n] = \bigwedge_{p \in PRED(n)} B[p]
         \end{cases}
-      \end{equation}
+    \]
 
-      \alert{Basis}. Initially $B^0[n] = 1(\text{except }n_0), A[n_0] = 0$, so we have $\forall n. f_n(A[n]) \leq B^0[n]$.
-    }
-    \only<2>{
-      \alert{Induction Step}. From the induction hypothesis(IH) we have:
-      \begin{equation}
-        (\forall n \in N) B^{m-1}[n] \geq f_n(A[n]) % \text{ for all n \in N}
-      \end{equation}
+      \alert{Base step}. Initially $B^0[n] = 1(\text{except }n_0), A[n_0] = 0$,
+      so we have for all $n \in N$, $f_n(A[n]) \leq B^0[n]$.
+  \end{block}
+\end{frame}
+\begin{frame}
+    \begin{proof}[Proof by induction on steps of algorithm 2 (cont.)]
+        \alert{Induction step}. From the induction hypothesis(IH) we have:
+        \[
+            (\forall n \in N) B^{m-1}[n] \geq f_n(A[n]) % \text{ for all n \in N}
+        \]
 
       Then we have:
-      \begin{equation*}
-        \begin{array}{lcll}
-          B^m[n] & = & \bigwedge_{p \in PRED(n)} f_n(B^{m-1}[p]) \\
-          & = & \bigwedge_{p \in PRED(n)} f_n(f_p(A[p]))  & \quad \text{\scriptsize{(monotonicity \& IH)}} \\
-          & \geq & f_n(\bigwedge_{p \in PRED(n)} f_p(A[p])) & \quad \text{\scriptsize{(monotonicity)}} \\
-          & = & f_n(A[n])
-        \end{array}
-      \end{equation*}
-    }
+      \begin{align*}
+   B^m[n] & = \bigwedge_{p \in PRED(n)} f_n(B^{m-1}[p]) \\
+          & = \bigwedge_{p \in PRED(n)} f_n(f_p(A[p]))  & \text{(monotonicity \& IH)} \\
+          & \geq f_n(\bigwedge_{p \in PRED(n)} f_p(A[p])) & \text{(monotonicity)} \\
+          & =  f_n(A[n])
+      \end{align*}
   \end{proof}
 \end{frame}
 
