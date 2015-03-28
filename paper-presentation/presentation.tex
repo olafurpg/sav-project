@@ -366,7 +366,7 @@
 % section A Variant of Kildall's Algorithm
 
 
-\subsection{The Algorithm}
+\subsection{Algorithm 2}
 
 \begin{frame}
   \frametitle{Initialization}
@@ -426,7 +426,7 @@
         B[n] = \bigwedge_{p \in PRED(n)} f_n(B[p])
       \end{equation*}
 
-      \alert{Conditions} of the sequence($v_1, v_2, ...$):
+      Conditions of the sequence($v_1, v_2, ...$):
       \begin{itemize}
       \item If a node doesn't satisfy the equation above, it should be visited again.
       \item If all nodes satisfy the equation, the sequence eventually end.
@@ -619,6 +619,59 @@
     \end{column}
   \end{columns}
 \end{frame}
+
+\subsection{Properties of Algorithm 2}
+
+\begin{frame}
+  \frametitle{Properties of Algorithm - Theorem 5}
+  \begin{theorem}
+    Given an instance $I = (G, M)$ of a framework $D = (L, \wedge, F)$ as input to Algorithm 2:
+
+    \begin{itemize}
+    \item Algorithm 2 will eventually halt. \alert{\scriptsize proof: B[n] decrease and L is bounded}.
+    \item The result we get is unique independent of the order in which the nodes are visited. \alert{\scriptsize proof: B[n] is the  maximal fix point of the set of equations}.
+    \item $(\forall n \in N) H[n] \leq \bigwedge_{P \in PATH(n)}f_P(0)$. \alert{\scriptsize proof: Induction on the length of P}.
+    \item If A[n] is the result of applying Algorithm 1 to $I = (G, M)$, then $A[n] \leq H[n]$. \alert{\scriptsize Let's prove this}.
+    \end{itemize}
+  \end{theorem}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Properties of Algorithm - Proof}
+  Proposition: If A[n] is the result of applying Algorithm 1 to $I = (G, M)$, then $A[n] \leq H[n]$.
+
+  \begin{proof}[Proof by induction on steps of algorithm 2]
+    \only<1>{
+      It's equivalent to prove following proposition:
+      \begin{equation}
+        (\forall p \in N) f_p(A[p]) \leq B[p] \Longleftarrow
+        \begin{cases}
+          A[n] = \bigwedge_{p \in PRED(n)}f_p(A[p]) \\
+          H[n] = \bigwedge_{p \in PRED(n)}B[p]
+        \end{cases}
+      \end{equation}
+
+      \alert{Basis}. Initially $B^0[n] = 1(\text{except }n_0), A[n_0] = 0$, so we have $\forall n. f_n(A[n]) \leq B^0[n]$.
+    }
+    \only<2>{
+      \alert{Induction Step}. From the induction hypothesis(IH) we have:
+      \begin{equation}
+        (\forall n \in N) B^{m-1}[n] \geq f_n(A[n]) % \text{ for all n \in N}
+      \end{equation}
+
+      Then we have:
+      \begin{equation*}
+        \begin{array}{lcll}
+          B^m[n] & = & \bigwedge_{p \in PRED(n)} f_n(B^{m-1}[p]) \\
+          & = & \bigwedge_{p \in PRED(n)} f_n(f_p(A[p]))  & \quad \text{\scriptsize{(monotonicity \& IH)}} \\
+          & \geq & f_n(\bigwedge_{p \in PRED(n)} f_p(A[p])) & \quad \text{\scriptsize{(monotonicity)}} \\
+          & = & f_n(A[n])
+        \end{array}
+      \end{equation*}
+    }
+  \end{proof}
+\end{frame}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 5. Undecidability
