@@ -345,12 +345,12 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 3. Approaches to solving Monotone Data Flow Analysis Frameworks
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Approaches to solving frameworks} % (fold)
+\section{Approaches to solving monotone frameworks} % (fold)
 \label{sec:approaches}
 \subsection{Algorithm 1 (Kildall's Algorithm)}
 \begin{frame}[fragile]
     \frametitle{Algorithm 1}
-    
+
 \end{frame}
 
 % section approaches
@@ -620,31 +620,38 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 5. Undecidability
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Undecidability of MOP Problem for frameworks} % (fold)
+\section{Undecidability of MOP Problem for monotone frameworks} % (fold)
 \label{sec:undecidability}
-
-% section undecidability (end)
+\subsection{Previous result} % (fold)
+\label{sub:Previous-result}
 \begin{frame}[fragile]
-    \frametitle{Example usage of blocks and columns}
-    \begin{columns}
-        \begin{column}{0.5\textwidth}
-            \begin{block}{Block 1}
-                \begin{itemize}
-                    \item<1> 1
-                    \item<2> 2
-                    \item<3> 3
-                \end{itemize}
-            \end{block}
-        \end{column}
-        \begin{column}{0.5\textwidth}
-            \begin{block}{Block 2}
-                \begin{itemize}
-                    \item<4> b
-                    \item<5> b
-                    \item<6> b
-                \end{itemize}
-            \end{block}
-        \end{column}
-    \end{columns}
+    \frametitle{}
+    \begin{quote}
+        Computing the MOP solution for a monotone framework is NP-hard \\
+        \begin{flushright}
+            - Dana Charmian Angluin\footnote{Missing reference}
+        \end{flushright}
+    \end{quote}
+\end{frame}
+% subsection Previous result (end)
+\subsection{Strengthened result} % (fold)
+\label{sub:Strengthened-result}
+\begin{frame}[fragile]
+    \frametitle{Solving monotone frameworks is undecidable}
+    \begin{theorem}
+        Given arbitrary instance $I = (G, M)$ of an arbitrary monotone
+        framework $D = (L, \wedge, F)$, there does not exist an algorithm which
+        computes $\bigwedge_{P \in PATH(n)} f_P(0)$ for all nodes $n \in G$.
+    \end{theorem}
+    \begin{block}{Intuition}
+        We reduce the problem to Modified Post Correspondence Problem (MPCP), which is well known to be undecidable.
+
+        In short, given an arbitrary instance $AB$ of MPCP, we construct a suitable monotone
+        framework $D = (L_{AB}, \wedge, F_{AB})$ such that $L_{AB}$, $\wedge$ and $F_{AB}$ have the
+        properties required to solve $AB$.
+
+        If an algorithm to solve $D$ would exist, we could use $D$ to solve $AB$.
+        See page 315 for details.
+    \end{block}
 \end{frame}
 \end{document}
