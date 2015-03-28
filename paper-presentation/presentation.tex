@@ -890,7 +890,7 @@
 \subsection{Properties of Algorithm 2}
 
 \begin{frame}
-  \frametitle{Properties of Algorithm 2 - Theorem 5}
+  \frametitle{Properties of Algorithm 2}
   \begin{theorem}
     Given an instance $I = (G, M)$ of a framework $D = (L, \wedge, F)$ as input to Algorithm 2:
 
@@ -915,8 +915,8 @@
   \end{proposition}
 
   \begin{block}{Proof by induction on steps of algorithm 2}
-      For node $n_0$, the property trivially holds because for any $e \in L$, $A[n_0] = 0 \leqq e$.
-      For all other node $n \in N$, the proposition is equivalent to:
+      For node $n_0$, the property trivially holds because $A[n_0] = H[n_0] = 0$.
+      For all other node $n \in N$, $A[n] \leqq H[n]$ is equivalent to:
       \alert{$f_n(A[n]) \leqq B[n]$} because
       \begin{align*}
           A[n] & = \bigwedge_{p \in PRED(n)} f_p(A[p]) \\
@@ -930,14 +930,14 @@
     \begin{proof}[Proof by induction on steps of algorithm 2 (cont.)]
         \emph{Induction step ($m > 0$)}. Our induction hypothesis (IH) is:
         \[
-            B^{m-1}[n] \leqq f_n(A[n])
+            B^{m-1}[n] \geqq f_n(A[n])
         \]
 
       Then
       \begin{align*}
    B^m[n] & = \bigwedge_{p \in PRED(n)} f_n(B^{m-1}[p]) \\
-          & \leqq \bigwedge_{p \in PRED(n)} f_n(f_p(A[p]))  & \text{(IH)} \\
-          & \leqq f_n(\bigwedge_{p \in PRED(n)} f_p(A[p])) & \text{(monotonicity)} \\
+          & \geqq \bigwedge_{p \in PRED(n)} f_n(f_p(A[p]))  & \text{(IH)} \\
+          & \geqq f_n(\bigwedge_{p \in PRED(n)} f_p(A[p])) & \text{(monotonicity)} \\
           & =  f_n(A[n])
       \end{align*}
   \end{proof}
@@ -951,7 +951,7 @@
     constructed instance of a \alert{non-distributive} monotone
     framework:
     \[
-        MOP = \bigwedge_{P \in PATH(n)}f_P(0) \geqq f(x) \wedge f(y) > f(x \wedge y) = H[n].
+        MOP(n) = \bigwedge_{P \in PATH(n)}f_P(0) \geqq f(x) \wedge f(y) > f(x \wedge y) = H[n].
     \]
     \begin{figure}
         \centering
@@ -971,7 +971,7 @@
 \begin{frame}[fragile]
     \frametitle{Previous result}
     \begin{quote}
-        Computing the MOP solution for a monotone framework is NP-hard \\
+        Computing the MOP solution for a monotone framework is NP-hard. \\
         \begin{flushright}
             - Dana Charmian Angluin\footnote{Missing reference}
         \end{flushright}
@@ -988,37 +988,55 @@
         computes $\bigwedge_{P \in PATH(n)} f_P(0)$ for all nodes $n \in G$.
     \end{theorem}
     \begin{block}{Intuition}
-        We reduce the problem to Modified Post Correspondence Problem (MPCP), which is well known to be undecidable.
+        We can transform any \emph{Modified Post Correspondence Problem} (MPCP), which is well known to be \alert{undecidable}, to a MOP problem on a monotone data flow framework.
 
-        In short, given an arbitrary instance $AB$ of MPCP, we construct a suitable monotone
-        framework $D = (L_{AB}, \wedge, F_{AB})$ such that $L_{AB}$, $\wedge$ and $F_{AB}$ have the
-        properties required to solve $AB$.
-
-        If an algorithm to solve $D$ would exist, we could use $D$ to solve $AB$.
+        If there exists a general algorithm to solve the MOP problem, then we can use it to decide whether any given MPCP problem has a solution or not, which is a contradiction.
     \end{block}
 \end{frame}
 \begin{frame}[fragile]
-    \frametitle{WIP - MPCP example}
-    This following MPCP instance has a solution: 3, 2, 2, 4: $w_1w_3w_2w_2w_4 =
-    x_1x_3x_2x_2x_4$ = 1101111110
-    \begin{table}
+  \frametitle{MPCP example}
+
+  \begin{definition}[Modified Post Correspondence Problem]
+    Given arbitrary lists A and B, of k strings each in $\{0, 1\}^+$, say
+    \begin{equation*}
+      A = w_1, w_2, \ldots, w_k \quad B = z_1, z_2, \ldots, z_k
+    \end{equation*}
+    does there exist a sequence of integers $i_1, i_2, \ldots, i_r$ such at
+    \begin{equation*}
+      w_1w_{i_1}w_{i_2} \ldots w_{i_r} = z_1z_{i_1}z_{i_2} \ldots z_{i_r}
+    \end{equation*}
+  \end{definition}
+
+  \begin{columns}[onlytextwidth]
+    \begin{column}{0.65\textwidth}
+
+      This example has a solution: \alert{3, 2, 2, 4}.
+      \begin{align*}
+        w_1w_3w_2w_2w_4 & = \text{11,0111,1,1,10} = 1101111110 \\
+        x_1x_3x_2x_2x_4 & = \text{1,10,111,111,0} = 1101111110
+      \end{align*}
+    \end{column}
+    \begin{column}{0.35\textwidth}
+      \begin{table}
         \begin{tabular}{l|cc}
-            % & A     & B \\
-            $i$ & $w_i$ & $x_i$ \\
-            \hline
-            1   & 11    & 1   \\
-            2   & 1     & 111 \\
-            3   & 0111  & 10  \\
-            4   & 10    & 0
+          % & A     & B \\
+          $i$ & $w_i$ & $x_i$ \\
+          \hline
+          1   & 11    & 1   \\
+          2   & 1     & 111 \\
+          3   & 0111  & 10  \\
+          4   & 10    & 0
         \end{tabular}
-    \end{table}
+      \end{table}
+    \end{column}
+  \end{columns}
 \end{frame}
 \begin{frame}[fragile]
     \frametitle{Strengthened result (cont.)}
     \begin{figure}
         \centering
         \includegraphics[width=0.7\textwidth]{img/fig4.png}
-        \caption{One path is a solution to MPCP if it exists}
+        \caption{The solution to a MPCP would be one path}
     \end{figure}
 \end{frame}
 \end{document}
