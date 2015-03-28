@@ -352,11 +352,221 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Approaches to solving monotone frameworks} % (fold)
 \label{sec:approaches}
-\subsection{Algorithm 1 (Kildall's Algorithm)}
-\begin{frame}[fragile]
-    \frametitle{Algorithm 1}
 
+\subsection{Algorithm 1 (Kildall's Algorithm)}
+
+\begin{frame}
+  \frametitle{Initialization}
+
+  \begin{columns}[onlytextwidth]
+    \begin{column}{0.55\textwidth}
+      \begin{equation*}
+        A[n] =
+        \begin{cases}
+          0 & \text{if } n = n_0\\
+          1 & otherwise
+        \end{cases}
+      \end{equation*}
+
+      \begin{itemize}
+      % \item \textit{Initialization}
+      \item 0 - zero element of the lattice
+      \item 1 - one element of the lattice
+      \item $i$ - identity function
+      \item $L \subset 2^{V \times \RR}$ where $V = \{A, B, C\}$
+      \end{itemize}
+    \end{column}
+
+    \begin{column}{0.45\textwidth}
+        \begin{center}
+            \begin{tikzpicture}[node distance = 2cm, auto, every text node part/.style={align=left}]
+            % Place nodes
+            \node [block, label=above:$n_0$] (n0) {$A=1$};
+            \node [value, right of=n0, node distance=0.6cm] (s0) {0};
+            \node [block, below of=n0, label=above:$n_1$, xshift=-0.8cm] (n1) {$A = 2$\\$B = 3$};
+            \node [value, left of=n1, node distance=0.6cm] (s1) {1};
+            \node [block, below of=n0, label=above:$n_2$, xshift=0.8cm] (n2) {$A = 3$\\$B = 2$};
+            \node [value, right of=n2, node distance=0.6cm] (s2) {1};
+            \node [block, below of=n1, label=130:$n_3$, xshift=0.85cm] (n3) {$C = A + B$};
+            \node [value, right of=n3, node distance=0.8cm] (s3) {1};
+            \node [block, below of=n3, label=100:$n_4$] (n4) {$i$};
+            \node [value, right of=n4, node distance=0.5cm] (s3) {1};
+            % Draw edges
+            \path [line] (n0) -- (n1);
+            \path [line] (n0) -- (n2);
+            \path [line] (n1) -- (n3);
+            \path [line] (n2) -- (n3);
+            \path [line] (n3) -- (n4);
+            \end{tikzpicture}
+        \end{center}
+    \end{column}
+  \end{columns}
 \end{frame}
+
+\begin{frame}
+  \frametitle{Iteration Step}
+ \begin{columns}[onlytextwidth]
+    \begin{column}{0.55\textwidth}
+      Visit nodes other than $n_0$ in order $v_1, v_2, ...$, for each visited node $n$, set \\
+      \begin{equation*}
+        A[n] = \bigwedge_{p \in PRED(n)} f_p(A[p])
+      \end{equation*}
+
+      Conditions of the sequence($v_1, v_2, ...$):
+      \begin{itemize}
+      \item If a node doesn't satisfy the equation above, it should be visited again.
+      \item If all nodes satisfy the equation, the sequence eventually end.
+      \end{itemize}
+
+      \only<1>{
+        Example: \alert{$n_2, n_1, n_3, n_2, n_3$}
+      }
+
+    \end{column}
+
+    \begin{column}{0.45\textwidth}
+      \begin{center}
+        \only<1>{
+          \begin{tikzpicture}[node distance = 2cm, auto, every text node part/.style={align=left}]
+            % Place nodes
+            \node [block, label=above:$n_0$] (n0) {$A = 1$};
+            \node [value, right of=n0, node distance=0.6cm] (s0) {0};
+            \node [block, below of=n0, label=above:$n_1$, xshift=-0.8cm] (n1) {$A = 2$\\$B = 3$};
+            \node [value, left of=n1, node distance=0.6cm] (s1) {1};
+            \node [block, below of=n0, label=above:$n_2$, xshift=0.8cm] (n2) {$A = 3$\\$B = 2$};
+            \node [value, right of=n2, node distance=0.6cm] (s2) {1};
+            \node [block, below of=n1, label=130:$n_3$, xshift=0.85cm] (n3) {$C = A + B$};
+            \node [value, right of=n3, node distance=0.8cm] (s3) {1};
+            \node [block, below of=n3, label=100:$n_4$] (n4) {$i$};
+            \node [value, right of=n4, node distance=0.5cm] (s3) {1};
+            % Draw edges
+            \path [line] (n0) -- (n1);
+            \path [line] (n0) -- (n2);
+            \path [line] (n1) -- (n3);
+            \path [line] (n2) -- (n3);
+            \path [line] (n3) -- (n4);
+          \end{tikzpicture}
+        }
+        \only<2>{
+          \begin{tikzpicture}[node distance = 2cm, auto, every text node part/.style={align=left}]
+            % Place nodes
+            \node [block, label=above:$n_0$] (n0) {$A = 1$};
+            \node [value, right of=n0, node distance=0.6cm] (s0) {0};
+            \node [block, below of=n0, label=above:$n_1$, xshift=-0.8cm] (n1) {$A = 2$\\$B = 3$};
+            \node [value, left of=n1, node distance=0.6cm] (s1) {1};
+            \node [block, fill=red, below of=n0, label=above:$n_2$, xshift=0.8cm] (n2) {$A = 3$\\$B = 2$};
+            \node [value, right of=n2, node distance=0.6cm] (s2) {0};
+            \node [block, below of=n1, label=130:$n_3$, xshift=0.85cm] (n3) {$C = A + B$};
+            \node [value, right of=n3, node distance=0.8cm] (s3) {1};
+            \node [block, below of=n3, label=100:$n_4$] (n4) {$i$};
+            \node [value, right of=n4, node distance=0.5cm] (s3) {1};
+            % Draw edges
+            \path [line] (n0) -- (n1);
+            \path [line] (n0) -- (n2);
+            \path [line] (n1) -- (n3);
+            \path [line] (n2) -- (n3);
+            \path [line] (n3) -- (n4);
+          \end{tikzpicture}
+
+          \alert{$n_2$}, $n_1, n_3, n_2, n_4$
+        }
+        \only<3>{
+          \begin{tikzpicture}[node distance = 2cm, auto, every text node part/.style={align=left}]
+            % Place nodes
+            \node [block, label=above:$n_0$] (n0) {$A = 1$};
+            \node [value, right of=n0, node distance=0.6cm] (s0) {0};
+            \node [block, fill=red, below of=n0, label=above:$n_1$, xshift=-0.8cm] (n1) {$A = 2$\\$B = 3$};
+            \node [value, left of=n1, node distance=0.6cm] (s1) {0};
+            \node [block, below of=n0, label=above:$n_2$, xshift=0.8cm] (n2) {$A = 3$\\$B = 2$};
+            \node [value, right of=n2, node distance=0.6cm] (s2) {0};
+            \node [block, below of=n1, label=130:$n_3$, xshift=0.85cm] (n3) {$C = A + B$};
+            \node [value, right of=n3, node distance=0.8cm] (s3) {1};
+            \node [block, below of=n3, label=100:$n_4$] (n4) {$i$};
+            \node [value, right of=n4, node distance=0.5cm] (s3) {1};
+            % Draw edges
+            \path [line] (n0) -- (n1);
+            \path [line] (n0) -- (n2);
+            \path [line] (n1) -- (n3);
+            \path [line] (n2) -- (n3);
+            \path [line] (n3) -- (n4);
+          \end{tikzpicture}
+
+          $n_2$, \alert{$n_1$}, $n_3, n_2, n_4$
+        }
+        \only<4>{
+          \begin{tikzpicture}[node distance = 2cm, auto, every text node part/.style={align=left}]
+            % Place nodes
+            \node [block, label=above:$n_0$] (n0) {$A = 1$};
+            \node [value, right of=n0, node distance=0.6cm] (s0) {0};
+            \node [block, below of=n0, label=above:$n_1$, xshift=-0.8cm] (n1) {$A = 2$\\$B = 3$};
+            \node [value, left of=n1, node distance=0.6cm] (s1) {0};
+            \node [block, below of=n0, label=above:$n_2$, xshift=0.8cm] (n2) {$A = 3$\\$B = 2$};
+            \node [value, right of=n2, node distance=0.6cm] (s2) {0};
+            \node [block, fill=red, below of=n1, label=130:$n_3$, xshift=0.85cm] (n3) {$C = A + B$};
+            \node [value, right of=n3, node distance=0.8cm] (s3) {0};
+            \node [block, below of=n3, label=100:$n_4$] (n4) {$i$};
+            \node [value, right of=n4, node distance=0.5cm] (s3) {1};
+            % Draw edges
+            \path [line] (n0) -- (n1);
+            \path [line] (n0) -- (n2);
+            \path [line] (n1) -- (n3);
+            \path [line] (n2) -- (n3);
+            \path [line] (n3) -- (n4);
+          \end{tikzpicture}
+
+          $n_2$, $n_1$, \alert{$n_3$}, $n_2, n_4$
+        }
+        \only<5>{
+          \begin{tikzpicture}[node distance = 2cm, auto, every text node part/.style={align=left}]
+            % Place nodes
+            \node [block, label=above:$n_0$] (n0) {$A = 1$};
+            \node [value, right of=n0, node distance=0.6cm] (s0) {0};
+            \node [block, below of=n0, label=above:$n_1$, xshift=-0.8cm] (n1) {$A = 2$\\$B = 3$};
+            \node [value, left of=n1, node distance=0.6cm] (s1) {0};
+            \node [block, below of=n0, label=above:$n_2$, xshift=0.8cm] (n2) {$A = 3$\\$B = 2$};
+            \node [value, right of=n2, node distance=0.6cm] (s2) {0};
+            \node [block, fill=red, below of=n1, label=130:$n_3$, xshift=0.85cm] (n3) {$C = A + B$};
+            \node [value, right of=n3, node distance=0.8cm] (s3) {0};
+            \node [block, below of=n3, label=100:$n_4$] (n4) {$i$};
+            \node [value, right of=n4, node distance=0.5cm] (s3) {1};
+            % Draw edges
+            \path [line] (n0) -- (n1);
+            \path [line] (n0) -- (n2);
+            \path [line] (n1) -- (n3);
+            \path [line] (n2) -- (n3);
+            \path [line] (n3) -- (n4);
+          \end{tikzpicture}
+
+          $n_2$, $n_1$, $n_3$, \alert{$n_2}, n_4$
+        }
+        \only<6>{
+          \begin{tikzpicture}[node distance = 2cm, auto, every text node part/.style={align=left}]
+            % Place nodes
+            \node [block, label=above:$n_0$] (n0) {$A = 1$};
+            \node [value, right of=n0, node distance=0.6cm] (s0) {0};
+            \node [block, below of=n0, label=above:$n_1$, xshift=-0.8cm] (n1) {$A = 2$\\$B = 3$};
+            \node [value, left of=n1, node distance=0.6cm] (s1) {0};
+            \node [block, below of=n0, label=above:$n_2$, xshift=0.8cm] (n2) {$A = 3$\\$B = 2$};
+            \node [value, right of=n2, node distance=0.6cm] (s2) {0};
+            \node [block, below of=n1, label=130:$n_3$, xshift=0.85cm] (n3) {$C = A + B$};
+            \node [value, right of=n3, node distance=0.8cm] (s3) {0};
+            \node [block, fill=red, below of=n3, label=100:$n_4$] (n4) {$i$};
+            \node [value, right of=n4, node distance=0.5cm] (s3) {0};
+            % Draw edges
+            \path [line] (n0) -- (n1);
+            \path [line] (n0) -- (n2);
+            \path [line] (n1) -- (n3);
+            \path [line] (n2) -- (n3);
+            \path [line] (n3) -- (n4);
+          \end{tikzpicture}
+
+          $n_2$, $n_1$, $n_3$, $n_2$, \alert{$n_4$}
+        }
+      \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
+
 
 % section approaches
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -364,9 +574,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{A Variant of Kildall's Algorithm} % (fold)
 \label{sec:variant}
-
-% section A Variant of Kildall's Algorithm
-
 
 \subsection{Algorithm 2}
 
@@ -397,7 +604,7 @@
         \begin{center}
             \begin{tikzpicture}[node distance = 2cm, auto, every text node part/.style={align=left}]
             % Place nodes
-            \node [block, label=above:$n_0$] (n0) {$(A, 1)$};
+            \node [block, label=above:$n_0$] (n0) {$A=1$};
             \node [value, right of=n0, node distance=0.8cm] (s0) {\{(A, 1)\}};
             \node [block, below of=n0, label=above:$n_1$, xshift=-0.8cm] (n1) {$A = 2$\\$B = 3$};
             \node [value, left of=n1, node distance=0.6cm] (s1) {1};
@@ -421,7 +628,7 @@
 
 \begin{frame}
   \frametitle{Iteration Step}
-  \begin{columns}[onlytextwidth]
+ \begin{columns}[onlytextwidth]
     \begin{column}{0.55\textwidth}
       Visit nodes other than $n_0$ in order $v_1, v_2, ...$, for each visited node $n$, set \\
       \begin{equation*}
