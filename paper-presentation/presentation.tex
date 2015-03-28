@@ -21,6 +21,7 @@
 \newcommand{\gangle}[1]{\langle{} #1 \rangle{}}
 \newcommand{\myd}{\mathrm{d}}
 \newcommand{\NN}{\mathbb{N}}
+\newcommand{\RR}{\mathbb{R}}
 \newcommand{\ZZ}{\mathbb{Z}}
 
 \newsavebox{\flowgraph}
@@ -284,6 +285,17 @@
             \end{center}
         \end{column}
     \end{columns}
+\end{frame}
+\subsection{Constant propagation}
+\begin{frame}[fragile]
+    \frametitle{Constant propagation}
+    Constant propagation can be formalized as a monotone data flow analysis framework where
+    \begin{align*}
+        CONST  & = (L, \wedge, F) & \text{framework}\\
+        V      & = \{A_1, A_2, \ldots \} & \text{infinite set of variables} \\
+        L      & \subset 2^{V \times \RR} & \text{possible variable assignments}\\
+        \wedge & = \text{set intersection} \\
+    \end{align*}
 \end{frame}
 
 % section Monotone Data Flow Analysis Frameworks (end)
