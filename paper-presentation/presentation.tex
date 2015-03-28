@@ -672,6 +672,23 @@
   \end{proof}
 \end{frame}
 
+\subsection{Algorithm 2 is not Universal}
+
+\begin{frame}
+  \frametitle{Infinite number of counterexamples}
+  For the following constructed graph, for node $n$ we have:
+
+  \begin{equation}
+    MOP = \bigwedge_{P \in PATH(n)}f_P(0) \geq f(x) \wedge f(y) \geq f(x \wedge y) = H[n].
+  \end{equation}
+
+  \begin{figure}
+    \centering
+    \includegraphics[width=0.4\textwidth]{img/not-universal.png}
+    \caption{Constructed counterexample where MOP and Algorithm 2 differs}
+  \end{figure}
+\end{frame}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 5. Undecidability
