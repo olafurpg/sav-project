@@ -75,7 +75,7 @@
 
 \tikzstyle{block} = [rectangle, draw, font=\tiny, text centered, rounded corners, minimum height=1em, node distance=1.5cm, minimum width=2em]
 \tikzstyle{line} = [draw, -latex']
-\tikzstyle{value} = [label, red, font=\tiny, thick, node distance=0.4cm]
+\tikzstyle{value} = [label, black, font=\tiny, thick, node distance=0.4cm]
 
 \title[Monotone Data Flow Analysis Frameworks]{Monotone Data Flow Analysis Frameworks}
 \author{Fengyun Liu, Ólafur Páll Geirsson}
@@ -300,8 +300,9 @@
 \begin{frame}[fragile]
     \frametitle{Constant propagation is not distributive}
     \begin{definition}
+        For all $x, y \in L$ and $f \in F$, \alert{distributivity} is satisfied when
         \begin{equation*}
-            (\forall x, y \in L)(\forall f \in F)[f(x \wedge y) = f(x) \wedge f(y)] \quad (distributivity)
+            f(x \wedge y) = f(x) \wedge f(y)
         \end{equation*}
     \end{definition}
     \begin{columns}
