@@ -567,6 +567,25 @@
   \end{columns}
 \end{frame}
 
+\subsection{Properties of Algorithm 1}
+
+\begin{frame}
+  \frametitle{Properties of Algorithm 1}
+  \begin{theorem}
+    Given an instance $I = (G, M)$ of a framework $D = (L, \wedge, F)$ as input to Algorithm 1:
+
+    \begin{enumerate}[(i)]
+    \item Algorithm 2 will eventually halt. \alert{\scriptsize proof: A[n]
+        decrease and L is bounded}.
+    \item $(\forall n \in N) A[n] \leqq \bigwedge_{P \in PATH(n)}f_P(0)$.
+        \alert{\scriptsize proof: Induction on the length of P}.
+    \item The result we get is unique independent of the order in which the
+        nodes are visited. \alert{\scriptsize proof: A[n] is the  maximal fix
+        point of the set of equations}.
+    \item There're cases where A[n] is strictly less than MOP when the data flow graph is monotone. \alert{\scriptsize proof: illustrated in the example}.
+    \end{enumerate}
+  \end{theorem}
+\end{frame}
 
 % section approaches
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -585,7 +604,7 @@
       \begin{equation*}
         B[n] =
         \begin{cases}
-          f_{n_0}(0) & \text{if } n = n_0\\
+          \alert{f_{n_0}(0)} & \text{if } n = n_0\\
           1 & otherwise
         \end{cases}
       \end{equation*}
@@ -632,7 +651,7 @@
     \begin{column}{0.55\textwidth}
       Visit nodes other than $n_0$ in order $v_1, v_2, ...$, for each visited node $n$, set \\
       \begin{equation*}
-        B[n] = \bigwedge_{p \in PRED(n)} f_n(B[p])
+        B[n] = \bigwedge_{p \in PRED(n)} f_{\alert{n}}(B[p])
       \end{equation*}
 
       Conditions of the sequence($v_1, v_2, ...$):
@@ -832,7 +851,7 @@
 \subsection{Properties of Algorithm 2}
 
 \begin{frame}
-  \frametitle{Properties of Algorithm - Theorem 5}
+  \frametitle{Properties of Algorithm 2 - Theorem 5}
   \begin{theorem}
     Given an instance $I = (G, M)$ of a framework $D = (L, \wedge, F)$ as input to Algorithm 2:
 
