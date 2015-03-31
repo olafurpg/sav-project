@@ -216,7 +216,7 @@
     Analogous to $\top$ from last lecture.
     \pause
     \begin{block}{Example}
-        $L = \{1,2\}$\\
+        $L = \{\{1,2\},\{1\},\{2\},\{\}\}$\\
         $A \wedge B = A \cap B$
 
         Example 0: $\{\}$\\
@@ -235,7 +235,7 @@
     \end{definition}
     \pause
     \begin{block}{Example}
-        $L = \{1,2\}$\\
+        $L = \{\{1,2\},\{1\},\{2\},\{\}\}$\\
         $A \wedge B = A \cap B$
 
         Example chain: $\{1, 2\}, \{1\}, \{\}$\\
@@ -1008,9 +1008,8 @@
         computes $\bigwedge_{P \in PATH(n)} f_P(0)$ for all nodes $n \in G$.
     \end{theorem}
     \begin{block}{Intuition}
-        We can transform any \emph{Modified Post Correspondence Problem} (MPCP), which is well known to be \alert{undecidable}, to a MOP problem on a monotone data flow framework.
-
-        If there exists a general algorithm to solve the MOP problem, then we can use it to decide whether any given MPCP problem has a solution or not, which is a contradiction.
+        The \emph{Modified Post Correspondence Problem} (MPCP), which is well known to be \alert{undecidable}, can be reduced to the \emph{MOP problem}.
+        This is accomplished by modeling the MPCP problem as a monotone data flow framework.
     \end{block}
 \end{frame}
 \begin{frame}[fragile]
@@ -1052,17 +1051,17 @@
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{Strengthened result (cont.)}
+  \frametitle{Reducing MPCP to MOP}
   \begin{columns}[onlytextwidth]
     \begin{column}{0.5\textwidth}
-      Given
+      Define
       \begin{itemize}
       \item L = 0, \$, and all strings of integers beginning with 1
       \item $x \wedge y = 0 \text{ if } x \neq y$
-      \item $h(x) = 1$(string 1)
-      \item $f_i(0)=0, f_i(\$)=\$, f_i(x)=\text{x i}$
+      \item $h(x) =$ ``1''
+      \item $f_i(0)=0, f_i(\$)=\$$, $f_i(x)= concat(x, i)}$
       \item $g(0)=0, g(\$)=\$$
-      \item $g(x) = 0 \text{ if x is a solution}$
+      \item $g(x) = 0 \text{ if $x$ is a solution}$
       \item $g(x) = \$ \text{ otherwise}$
       \end{itemize}
       \alert{We have $MOP(*) = 0$ if there's a solution, otherwise $MOP(*)=\$$}.
