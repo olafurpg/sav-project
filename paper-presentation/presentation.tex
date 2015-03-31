@@ -146,6 +146,7 @@
         \end{column}
     \end{columns}
 \end{frame}
+
 \subsection{Semilattice}
 \begin{frame}[fragile]
     \frametitle{Semilattice}
@@ -159,17 +160,42 @@
         \end{align*}
     \end{definition}
 \end{frame}
+
 \subsection{Semilattice: ordering}
 \begin{frame}[fragile]
 \frametitle{Semilattice: ordering}
 \begin{definition}
-    The meet $\wedge$ defines an \alert{order} on $L$
+    The meet $\wedge$ defines a \alert{partial order} on $L$
     \begin{align*}
         a & \geqq b & \text{iff } a \wedge b = b \\
         a > b & = b \wedge a & \text{iff } a \wedge b = b \text{\ and } a \neq b
     \end{align*}
 \end{definition}
+\begin{figure}
+    \centering
+    \begin{tikzpicture}[scale=0.13]
+        \tikzstyle{every node}+=[inner sep=0pt]
+        \draw [black] (35.2,-19.2) circle (3);
+        \draw (35.2,-19.2) node {$d$};
+        \draw [black] (28.2,-29.1) circle (3);
+        \draw (28.2,-29.1) node {$b$};
+        \draw [black] (42,-29.1) circle (3);
+        \draw (42,-29.1) node {$c$};
+        \draw [black] (35.2,-39.2) circle (3);
+        \draw (35.2,-39.2) node {$a$};
+        \draw [black] (33.49,-36.73) -- (29.91,-31.57);
+        \fill [black] (29.91,-31.57) -- (29.95,-32.51) -- (30.78,-31.94);
+        \draw [black] (36.88,-36.71) -- (40.32,-31.59);
+        \fill [black] (40.32,-31.59) -- (39.46,-31.97) -- (40.29,-32.53);
+        \draw [black] (29.93,-26.65) -- (33.47,-21.65);
+        \fill [black] (33.47,-21.65) -- (32.6,-22.01) -- (33.41,-22.59);
+        \draw [black] (40.3,-26.63) -- (36.9,-21.67);
+        \fill [black] (36.9,-21.67) -- (36.94,-22.62) -- (37.76,-22.05);
+    \end{tikzpicture}
+    \caption{$d > b, c > a$. However, $b \not > c$ and $c \not > b$.}
+\end{figure}
 \end{frame}
+
 \subsection{Semilattice: 0 and 1}
 \begin{frame}[fragile]
     \frametitle{}
