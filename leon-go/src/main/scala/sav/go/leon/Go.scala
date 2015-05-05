@@ -5,7 +5,13 @@ import java.text.ParseException
 import scala.collection.parallel.mutable
 import scala.io.StdIn
 
-sealed trait Cell
+sealed trait Cell {
+  def otherColor: Cell = this match {
+    case WhiteCell => BlackCell
+    case BlackCell => WhiteCell
+    case EmptyCell => EmptyCell
+  }
+}
 
 case object WhiteCell extends Cell {
   override def toString(): String = "O"
@@ -18,20 +24,58 @@ case object EmptyCell extends Cell {
 }
 
 case class Board(n: Int, cells: Map[(Int, Int), Cell]) {
+//  def this(n: Int, cells: Map[(Int, Int)]) = this(n, cells.filter(p => isCaptured(p._1)))
   def this(n: Int) = this(n, Map.empty)
 
   def inRange(x: Int) = 0 < x && x <= n
 
+  def insideBoard(p: (Int, Int)) = inRange(p._1) && inRange(p._2)
+
   def at(x: Int, y: Int): Cell = cells.getOrElse((x, y), EmptyCell)
 
+  def at(p: (Int, Int)): Cell = at(p._1, p._2)
+
+  val r = 1 to n
+
   def board = {
-    val r = 1 to n
     r.map(x => r.map(y => at(x, y)))
   }
 
-  def put(c: Cell, x: Int, y: Int) = {
-    require(inRange(x) && inRange(y) && !cells.contains((x, y)))
-    Board(n, cells + ((x -> y) -> c))
+  // TODO: disallow suicide
+  def put(c: Cell, p: (Int, Int)) = {
+    require(insideBoard(p) && !cells.contains(p))
+    Board(n, (cells + (p -> c)).filter(isCaptured(p)))
+  }
+
+  // TODO: take into account color
+  def isCaptured(newP: (Int, Int))(p: ((Int, Int), Cell)): Boolean = {
+    dfs(p._1).exists(p => neighboors(p).withFilter(_ != newP).map(at).contains(EmptyCell))
+  }
+
+  def hasLiberty(p: (Int, Int)): Boolean = neighboors(p).map(at).contains(EmptyCell)
+
+  def neighboors(p: (Int, Int)): List[(Int, Int)] =
+    neighboors(p._1, p._2)
+
+  def sameColorNeighbors(p: (Int, Int)): List[(Int, Int)] = {
+    val c = at(p)
+    neighboors(p).filter(x => at(x) == c)
+  }
+
+  def neighboors(x: Int, y: Int): List[(Int, Int)] =
+    List((x + 1, y), (x, y + 1), (x - 1, y), (x, y - 1)).filter(insideBoard)
+
+  def dfs(p: (Int, Int)): Set[(Int, Int)] = dfs(p, Set.empty)
+
+  def dfs(p: (Int, Int), visited: Set[(Int, Int)]): Set[(Int, Int)] = {
+    if (visited.contains(p)) visited
+    else {
+      val newVisited = visited + p
+      val toVisit = sameColorNeighbors(p).map(Set(_))
+      toVisit.fold(newVisited) { case (a, b) =>
+          dfs(a.head, b ++ a)
+      }
+    }
   }
 
   def full: Boolean = cells.size == n * n
@@ -40,7 +84,7 @@ case class Board(n: Int, cells: Map[(Int, Int), Cell]) {
 
   def next(m: Step, c: Cell): Board = m match {
     case Pass => Board(n, cells)
-    case Place(x, y) => put(c, x, y)
+    case Place(x, y) => put(c, x -> y)
   }
 }
 
@@ -63,31 +107,12 @@ sealed trait Step
 case object Pass extends Step
 case class Place(x: Int, y: Int) extends Step
 
-case class Game(states: List[Board]) {
+case class Game(states: List[Board], steps: List[Step]) {
   //  require(s.length > 0)
 
   def state: Board = {
     require(states.length > 0)
     states.head
-  }
-
-  def lastStep(prevState: Board): Step = {
-    val k = state.playerCells(activePlayer.previousPlayer) -- prevState.playerCells(activePlayer.previousPlayer)
-    // Leon must verify that this is never more than one
-    k.headOption.map {
-      case (x, y) =>
-        Place(x, y)
-    }.getOrElse(Pass)
-  }
-
-  def lastGame: Game = {
-    require(states.length > 0)
-    Game(states.tail)
-  }
-
-  def lastStep: Step = {
-    require(states.length >= 2)
-    lastStep(lastGame.state)
   }
 
   val activePlayer: PlayerType = if (states.length % 2 == 1) BlackPlayer else WhitePlayer
@@ -97,22 +122,18 @@ case class Game(states: List[Board]) {
   val size: Int = state.n
 
   def isOver: Boolean = {
-    if (round > 1)
-      println(lastStep)
-    round > 1 && (lastStep == Pass && lastGame.lastStep == Pass)
+    round > 1 && steps.head == Pass && steps.tail.head == Pass
   }
 
-  def steps: List[Step] = ???
-
   def move(m: Step): Game = {
-    Game(state.next(m, activePlayer.cell) :: states)
+    Game(state.next(m, activePlayer.cell) :: states, m :: steps)
   }
 
   override def toString(): String = state.board.map(_.mkString("")).mkString("\n")
 }
 
 object Game {
-  def apply(b: Board): Game = Game(List(b))
+  def apply(b: Board): Game = Game(List(b), Nil)
   def apply(n: Int): Game = Game(new Board(n))
 }
 
