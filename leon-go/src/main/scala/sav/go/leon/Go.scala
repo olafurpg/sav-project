@@ -24,7 +24,6 @@ case object EmptyCell extends Cell {
 }
 
 case class Board(n: Int, cells: Map[(Int, Int), Cell]) {
-//  def this(n: Int, cells: Map[(Int, Int)]) = this(n, cells.filter(p => isCaptured(p._1)))
   def this(n: Int) = this(n, Map.empty)
 
   def inRange(x: Int) = 0 < x && x <= n
@@ -44,12 +43,12 @@ case class Board(n: Int, cells: Map[(Int, Int), Cell]) {
   // TODO: disallow suicide
   def put(c: Cell, p: (Int, Int)) = {
     require(insideBoard(p) && !cells.contains(p))
-    Board(n, (cells + (p -> c)).filter(isCaptured(p)))
+    Board(n, cells.filter(x => at(x._1) == c.otherColor && isCaptured(p)(x)) + (p -> c))
   }
 
   // TODO: take into account color
   def isCaptured(newP: (Int, Int))(p: ((Int, Int), Cell)): Boolean = {
-    dfs(p._1).exists(p => neighboors(p).withFilter(_ != newP).map(at).contains(EmptyCell))
+    dfs(p._1).exists(p => !emptyNeighors(p).filter(_ != newP).isEmpty)
   }
 
   def hasLiberty(p: (Int, Int)): Boolean = neighboors(p).map(at).contains(EmptyCell)
@@ -62,6 +61,10 @@ case class Board(n: Int, cells: Map[(Int, Int), Cell]) {
     neighboors(p).filter(x => at(x) == c)
   }
 
+  def emptyNeighors(p: (Int, Int)): List[(Int, Int)] = {
+    neighboors(p).filter(x => at(x) == EmptyCell)
+  }
+
   def neighboors(x: Int, y: Int): List[(Int, Int)] =
     List((x + 1, y), (x, y + 1), (x - 1, y), (x, y - 1)).filter(insideBoard)
 
@@ -71,9 +74,10 @@ case class Board(n: Int, cells: Map[(Int, Int), Cell]) {
     if (visited.contains(p)) visited
     else {
       val newVisited = visited + p
-      val toVisit = sameColorNeighbors(p).map(Set(_))
-      toVisit.fold(newVisited) { case (a, b) =>
-          dfs(a.head, b ++ a)
+      val toVisit = sameColorNeighbors(p)
+      toVisit.foldRight(newVisited) { case (a, b) =>
+//        println(s"p = $p, toVisit = $toVisit, a = $a, b = $b")
+        dfs(a, b)
       }
     }
   }
@@ -86,6 +90,8 @@ case class Board(n: Int, cells: Map[(Int, Int), Cell]) {
     case Pass => Board(n, cells)
     case Place(x, y) => put(c, x -> y)
   }
+
+  override def toString() = board.map(_.mkString("")).mkString("\n")
 }
 
 sealed trait PlayerType {
@@ -129,7 +135,7 @@ case class Game(states: List[Board], steps: List[Step]) {
     Game(state.next(m, activePlayer.cell) :: states, m :: steps)
   }
 
-  override def toString(): String = state.board.map(_.mkString("")).mkString("\n")
+  override def toString(): String = state.toString()
 }
 
 object Game {
