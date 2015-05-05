@@ -3,14 +3,28 @@ package sav.go.leon
 import scala.collection.parallel.mutable
 
 sealed trait Cell
-case object WhiteCell extends Cell
-case object BlackCell extends Cell
-case object EmptyCell extends Cell
+
+case object WhiteCell extends Cell {
+  override def toString(): String = "O"
+}
+case object BlackCell extends Cell {
+  override def toString(): String = "X"
+}
+case object EmptyCell extends Cell {
+  override def toString(): String = "_"
+}
 
 case class Board(n: Int, cells: Map[(Int, Int), Cell]) {
   def this(n: Int) = this(n, Map.empty)
 
   def inRange(x: Int) = 0 <= x && x < n
+
+  def at(x: Int, y: Int): Cell = cells.getOrElse((x, y), EmptyCell)
+
+  def board = {
+    val r = 0 to n
+    r.map(x => r.map(y => at(x, y)))
+  }
 
   def put(c: Cell, x: Int, y: Int) = {
     require(inRange(x) && inRange(y) && !cells.contains((x, y)))
@@ -20,6 +34,11 @@ case class Board(n: Int, cells: Map[(Int, Int), Cell]) {
   def full: Boolean = cells.size == n * n
 
   def playerCells(p: PlayerType): Set[(Int, Int)] = cells.withFilter(_._2 == p.cell).map(_._1).toSet
+
+  def next(m: Step, c: Cell): Board = m match {
+    case Pass => Board(n, cells)
+    case Place(x, y) => put(c, x, y)
+  }
 }
 
 sealed trait PlayerType {
@@ -42,33 +61,20 @@ sealed trait Step
 case object Pass extends Step
 case class Place(x: Int, y: Int) extends Step
 
-case class State(b: Board, activePlayer: PlayerType) {
-  def next(m: Step): State = m match {
-    case Pass => State(b, activePlayer.nextPlayer)
-    case Place(x, y) => State(b.put(activePlayer.cell, x, y), activePlayer.nextPlayer)
-  }
-
-  def lastStep(prevState: State): Step = {
-    val k = b.playerCells(activePlayer.previousPlayer) -- prevState.b.playerCells(activePlayer)
-    // Leon must verify that this is never more than one
-    k.headOption.map { case (x, y) =>
-        Place(x, y)
-    }.getOrElse(Pass)
-  }
-
-  def isOver: Boolean = b.full
-}
-
-object State {
-  def apply(n: Int): State = State(new Board(n), BlackPlayer)
-}
-
-case class Game(states: List[State]) {
+case class Game(states: List[Board]) {
 //  require(s.length > 0)
 
-  def state: State = {
+  def state: Board = {
     require(states.length > 0)
     states.head
+  }
+
+  def lastStep(prevState: Board): Step = {
+    val k = state.playerCells(activePlayer.previousPlayer) -- prevState.playerCells(activePlayer)
+    // Leon must verify that this is never more than one
+    k.headOption.map { case (x, y) =>
+      Place(x, y)
+    }.getOrElse(Pass)
   }
 
   def lastGame: Game = {
@@ -78,10 +84,10 @@ case class Game(states: List[State]) {
 
   def lastStep: Step = {
     require(states.length >= 2)
-    state.lastStep(lastGame.state)
+    lastStep(lastGame.state)
   }
 
-  val activePlayer: PlayerType = state.activePlayer
+  val activePlayer: PlayerType = if (states.length % 2 == 1) BlackPlayer else WhitePlayer
 
   def isOver: Boolean = lastStep == Pass && lastGame.lastStep == Pass
 
@@ -89,13 +95,15 @@ case class Game(states: List[State]) {
   def steps: List[Step] = ???
 
   def move(m: Step): Game = {
-    Game(states.head.next(m) :: states)
+    Game(state.next(m, activePlayer.cell) :: states)
   }
+
+  override def toString(): String = state.board.mkString("\n")
 }
 
 object Game {
-  def apply(s: State): Game = Game(List(s))
-  def apply(n: Int): Game = Game(State(n))
+  def apply(b: Board): Game = Game(List(b))
+  def apply(n: Int): Game = Game(new Board(n))
 }
 
 
@@ -104,15 +112,19 @@ object Game {
 // ******************
 
 object Driver {
+
+  def takeTurns[T](a: T, b: T)(x: T): T = x match {
+    case `a` => b
+    case _ => a
+  }
+
   def main(args: Array[String]): Unit = {
     val n = 5
-    var g = Game(n)
-    val players = List(HumanPlayer, ComputerPlayer)
-    var i = 1
-    while (!g.isOver) {
-      g = g.move(players(i).move(g))
-      i = 1 - i
+    val nextPlayer = takeTurns[Player](HumanPlayer, ComputerPlayer) _
+    val game = Stream.iterate((HumanPlayer: Player, Game(n))) { case (player, g) =>
+      (nextPlayer(player), g.move(player.move(g)))
     }
+    game takeWhile { case (_, g) => !g.isOver }
   }
 }
 
