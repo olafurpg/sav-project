@@ -5,7 +5,14 @@ import java.text.ParseException
 import scala.collection.parallel.mutable
 import scala.io.StdIn
 
-sealed trait Cell {
+object Cell {
+  def fromString(ch: Char): Cell = ch match {
+          case 'X' | 'x' => BlackCell
+          case 'O' | 'o' => WhiteCell
+          case _ => EmptyCell
+  }
+}
+sealed abstract class Cell {
   def otherColor: Cell = this match {
     case WhiteCell => BlackCell
     case BlackCell => WhiteCell
@@ -91,7 +98,22 @@ case class Board(n: Int, cells: Map[(Int, Int), Cell]) {
     case Place(x, y) => put(c, x -> y)
   }
 
-  override def toString() = board.map(_.mkString("")).mkString("\n")
+  override def toString() = {
+    board.map(_.mkString("")).mkString("\n")
+  }
+}
+object Board {
+  def fromString(N: Int, str: String): Board = {
+    val cells = for {
+      (row, x) <- str.split("\n").filter(!_.isEmpty).zipWithIndex
+      (ch, y) <- {
+        println(s"$row")
+        row.zipWithIndex
+      }
+    } yield (x + 1) -> (y + 1) -> Cell.fromString(ch)
+    println(cells.toList)
+    Board(N, Map(cells.filter(_._2 != EmptyCell):_*))
+  }
 }
 
 sealed trait PlayerType {

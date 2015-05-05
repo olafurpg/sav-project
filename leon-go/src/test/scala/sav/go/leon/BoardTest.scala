@@ -5,8 +5,7 @@ import org.scalatest.FunSuite
 class BoardTest extends FunSuite {
   val w = WhiteCell
   val b = BlackCell
-
-
+  val e = WhiteCell
 
   def dfsTest(lst: List[((Int, Int), Cell)], ignore: Set[((Int, Int), Cell)] = Set.empty): Unit = {
     val b1 = Board(10, Map(lst:_*))
@@ -34,7 +33,7 @@ class BoardTest extends FunSuite {
   }
 
   test("capture works in bug case") {
-    val ps = Map(2 -> 2 -> w, 2 -> 3 -> w, 3 -> 2 -> w, 3 -> 3 -> w, 1 -> 2 -> b, 2 -> 1 -> b)//, 1 -> 1 -> b) // , 1 -> 3 -> b)
+    val ps = Map(2 -> 2 -> w, 2 -> 3 -> w, 3 -> 2 -> w, 3 -> 3 -> w, 1 -> 2 -> b, 2 -> 1 -> b)
     val b1 = Board(3, ps)
     val b2 = b1.put(BlackCell, 3 -> 1)
     assert(b1.at(3 -> 1) == EmptyCell)
@@ -42,6 +41,19 @@ class BoardTest extends FunSuite {
     assert(b2.at(3 -> 2) == WhiteCell)
   }
 
+  test("Board.fromString works") {
+    val b1 = Board.fromString(3,
+      """
+        |xxx
+        |ooo
+        |
+        """.stripMargin)
+    val expected: Set[((Int, Int), Cell)] = Set(((1,1),b), ((1,2),b), ((1,3),b), ((2,1),w), ((2,2),w), ((2,3),w))
+    val obtained = b1.cells.toSet
+    assert(obtained === expected)
+    val b2 = Board.fromString(3, "")
+    assert(b2.cells.isEmpty)
+  }
 // TODO: Bug
 //  *************
 //  * Round 14
