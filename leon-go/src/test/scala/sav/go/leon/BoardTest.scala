@@ -54,28 +54,5 @@ class BoardTest extends FunSuite {
     val b2 = Board.fromString(3, "")
     assert(b2.cells.isEmpty)
   }
-// TODO: Bug
-//  *************
-//  * Round 14
-//  * BlackPlayer
-//    * Size: 5 x 5
-//  *************
-//  X_X__
-//  _XX__
-//  _X_X_
-//  __XOO
-//  ___OO
-//  x y to place, p to pass, q to quit: 5 3
-//  *************
-//  * Round 15
-//  * WhitePlayer
-//    * Size: 5 x 5
-//  *************
-//  X_X__
-//  _XX__
-//  _X_X_
-//  __XOO
-//  __X_O
-
 
 }
