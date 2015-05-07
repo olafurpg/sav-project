@@ -18,6 +18,7 @@ case class Board(n: Int, cells: Map[(Int, Int), Cell]) {
   }
 
   // TODO: disallow suicide
+  // TODO: Buggy
   def put(c: Cell, p: (Int, Int)): Board = {
     require(insideBoard(p) && !cells.contains(p))
     Board(n, cells.filter(x => at(x._1) == c.otherColor && isCaptured(p)(x)) + (p -> c))
@@ -69,7 +70,7 @@ case class Board(n: Int, cells: Map[(Int, Int), Cell]) {
   }
 
   override def toString() = {
-    board.map(_.mkString("")).mkString("\n")
+    board.map(_.mkString("")).mkString("\n", "\n", "\n")
   }
 }
 

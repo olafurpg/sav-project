@@ -6,11 +6,6 @@ import scala.io.StdIn
 
 trait Player {
   def move(g: Game): Step
-  case class Ordering[T](lessThan: (T, T) => Boolean)
-
-  implicit def stringOrdering: Ordering[String] = Ordering[String](a => false)
-
-  def sort[T](lst: List[T])(implicit o: Ordering[T]): List[T] = ???
 }
 
 

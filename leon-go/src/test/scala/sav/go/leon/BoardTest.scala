@@ -54,5 +54,25 @@ class BoardTest extends FunSuite {
     val b2 = Board.fromString(3, "")
     assert(b2.cells.isEmpty)
   }
+  test("bug 1") {
+    val b1 = Board.fromString(5,
+      """
+        |OX___
+        |_____
+        |_____
+        |_____
+        |_____
+      """.stripMargin)
+    val b2 = Board.fromString(5,
+      """
+        |OX___
+        |_O___
+        |_____
+        |_____
+        |_____
+      """.stripMargin)
+    assert(b1.put(w, (2, 2)) === b2)
+  }
+
 
 }

@@ -1,7 +1,8 @@
 package sav.go.leon
 
+
 trait GameRules {
-  def move(g: Game, s: Step): Either[Game, MoveError]
+  def move(g: Game, s: Step): Option[MoveError]
 }
 
 //case object ChineseRules extends GameRules
