@@ -17,11 +17,13 @@ case class Board(n: Int, cells: Map[(Int, Int), Cell]) {
     r.map(x => r.map(y => at(x, y)))
   }
 
-  // TODO: disallow suicide
-  // TODO: Buggy
   def put(c: Cell, p: (Int, Int)): Board = {
     require(insideBoard(p) && !cells.contains(p))
-    Board(n, cells.filter(x => at(x._1) == c.otherColor && isCaptured(p)(x)) + (p -> c))
+    val css = neighboors(p, c.otherColor)
+      .map(captured(p))
+    val cs = css.fold(Set.empty)((a, b) => a.union(b))
+
+    Board(n, cells.filterNot(x => cs.contains(x._1)) + (p -> c))
   }
 
   // TODO: take into account color
@@ -29,15 +31,26 @@ case class Board(n: Int, cells: Map[(Int, Int), Cell]) {
     dfs(p._1).exists(p => !emptyNeighors(p).filter(_ != newP).isEmpty)
   }
 
-  def hasLiberty(p: (Int, Int)): Boolean = neighboors(p).map(at).contains(EmptyCell)
+  def hasLiberty(newP: (Int, Int))(p: (Int, Int)): Boolean = neighboors(p).withFilter(_ != newP).map(at).contains(EmptyCell)
+
+  def captured(newP: (Int, Int))(p: (Int, Int)): Set[(Int, Int)] = {
+    val component = dfs(p)
+    println(s"newP = $newP, component = $component")
+    if (component.exists(hasLiberty(newP))) Set.empty
+    else component
+  }
 
   def neighboors(p: (Int, Int)): List[(Int, Int)] =
     neighboors(p._1, p._2)
 
-  def sameColorNeighbors(p: (Int, Int)): List[(Int, Int)] = {
-    val c = at(p)
-    neighboors(p).filter(x => at(x) == c)
-  }
+  def neighboors(p: (Int, Int), c: Cell): List[(Int, Int)] =
+    neighboors(p._1, p._2).filter(x => at(x) == c)
+
+  def sameColorNeighbors(p: (Int, Int)): List[(Int, Int)] =
+    neighboors(p, at(p))
+
+  def oppositeColorNeighbors(p: (Int, Int)): List[(Int, Int)] =
+    neighboors(p, at(p).otherColor)
 
   def emptyNeighors(p: (Int, Int)): List[(Int, Int)] = {
     neighboors(p).filter(x => at(x) == EmptyCell)
@@ -53,9 +66,10 @@ case class Board(n: Int, cells: Map[(Int, Int), Cell]) {
     else {
       val newVisited = visited + p
       val toVisit = sameColorNeighbors(p)
-      toVisit.foldRight(newVisited) { case (a, b) =>
-        //        println(s"p = $p, toVisit = $toVisit, a = $a, b = $b")
-        dfs(a, b)
+      toVisit.foldRight(newVisited) {
+        case (a, b) =>
+          //        println(s"p = $p, toVisit = $toVisit, a = $a, b = $b")
+          dfs(a, b)
       }
     }
   }
@@ -80,12 +94,10 @@ object Board {
     val cells = for {
       (row, x) <- str.split("\n").filter(!_.isEmpty).zipWithIndex
       (ch, y) <- {
-        println(s"$row")
         row.zipWithIndex
       }
     } yield (x + 1) -> (y + 1) -> Cell.fromString(ch)
-    println(cells.toList)
-    Board(N, Map(cells.filter(_._2 != EmptyCell):_*))
+    Board(N, Map(cells.filter(_._2 != EmptyCell): _*))
   }
 }
 

@@ -54,7 +54,7 @@ class BoardTest extends FunSuite {
     val b2 = Board.fromString(3, "")
     assert(b2.cells.isEmpty)
   }
-  test("bug 1") {
+  test("Simple case 1, no capture") {
     val b1 = Board.fromString(5,
       """
         |OX___
