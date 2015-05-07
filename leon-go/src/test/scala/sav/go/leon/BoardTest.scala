@@ -9,7 +9,7 @@ class BoardTest extends FunSuite {
 
   def dfsTest(lst: List[((Int, Int), Cell)], ignore: Set[((Int, Int), Cell)] = Set.empty): Unit = {
     val b1 = Board(10, Map(lst:_*))
-    assert(b1.dfs(1 -> 1).toList.sorted === lst.filterNot(ignore).map(_._1).sorted)
+    assert(b1.connectedComponent(1 -> 1 -> b).map(_._1).toList.sorted === lst.filterNot(ignore).map(_._1).sorted)
   }
 
   test("dfs should work on basic cases") {

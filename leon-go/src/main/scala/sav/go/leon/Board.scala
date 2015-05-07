@@ -3,8 +3,8 @@ package sav.go.leon
 import sav.go.scala.Util
 
 case class Board(n: Int, cells: Map[(Int, Int), Cell]) {
-  import Util.
-  _
+  import Util._
+
   def this(n: Int) = this(n, Map.empty)
 
   def inRange(x: Int) = 0 < x && x <= n
@@ -17,55 +17,48 @@ case class Board(n: Int, cells: Map[(Int, Int), Cell]) {
 
   val r = 1 to n
 
-  def board = {
+  def board =
     r.map(x => r.map(y => at(x, y)))
-  }
 
   def put(c: Cell, p: (Int, Int)): Board = {
     require(insideBoard(p) && !cells.contains(p))
-    val css = neighboors(p, c.otherColor)
-      .map(captured(p))
-    val cs = css.fold(Set.empty)((a, b) => a.union(b))
-
-    Board(n, cells.filterNot(x => cs.contains(x._1)) + (p -> c))
+    val captured = Board(n, cells + (p -> c)).capturedCells
+    Board(n, cells.filterNot(x => captured.contains(x)) + (p -> c))
   }
 
-  // TODO: take into account color
-  def isCaptured(newP: (Int, Int))(p: ((Int, Int), Cell)): Boolean = {
-    dfs(p._1).exists(p => !emptyNeighors(p).filter(_ != newP).isEmpty)
+  def hasLiberty(p: ((Int, Int), Cell)): Boolean = neighboors(p._1).exists(_._2 == EmptyCell)
+
+  def capturedCells: Set[((Int, Int), Cell)] = {
+    val e = Set.empty[((Int, Int), Cell)]
+    cells.foldRight(e -> e) { case (p, (explored, captured)) =>
+        if (explored(p)) explored -> captured
+        else {
+          val component = connectedComponent(p)
+          if (component.exists(hasLiberty)) (component ++ explored, captured)
+          else (component ++ explored, captured ++ explored)
+        }
+    }._2
   }
 
-  def hasLiberty(newP: (Int, Int))(p: (Int, Int)): Boolean = neighboors(p).withFilter(_ != newP).map(at).contains(EmptyCell)
+  def neighboors(x: Int, y: Int): List[((Int, Int), Cell)] =
+    List((x + 1, y), (x, y + 1), (x - 1, y), (x, y - 1)).filter(insideBoard).map(x => (x, at(x)))
 
-  def captured(newP: (Int, Int))(p: (Int, Int)): Set[(Int, Int)] = {
-    val component = dfs(p)
-    log(s"newP = $newP, component = $component")
-    if (component.exists(hasLiberty(newP))) Set.empty
-    else component
-  }
-
-  def neighboors(p: (Int, Int)): List[(Int, Int)] =
+  def neighboors(p: (Int, Int)): List[((Int, Int), Cell)] =
     neighboors(p._1, p._2)
 
-  def neighboors(p: (Int, Int), c: Cell): List[(Int, Int)] =
-    neighboors(p._1, p._2).filter(x => at(x) == c)
+  def neighboors(p: (Int, Int), c: Cell): List[((Int, Int), Cell)] =
+    neighboors(p._1, p._2).filter(x => x._2 == c)
 
-  def sameColorNeighbors(p: (Int, Int)): List[(Int, Int)] =
-    neighboors(p, at(p))
+  def sameColorNeighbors(p: ((Int, Int), Cell)): List[((Int, Int), Cell)] =
+    neighboors(p._1, p._2)
 
-  def oppositeColorNeighbors(p: (Int, Int)): List[(Int, Int)] =
+  def oppositeColorNeighbors(p: (Int, Int)): List[((Int, Int), Cell)] =
     neighboors(p, at(p).otherColor)
 
-  def emptyNeighors(p: (Int, Int)): List[(Int, Int)] = {
-    neighboors(p).filter(x => at(x) == EmptyCell)
-  }
+  def emptyNeighors(p: (Int, Int)): List[((Int, Int), Cell)] =
+    neighboors(p).filter(x => x._2 == EmptyCell)
 
-  def neighboors(x: Int, y: Int): List[(Int, Int)] =
-    List((x + 1, y), (x, y + 1), (x - 1, y), (x, y - 1)).filter(insideBoard)
-
-  def dfs(p: (Int, Int)): Set[(Int, Int)] = dfs(p, Set.empty)
-
-  def dfs(p: (Int, Int), visited: Set[(Int, Int)]): Set[(Int, Int)] = {
+  def connectedComponent(p: ((Int, Int), Cell), visited: Set[((Int, Int), Cell)] = Set.empty): Set[((Int, Int), Cell)] = {
     if (visited.contains(p)) visited
     else {
       val newVisited = visited + p
@@ -73,7 +66,7 @@ case class Board(n: Int, cells: Map[(Int, Int), Cell]) {
       toVisit.foldRight(newVisited) {
         case (a, b) =>
           //        println(s"p = $p, toVisit = $toVisit, a = $a, b = $b")
-          dfs(a, b)
+          connectedComponent(a, b)
       }
     }
   }
