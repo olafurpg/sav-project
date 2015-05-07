@@ -26,8 +26,11 @@ case class Board(n: Int, cells: Map[Point, Cell]) {
 
   def put(c: Cell, p: Point): Board = {
     require(insideBoard(p) && !cells.contains(p))
-    val captured = Board(n, cells + (p -> c)).capturedCells
-    Board(n, (cells + (p -> c)).filterNot(x => captured.contains(x)))
+    val captured1 = Board(n, cells + (p -> c)).capturedCells.filterNot(_.c == c)
+    val b1 = Board(n, (cells + (p -> c)).filterNot(x => captured1.contains(x)))
+    val captured2 = b1.capturedCells.filter(_.c == c)
+//    println(s"captured = $captured2")
+    Board(n, b1.cells.filterNot(x => captured2.contains(x)))
   }
 
   def freeCells: Set[Point] = (for {
@@ -38,6 +41,7 @@ case class Board(n: Int, cells: Map[Point, Cell]) {
   def hasLiberty(p: PlacedCell): Boolean = neighboors(p.p).exists(_.c == EmptyCell)
 
   def capturedCells: Set[PlacedCell] = {
+//    println(s"this = $this")
     val e = Set.empty[PlacedCell]
     cells.foldRight(e -> e) {
       case (p, (explored, captured)) =>
@@ -99,7 +103,7 @@ object Board {
 
   def fromString(N: Int, str: String): Board = {
     val cells = for {
-      (row, x) <- str.split("\n").filter(!_.isEmpty).zipWithIndex
+      (row, x) <- str.stripMargin.split("\n").filter(!_.isEmpty).zipWithIndex
       (ch, y) <- {
         row.zipWithIndex
       }

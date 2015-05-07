@@ -59,7 +59,6 @@ class BoardTest extends FunSuite {
     assert(obtained === expected)
     val b2 = Board.fromString(3, "")
     assert(b2.cells.isEmpty)
-
   }
 
   test("capturedCells works") {
@@ -131,5 +130,58 @@ class BoardTest extends FunSuite {
     assert(B.freeCells === allCells)
     assert(B.put(w, Point(1, 1)).freeCells === allCells - Point(1, 1))
   }
+  
+  val B1 = Board.fromString(4,
+    """
+      |_XO_
+      |XO_O
+      |_XO_
+      |____
+    """)
+  val B2 = Board.fromString(4,
+    """
+      |_XO_
+      |X_XO
+      |_XO_
+      |____
+    """)
+
+  test("Game.move SuicideError") {
+    val g = Game(B1)
+    val suicide = Place(1, 4)
+    val ko1 = Place(2, 3)
+    val ko2 = Place(2, 2)
+    val g2 = Game(List(B2, B1), List(ko1))
+    assert(g.move(suicide) === Right(SuicideError))
+  }
+
+  test("Game.move KoError") {
+    val g = Game(B1)
+    val suicide = Place(1, 4)
+    val ko1 = Place(2, 3)
+    val ko2 = Place(2, 2)
+    val g2 = Game(List(B2, B1), List(ko1))
+    assert(g2.move(ko2) === Right(KoError))
+  }
+
+}
+
+class BoardTestPlayground extends FunSuite {
+
+  val B1 = Board.fromString(4,
+    """
+      |_XO_
+      |XO_O
+      |_XO_
+      |____
+    """)
+  val B2 = Board.fromString(4,
+    """
+      |_XO_
+      |X_XO
+      |_XO_
+      |____
+    """)
+
 
 }
