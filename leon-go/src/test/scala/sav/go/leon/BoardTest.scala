@@ -8,8 +8,14 @@ class BoardTest extends FunSuite {
   val e = WhiteCell
 
   def dfsTest(lst: List[((Int, Int), Cell)], ignore: Set[((Int, Int), Cell)] = Set.empty): Unit = {
-    val b1 = Board(10, Map(lst:_*))
+    val b1 = Board(10, Map(lst: _*))
     assert(b1.connectedComponent(1 -> 1 -> b).map(_._1).toList.sorted === lst.filterNot(ignore).map(_._1).sorted)
+  }
+
+  def moveTest(n: Int, str1: String, str2: String, c: Cell, p: (Int, Int)): Unit = {
+    val b1 = Board.fromString(n, str1.stripMargin)
+    val b2 = Board.fromString(n, str2.stripMargin)
+    assert(b1.put(c, p) === b2)
   }
 
   test("dfs should work on basic cases") {
@@ -47,32 +53,32 @@ class BoardTest extends FunSuite {
         |xxx
         |ooo
         |
-        """.stripMargin)
-    val expected: Set[((Int, Int), Cell)] = Set(((1,1),b), ((1,2),b), ((1,3),b), ((2,1),w), ((2,2),w), ((2,3),w))
+      """.stripMargin)
+    val expected: Set[((Int, Int), Cell)] = Set(((1, 1), b), ((1, 2), b), ((1, 3), b), ((2, 1), w), ((2, 2), w), ((2, 3), w))
     val obtained = b1.cells.toSet
     assert(obtained === expected)
     val b2 = Board.fromString(3, "")
     assert(b2.cells.isEmpty)
-  }
-  test("Simple case 1, no capture") {
-    val b1 = Board.fromString(5,
-      """
-        |OX___
-        |_____
-        |_____
-        |_____
-        |_____
-      """.stripMargin)
-    val b2 = Board.fromString(5,
-      """
-        |OX___
-        |_O___
-        |_____
-        |_____
-        |_____
-      """.stripMargin)
-    assert(b1.put(w, (2, 2)) === b2)
+
   }
 
+  test("Simple case 1, no capture") {
+    moveTest(5,
+      """
+        |OX___
+        |_____
+        |_____
+        |_____
+        |_____
+      """,
+      """
+      |OX___
+      |_O___
+      |_____
+      |_____
+      |_____
+    """, w, (2, 2)
+    )
+  }
 
 }
