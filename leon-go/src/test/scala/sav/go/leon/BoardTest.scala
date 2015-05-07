@@ -100,5 +100,23 @@ class BoardTest extends FunSuite {
     """, w, (2, 2)
     )
   }
+  test("Board.put suicide is captured") {
+    moveTest(5,
+      """
+        |X_X__
+        |_X_X_
+        |_XXX_
+        |__X__
+        |_____
+      """,
+      """
+        |X_X__
+        |_X_X_
+        |_XXX_
+        |__X__
+        |_____
+      """, w, (2, 3)
+    )
+  }
 
 }

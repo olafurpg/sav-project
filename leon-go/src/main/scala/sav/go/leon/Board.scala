@@ -27,8 +27,7 @@ case class Board(n: Int, cells: Map[Point, Cell]) {
   def put(c: Cell, p: Point): Board = {
     require(insideBoard(p) && !cells.contains(p))
     val captured = Board(n, cells + (p -> c)).capturedCells
-    println(s"captured = $captured")
-    Board(n, cells.filterNot(x => captured.contains(x)) + (p -> c))
+    Board(n, (cells + (p -> c)).filterNot(x => captured.contains(x)))
   }
 
   def hasLiberty(p: PlacedCell): Boolean = neighboors(p.p).exists(_.c == EmptyCell)
