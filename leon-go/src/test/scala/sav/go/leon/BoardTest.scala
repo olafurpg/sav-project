@@ -9,7 +9,7 @@ class BoardTest extends FunSuite {
 
   def dfsTest(lst: List[(Point, Cell)], ignore: Set[(Point, Cell)] = Set.empty): Unit = {
     val b1 = Board(10, Map(lst: _*))
-    assert(b1.connectedComponent(Point(1, 1) -> b).map(_._1).toList.sortBy(_.tpl) === lst.filterNot(ignore).map(_._1).sortBy(_.tpl))
+    assert(b1.connectedComponent(PlacedCell(Point(1, 1), b)).map(_.p).toList.sortBy(_.tpl) === lst.filterNot(ignore).map(_._1).sortBy(_.tpl))
   }
 
   def moveTest(n: Int, str1: String, str2: String, c: Cell, p: Point): Unit = {

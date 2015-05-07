@@ -4,6 +4,8 @@ case class Point(x: Int, y: Int) {
   def tpl: (Int, Int) = x -> y
 }
 
+case class PlacedCell(p: Point, c: Cell)
+
 case class Board(n: Int, cells: Map[Point, Cell]) {
 
   def this(n: Int) = this(n, Map.empty)
@@ -27,10 +29,10 @@ case class Board(n: Int, cells: Map[Point, Cell]) {
     Board(n, cells.filterNot(x => captured.contains(x)) + (p -> c))
   }
 
-  def hasLiberty(p: (Point, Cell)): Boolean = neighboors(p._1).exists(_._2 == EmptyCell)
+  def hasLiberty(p: PlacedCell): Boolean = neighboors(p.p).exists(_.c == EmptyCell)
 
-  def capturedCells: Set[(Point, Cell)] = {
-    val e = Set.empty[(Point, Cell)]
+  def capturedCells: Set[PlacedCell] = {
+    val e = Set.empty[PlacedCell]
     cells.foldRight(e -> e) { case (p, (explored, captured)) =>
         if (explored(p)) explored -> captured
         else {
@@ -41,25 +43,25 @@ case class Board(n: Int, cells: Map[Point, Cell]) {
     }._2
   }
 
-  def neighboors(x: Int, y: Int): List[(Point, Cell)] =
-    List((x + 1, y), (x, y + 1), (x - 1, y), (x, y - 1)).map(tpl2Point).filter(insideBoard).map(x => (x, at(x)))
+  def neighboors(x: Int, y: Int): List[PlacedCell] =
+    List((x + 1, y), (x, y + 1), (x - 1, y), (x, y - 1)).map(tpl2Point).filter(insideBoard).map(x => PlacedCell(x, at(x)))
 
-  def neighboors(p: Point): List[(Point, Cell)] =
+  def neighboors(p: Point): List[PlacedCell] =
     neighboors(p.x, p.y)
 
-  def neighboors(p: Point, c: Cell): List[(Point, Cell)] =
-    neighboors(p.x, p.y).filter(x => x._2 == c)
+  def neighboors(p: Point, c: Cell): List[PlacedCell] =
+    neighboors(p.x, p.y).filter(_.c == c)
 
-  def sameColorNeighbors(p: (Point, Cell)): List[(Point, Cell)] =
-    neighboors(p._1, p._2)
+  def sameColorNeighbors(p: PlacedCell): List[PlacedCell] =
+    neighboors(p.p, p.c)
 
-  def oppositeColorNeighbors(p: Point): List[(Point, Cell)] =
+  def oppositeColorNeighbors(p: Point): List[PlacedCell] =
     neighboors(p, at(p).otherColor)
 
-  def emptyNeighors(p: Point): List[(Point, Cell)] =
-    neighboors(p).filter(x => x._2 == EmptyCell)
+  def emptyNeighors(p: Point): List[PlacedCell] =
+    neighboors(p).filter(_.c == EmptyCell)
 
-  def connectedComponent(p: (Point, Cell), visited: Set[(Point, Cell)] = Set.empty): Set[(Point, Cell)] = {
+  def connectedComponent(p: PlacedCell, visited: Set[PlacedCell] = Set.empty): Set[PlacedCell] = {
     if (visited.contains(p)) visited
     else {
       val newVisited = visited + p
