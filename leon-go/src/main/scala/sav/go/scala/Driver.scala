@@ -14,7 +14,13 @@ object Driver {
     val game = Stream.iterate((HumanPlayer: Player, Game(n)))({
       // Round
       case (player, g) =>
-        (nextPlayer(player), g.move(player.move(g)))
+        g.move(player.move(g)) match {
+          case Right(err) =>
+            println(err)
+            (player, g)
+          case Left(game) =>
+            (nextPlayer(player), game)
+        }
     }) takeWhile { case (_, g) => !g.isOver }
     game.toList
   }

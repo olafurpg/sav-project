@@ -19,9 +19,12 @@ case class Game(states: List[Board], steps: List[Step]) {
     round > 1 && steps.head == Pass && steps.tail.head == Pass
   }
 
-  def move(m: Step): Game = {
-
-    Game(state.next(m, activePlayer.cell) :: states, m :: steps)
+  def move(m: Step): Either[Game, MoveError] = m match {
+    case Place(x, y) if !state.insideBoard(Point(x, y)) => Right(OutsideOfBoardError)
+    case Place(x, y) if state.isOccupied(Point(x, y)) => Right(AlreadyOccupiedError)
+      // TODO: Does map equality work?
+    case Place(x, y) if round > 1 && state.next(m, activePlayer.cell) == states(1) => Right(AlreadyOccupiedError)
+    case _ => Left(Game(state.next(m, activePlayer.cell) :: states, m :: steps))
   }
 
   override def toString(): String = state.toString()

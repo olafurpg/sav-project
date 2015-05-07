@@ -1,6 +1,6 @@
 package sav.go.scala
 
-import sav.go.leon.{Pass, Step, Game, Place}
+import sav.go.leon._
 
 import scala.io.StdIn
 
@@ -25,18 +25,15 @@ case object HumanPlayer extends Player {
         ???
       }
       case coordinate(xStr, yStr) => {
-        val (x, y) = (xStr.toInt, yStr.toInt)
-        if (!g.state.inRange(x) || !g.state.inRange(y)) {
-          // Error => IO
-          println(s"Point ($x, $y) is out of range, try again")
-          readStep(g)
-        }
-        else if (g.state.cells.contains((x, y))) {
-          println(s"Point ($x, $y) is already taken, try again")
-          readStep(g)
-        }
-        else {
-          Place(x, y)
+        val p = Place(xStr.toInt, yStr.toInt)
+        g.move(p) match {
+          case Right(OutsideOfBoardError) =>
+            println(s"$p is out of range, try again")
+            readStep(g)
+          case Right(AlreadyOccupiedError) =>
+            println(s"$p is already taken, try again")
+            readStep(g)
+          case _ => p
         }
       }
       case s => {

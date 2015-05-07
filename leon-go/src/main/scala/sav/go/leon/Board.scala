@@ -14,18 +14,20 @@ case class Board(n: Int, cells: Map[Point, Cell]) {
 
   def insideBoard(p: Point) = inRange(p.x) && inRange(p.y)
 
+  def isOccupied(p: Point) = cells.isDefinedAt(p)
+
   def at(x: Int, y: Int): Cell = cells.getOrElse(Point(x, y), EmptyCell)
 
   def at(p: Point): Cell = at(p.x, p.y)
 
   val r = 1 to n
 
-  def board =
-    r.map(x => r.map(y => at(x, y)))
+  def board = r.map(x => r.map(y => at(x, y)))
 
   def put(c: Cell, p: Point): Board = {
     require(insideBoard(p) && !cells.contains(p))
     val captured = Board(n, cells + (p -> c)).capturedCells
+    println(s"captured = $captured")
     Board(n, cells.filterNot(x => captured.contains(x)) + (p -> c))
   }
 
@@ -33,12 +35,14 @@ case class Board(n: Int, cells: Map[Point, Cell]) {
 
   def capturedCells: Set[PlacedCell] = {
     val e = Set.empty[PlacedCell]
-    cells.foldRight(e -> e) { case (p, (explored, captured)) =>
-        if (explored(p)) explored -> captured
+    cells.foldRight(e -> e) {
+      case (p, (explored, captured)) =>
+        if (explored.contains(p)) explored -> captured
         else {
           val component = connectedComponent(p)
-          if (component.exists(hasLiberty)) (component ++ explored, captured)
-          else (component ++ explored, captured ++ explored)
+//          println(s"p = $p, component = $component, explored = $explored, captured = $captured")
+          if (component.exists(hasLiberty)) (explored ++ component, captured)
+          else (explored ++ component, captured ++ component)
         }
     }._2
   }

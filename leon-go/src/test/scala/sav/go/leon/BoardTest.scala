@@ -62,6 +62,26 @@ class BoardTest extends FunSuite {
 
   }
 
+  test("capturedCells works") {
+    moveTest(5,
+      """
+        |OX___
+        |_O___
+        |_____
+        |_____
+        |_____
+      """,
+      """
+        |O O__
+        |_O___
+        |_____
+        |_____
+        |_____
+      """, w, 1 -> 3
+    )
+
+  }
+
   test("Simple case 1, no capture") {
     moveTest(5,
       """
