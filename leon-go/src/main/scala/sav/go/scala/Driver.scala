@@ -10,15 +10,18 @@ object Driver {
 
   def main(args: Array[String]): Unit = {
     val n = 5
-    val nextPlayer = takeTurns[Player](HumanPlayer, HumanPlayer) _
+    val nextPlayer = takeTurns[Player](HumanPlayer, ComputerPlayer) _
     val game = Stream.iterate((HumanPlayer: Player, Game(n)))({
       // Round
+
       case (player, g) =>
-        g.move(player.move(g)) match {
+        val step = player.move(g)
+        g.move(step) match {
           case Right(err) =>
             println(err)
             (player, g)
           case Left(game) =>
+            println(s"$player performed $step")
             (nextPlayer(player), game)
         }
     }) takeWhile { case (_, g) => !g.isOver }

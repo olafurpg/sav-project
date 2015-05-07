@@ -186,20 +186,18 @@ class BoardTest extends FunSuite {
 
 class BoardTestPlayground extends FunSuite {
 
-  val B1 = Board.fromString(4,
+  val B3 = Board.fromString(5,
     """
-      |_XO_
-      |XO_O
-      |_XO_
-      |____
+      |XO_OO
+      |_XO_O
+      |__XO_
+      |_X_X_
+      |OO__X
     """)
-  val B2 = Board.fromString(4,
-    """
-      |_XO_
-      |X_XO
-      |_XO_
-      |____
-    """)
+  test("Game.move occupied bug") {
+    val g = Game(B3)
+    assert(g.move(Place(1, 3)) !== Right(AlreadyOccupiedError))
+  }
 
 
 }
