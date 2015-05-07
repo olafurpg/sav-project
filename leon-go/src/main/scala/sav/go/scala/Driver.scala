@@ -3,7 +3,6 @@ package sav.go.scala
 import sav.go.leon.Game
 
 object Driver {
-
   def takeTurns[T](a: T, b: T)(x: T): T = x match {
     case `a` => b
     case _ => a
