@@ -10,7 +10,8 @@ trait Player {
 
 
 
-case object HumanPlayer extends Player with Util {
+case object HumanPlayer extends Player {
+  import Util._
   val coordinate = """\s*(\d+) (\d+)\s*""".r
 
   // String  => Either[Step, Error]

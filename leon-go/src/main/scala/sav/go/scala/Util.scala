@@ -1,6 +1,13 @@
 package sav.go.scala
 
-trait Util {
+object Util {
+
+  val debugLevel = 0
+
+
+  def log[T](msg: => T, level: Int = 0): Unit = if (level > debugLevel) {
+    println(msg)
+  }
 
   def lineDivider(n: Int): String = "*" * n
 

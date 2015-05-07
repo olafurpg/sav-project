@@ -1,6 +1,10 @@
 package sav.go.leon
 
+import sav.go.scala.Util
+
 case class Board(n: Int, cells: Map[(Int, Int), Cell]) {
+  import Util.
+  _
   def this(n: Int) = this(n, Map.empty)
 
   def inRange(x: Int) = 0 < x && x <= n
@@ -35,7 +39,7 @@ case class Board(n: Int, cells: Map[(Int, Int), Cell]) {
 
   def captured(newP: (Int, Int))(p: (Int, Int)): Set[(Int, Int)] = {
     val component = dfs(p)
-    println(s"newP = $newP, component = $component")
+    log(s"newP = $newP, component = $component")
     if (component.exists(hasLiberty(newP))) Set.empty
     else component
   }
