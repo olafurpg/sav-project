@@ -130,7 +130,7 @@ class BoardTest extends FunSuite {
     assert(B.freeCells === allCells)
     assert(B.put(w, Point(1, 1)).freeCells === allCells - Point(1, 1))
   }
-  
+
   val B1 = Board.fromString(4,
     """
       |_XO_
@@ -145,6 +145,24 @@ class BoardTest extends FunSuite {
       |_XO_
       |____
     """)
+  val G = Game(B1)
+
+  test("Game.move OutsideOfErrorBoard") {
+    assert(G.move(Place(0, 1)) === Right(OutsideOfBoardError))
+    assert(G.move(Place(1, 0)) === Right(OutsideOfBoardError))
+    assert(G.move(Place(5, 1)) === Right(OutsideOfBoardError))
+    assert(G.move(Place(1, 5)) === Right(OutsideOfBoardError))
+  }
+
+  test("Game.move AlreadyOccupiedError") {
+    assert(G.move(Place(1, 2)) === Right(AlreadyOccupiedError))
+    assert(G.move(Place(1, 3)) === Right(AlreadyOccupiedError))
+    assert(G.move(Place(2, 1)) === Right(AlreadyOccupiedError))
+    assert(G.move(Place(2, 2)) === Right(AlreadyOccupiedError))
+    assert(G.move(Place(2, 4)) === Right(AlreadyOccupiedError))
+    assert(G.move(Place(3, 2)) === Right(AlreadyOccupiedError))
+    assert(G.move(Place(3, 3)) === Right(AlreadyOccupiedError))
+  }
 
   test("Game.move SuicideError") {
     val g = Game(B1)
