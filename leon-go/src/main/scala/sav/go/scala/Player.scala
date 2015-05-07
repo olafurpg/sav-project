@@ -56,13 +56,34 @@ case object HumanPlayer extends Player {
 }
 
 case object ComputerPlayer extends Player {
-  override def move(g: Game): Step = AI(g.activePlayer).minimax(g, 4)._2
+  // TODO: Use smart heuristic to fix depth
+  val MaxNodes: Int = 500000
+
+  override def move(g: Game): Step = {
+    val startime = System.currentTimeMillis()
+    val ai = AI(g.activePlayer)
+    val size = g.state.freeCells.size
+    println(size)
+//    val depth = Stream.iterate(BigInt(1) -> 1) { case (_, i) =>
+//      val r = (size.toInt to (size.toInt + i)).product
+//      println(s"$i $r")
+//      (r, i + 1)
+//    }.(_._1 < MaxNodes)
+//    println(s"depth=$depth")
+    val depth = 4
+    val (score, move) = ai.minimax(g, depth)
+    val endtime = System.currentTimeMillis()
+    val time = endtime - startime
+    println(s"Minimax: depth=$depth score=$score runtime=${time}ms nodes=${ai.nodes} nodes/ms=${ai.nodes / time} errors=${ai.errors} nodes/errors=${ai.nodes / ai.errors}")
+    move
+  }
 }
 
 case class AI(p: PlayerType) {
   var nodes = 0
+  var errors = 0
   def minimax(g: Game, depth: Int = 2): (Int, Step) = {
-    nodes++
+    nodes += 1
     val maximizingPlayer = g.activePlayer == p
     val mult = if (maximizingPlayer) 1 else -1
     if (depth == 0) {
@@ -73,7 +94,7 @@ case class AI(p: PlayerType) {
       g.move(Pass) match {
         case Left(passGame) =>
           val startScore = minimax(passGame, depth - 1)._1
-          g.state.freeCells.par.foldLeft((startScore, Pass: Step)) { case ((currScore, step), p) =>
+          g.state.freeCells.toVector.par.foldLeft((startScore, Pass: Step)) { case ((currScore, step), p) =>
             val newStep = Place(p.x, p.y)
             g.move(newStep) match {
               case Left(nextGame) =>
@@ -81,7 +102,10 @@ case class AI(p: PlayerType) {
                 if (maximizingPlayer && score > currScore) (score, newStep)
                 else if (!maximizingPlayer && score < currScore) (score, newStep)
                 else (currScore, step)
-              case Right(_) => currScore -> step
+              case Right(_) => {
+                errors += 1
+                currScore -> step
+              }
             }
           }
         // Pass is illegal for some reason
