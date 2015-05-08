@@ -8,8 +8,6 @@ trait Player {
   def move(g: Game): Step
 }
 
-
-
 case object HumanPlayer extends Player {
   import Util._
   val coordinate = """\s*(\d+) (\d+)\s*""".r

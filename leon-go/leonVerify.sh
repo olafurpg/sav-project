@@ -1,0 +1,3 @@
+#!/bin/sh
+echo Executing Leon...
+leon src/main/scala/sav/go/leon/*.scala

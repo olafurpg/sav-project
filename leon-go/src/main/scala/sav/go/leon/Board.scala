@@ -1,4 +1,5 @@
 package sav.go.leon
+import leon.collection._
 
 case class Point(x: Int, y: Int) {
   def tpl: (Int, Int) = x -> y
@@ -76,10 +77,11 @@ case class Board(n: Int, cells: Map[Point, Cell]) {
   def connectedComponent(p: PlacedCell, visited: Set[PlacedCell] = Set.empty): Set[PlacedCell] = {
     if (visited.contains(p)) visited
     else {
+
       val newVisited = visited + p
       val toVisit = sameColorNeighbors(p)
-      toVisit.foldRight(newVisited) {
-        case (a, b) =>
+      toVisit.foldLeft(newVisited) {
+        case (b, a) =>
           connectedComponent(a, b)
       }
     }
