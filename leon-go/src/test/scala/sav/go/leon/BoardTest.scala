@@ -152,10 +152,10 @@ class BoardTest extends FunSuite with Util {
     val n = 5
     val B = Board.fromString(n, "")
 
-    val allCells = (for {
+    val allCells = GoSet((for {
       x <- 1 to n
       y <- 1 to n
-    } yield Point(x, y)).toSet
+    } yield Point(x, y)).toList)
 
     assert(B.freeCells === allCells)
     assert(B.put(w, Point(1, 1)).freeCells === allCells - Point(1, 1))

@@ -37,10 +37,10 @@ case class Board(n: Int, cells: GoMap) {
     Board(n, b1.cells.filterNot(x => captured2.contains(x)))
   }
 
-  def freeCells: Set[Point] = (for {
+  def freeCells: GoSet[Point] = GoSet((for {
     x <- r
     y <- r
-  } yield Point(x, y)).filterNot(cells.isDefinedAt).toSet
+  } yield Point(x, y)).filterNot(cells.isDefinedAt))
 
   def hasLiberty(p: PlacedCell): Boolean = neighboors(p.p).exists(_.c == EmptyCell)
 
