@@ -1,13 +1,5 @@
 package sav.go.leon
-
-
-trait GameRules {
-  def move(g: Game, s: Step): Option[MoveError]
-}
-
-//case object ChineseRules extends GameRules
-
-trait MoveError
+abstract class MoveError
 
 case object KoError extends MoveError
 case object OutsideOfBoardError extends MoveError

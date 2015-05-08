@@ -58,17 +58,10 @@ case object ComputerPlayer extends Player {
   val MaxNodes: Int = 500000
 
   override def move(g: Game): Step = {
+    println(s"AI is thinking...$g")
     val startime = System.currentTimeMillis()
-    val ai = AI(g.activePlayer)
-    val size = g.state.freeCells.size
-    println(size)
-//    val depth = Stream.iterate(BigInt(1) -> 1) { case (_, i) =>
-//      val r = (size.toInt to (size.toInt + i)).product
-//      println(s"$i $r")
-//      (r, i + 1)
-//    }.(_._1 < MaxNodes)
-//    println(s"depth=$depth")
     val depth = 4
+    val ai = AI(g.activePlayer)
     val (score, move) = ai.minimax(g, depth)
     val endtime = System.currentTimeMillis()
     val time = endtime - startime

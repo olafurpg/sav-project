@@ -44,9 +44,9 @@ case class Board(n: Int, cells: GoMap) {
 
   def hasLiberty(p: PlacedCell): Boolean = neighboors(p.p).exists(_.c == EmptyCell)
 
-  def capturedCells: Set[PlacedCell] = {
+  def capturedCells: GoSet[PlacedCell] = {
 //    println(s"this = $this")
-    val e = Set.empty[PlacedCell]
+    val e = GoSet.empty[PlacedCell]
     cells.foldRight(e -> e) {
       case (p, (explored, captured)) =>
         if (explored.contains(p)) explored -> captured
@@ -77,7 +77,7 @@ case class Board(n: Int, cells: GoMap) {
   def emptyNeighors(p: Point): List[PlacedCell] =
     neighboors(p).filter(_.c == EmptyCell)
 
-  def connectedComponent(p: PlacedCell, visited: Set[PlacedCell] = Set.empty): Set[PlacedCell] = {
+  def connectedComponent(p: PlacedCell, visited: GoSet[PlacedCell] = GoSet.empty): GoSet[PlacedCell] = {
     if (visited.contains(p)) visited
     else {
 
@@ -92,7 +92,7 @@ case class Board(n: Int, cells: GoMap) {
 
   def full: Boolean = cells.size == n * n
 
-  def playerCells(p: PlayerType): Set[Point] = cells.cells.filter(_.c == p.cell).map(_.p).toSet
+  def playerCells(p: PlayerType): GoSet[Point] = GoSet(cells.cells.filter(_.c == p.cell).map(_.p))
 
   def next(m: Step, c: Cell): Board = m match {
     case Pass => Board(n, cells)

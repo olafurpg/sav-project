@@ -8,8 +8,9 @@ trait Util extends FunSuite {
   val e = WhiteCell
 
   def dfsTest(lst: List[PlacedCell], ignore: Set[PlacedCell] = Set.empty): Unit = {
+    val expected = GoSet(lst.filterNot(ignore))
     val b1 = Board(10, GoMap(lst))
-    assert(b1.connectedComponent(PlacedCell(Point(1, 1), b)).map(_.p).toList.sortBy(_.tpl) === lst.filterNot(ignore).map(_.p).sortBy(_.tpl))
+    assert(b1.connectedComponent(PlacedCell(Point(1, 1), b)) === expected)
   }
 
   def moveTest(n: Int, str1: String, str2: String, c: Cell, p: Point): Unit = {
