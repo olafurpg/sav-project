@@ -71,7 +71,6 @@ class BoardTest extends FunSuite with Util {
   test("capture works in bug case") {
     val ps: List[PlacedCell] = List(Point(2, 2) -> w, Point(2, 3) -> w, Point(3, 2) -> w, Point(3, 3) -> w, Point(1, 2) -> b, Point(2, 1) -> b)
     val b1 = Board(3, GoMap(ps))
-    println(b1)
     val b2 = b1.put(BlackCell, 3 -> 1)
     assert(b1.at(3 -> 1) == EmptyCell)
     assert(b2.at(3 -> 1) == BlackCell)
@@ -201,20 +200,5 @@ class BoardTest extends FunSuite with Util {
 }
 
 class BoardTestPlayground extends FunSuite with Util {
-
-  ignore("Game.move occupied bug") {
-    val g = Game(B3)
-    assert(g.move(Place(1, 3)) !== Right(AlreadyOccupiedError))
-  }
-
-  test("capture works in bug case") {
-    val ps: List[PlacedCell] = List(Point(2, 2) -> w, Point(2, 3) -> w, Point(3, 2) -> w, Point(3, 3) -> w, Point(1, 2) -> b, Point(2, 1) -> b)
-    val b1 = Board(3, GoMap(ps))
-    val b2 = b1.put(BlackCell, 3 -> 1)
-    println(b2)
-    assert(b1.at(3 -> 1) == EmptyCell)
-    assert(b2.at(3 -> 1) == BlackCell)
-    assert(b2.at(3 -> 2) == WhiteCell)
-  }
 
 }
