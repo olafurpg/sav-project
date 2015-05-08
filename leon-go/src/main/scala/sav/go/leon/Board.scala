@@ -7,9 +7,9 @@ case class Point(x: Int, y: Int) {
 
 case class PlacedCell(p: Point, c: Cell)
 
-case class Board(n: Int, cells: Map[Point, Cell]) {
+case class Board(n: Int, cells: GoMap) {
 
-  def this(n: Int) = this(n, Map.empty)
+  def this(n: Int) = this(n, GoMap.empty)
 
   def inRange(x: Int) = 0 < x && x <= n
 
@@ -89,7 +89,7 @@ case class Board(n: Int, cells: Map[Point, Cell]) {
 
   def full: Boolean = cells.size == n * n
 
-  def playerCells(p: PlayerType): Set[Point] = cells.withFilter(_._2 == p.cell).map(_._1).toSet
+  def playerCells(p: PlayerType): Set[Point] = cells.cells.filter(_.c == p.cell).map(_.p).toSet
 
   def next(m: Step, c: Cell): Board = m match {
     case Pass => Board(n, cells)
@@ -109,8 +109,8 @@ object Board {
       (ch, y) <- {
         row.zipWithIndex
       }
-    } yield Point(x + 1, y + 1) -> Cell.fromString(ch)
-    Board(N, Map(cells.filter(_._2 != EmptyCell): _*))
+    } yield PlacedCell(Point(x + 1, y + 1), Cell.fromString(ch))
+    Board(N, GoMap(cells.filter(_.c != EmptyCell).toList))
   }
 }
 

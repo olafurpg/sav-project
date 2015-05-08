@@ -85,14 +85,14 @@ case class AI(p: PlayerType) {
     val maximizingPlayer = g.activePlayer == p
     val mult = if (maximizingPlayer) 1 else -1
     if (depth == 0) {
-      val (friend, enemy) = g.state.cells.partition(_.c == g.activePlayer.cell)
+      val (friend, enemy) = g.state.cells.cells.partition(_.c == g.activePlayer.cell)
       (friend.size - enemy.size) * (if (maximizingPlayer) 1 else -1) -> Pass
     }
     else {
       g.move(Pass) match {
         case Left(passGame) =>
           val startScore = minimax(passGame, depth - 1)._1
-          g.state.freeCells.toVector.par.foldLeft((startScore, Pass: Step)) { case ((currScore, step), p) =>
+          g.state.freeCells.foldLeft((startScore, Pass: Step)) { case ((currScore, step), p) =>
             val newStep = Place(p.x, p.y)
             g.move(newStep) match {
               case Left(nextGame) =>

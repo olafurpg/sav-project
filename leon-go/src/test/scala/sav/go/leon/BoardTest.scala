@@ -7,9 +7,9 @@ class BoardTest extends FunSuite {
   val b = BlackCell
   val e = WhiteCell
 
-  def dfsTest(lst: List[(Point, Cell)], ignore: Set[(Point, Cell)] = Set.empty): Unit = {
-    val b1 = Board(10, Map(lst: _*))
-    assert(b1.connectedComponent(PlacedCell(Point(1, 1), b)).map(_.p).toList.sortBy(_.tpl) === lst.filterNot(ignore).map(_._1).sortBy(_.tpl))
+  def dfsTest(lst: List[PlacedCell], ignore: Set[PlacedCell] = Set.empty): Unit = {
+    val b1 = Board(10, GoMap(lst))
+    assert(b1.connectedComponent(PlacedCell(Point(1, 1), b)).map(_.p).toList.sortBy(_.tpl) === lst.filterNot(ignore).map(_.p).sortBy(_.tpl))
   }
 
   def moveTest(n: Int, str1: String, str2: String, c: Cell, p: Point): Unit = {
@@ -19,10 +19,10 @@ class BoardTest extends FunSuite {
   }
 
   test("dfs should work on basic cases") {
-    val ps = List(Point(1, 1) -> b, Point(1, 2) -> b)
-    val pss = Point(2, 1) -> b :: ps
-    val psss = Point(2, 2) -> w :: pss
-    val bbbb = Point(2, 2) -> b :: pss
+    val ps = List[PlacedCell](Point(1, 1) -> b, Point(1, 2) -> b)
+    val pss = PlacedCell(Point(2, 1), b) :: ps
+    val psss: List[PlacedCell] = Point(2, 2) -> w :: pss
+    val bbbb: List[PlacedCell] = Point(2, 2) -> b :: pss
     dfsTest(ps)
     dfsTest(pss)
     dfsTest(psss, Set(Point(2, 2) -> w))
@@ -30,8 +30,8 @@ class BoardTest extends FunSuite {
   }
 
   test("basic put works") {
-    val ps = Map(Point(1, 1) -> b)
-    val b1 = Board(2, ps)
+    val ps = List(PlacedCell(Point(1, 1), b))
+    val b1 = Board(2, GoMap(ps))
     assert(b1.at(1 -> 1) === BlackCell)
     assert(b1.at(1 -> 2) === EmptyCell)
     assert(b1.at(2 -> 1) === EmptyCell)
@@ -39,8 +39,8 @@ class BoardTest extends FunSuite {
   }
 
   test("capture works in bug case") {
-    val ps = Map(Point(2, 2) -> w, Point(2, 3) -> w, Point(3, 2) -> w, Point(3, 3) -> w, Point(1, 2) -> b, Point(2, 1) -> b)
-    val b1 = Board(3, ps)
+    val ps: List[PlacedCell] = List(Point(2, 2) -> w, Point(2, 3) -> w, Point(3, 2) -> w, Point(3, 3) -> w, Point(1, 2) -> b, Point(2, 1) -> b)
+    val b1 = Board(3, GoMap(ps))
     val b2 = b1.put(BlackCell, 3 -> 1)
     assert(b1.at(3 -> 1) == EmptyCell)
     assert(b2.at(3 -> 1) == BlackCell)
@@ -55,10 +55,10 @@ class BoardTest extends FunSuite {
         |
       """.stripMargin)
     val expected: Set[(Point, Cell)] = Set((Point(1, 1), b), (Point(1, 2), b), (Point(1, 3), b), (Point(2, 1), w), (Point(2, 2), w), (Point(2, 3), w))
-    val obtained = b1.cells.toSet
+    val obtained = b1.cells.cells.toSet
     assert(obtained === expected)
     val b2 = Board.fromString(3, "")
-    assert(b2.cells.isEmpty)
+    assert(b2.cells.cells.isEmpty)
   }
 
   test("capturedCells works") {
