@@ -2,10 +2,13 @@ package sav.go.leon
 import leon.collection._
 
 case class Point(x: Int, y: Int) {
+  override def toString(): String = s"($x, $y)"
   def tpl: (Int, Int) = x -> y
 }
 
-case class PlacedCell(p: Point, c: Cell)
+case class PlacedCell(p: Point, c: Cell) {
+  override def toString(): String = s"$c$p"
+}
 
 case class Board(n: Int, cells: GoMap) {
 
@@ -30,7 +33,7 @@ case class Board(n: Int, cells: GoMap) {
     val captured1 = Board(n, cells + (p -> c)).capturedCells.filterNot(_.c == c)
     val b1 = Board(n, (cells + (p -> c)).filterNot(x => captured1.contains(x)))
     val captured2 = b1.capturedCells.filter(_.c == c)
-//    println(s"captured = $captured2")
+//    println(s"captured = $captured1")
     Board(n, b1.cells.filterNot(x => captured2.contains(x)))
   }
 

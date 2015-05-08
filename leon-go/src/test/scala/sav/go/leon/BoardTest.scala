@@ -2,7 +2,7 @@ package sav.go.leon
 
 import org.scalatest.FunSuite
 
-class BoardTest extends FunSuite {
+trait Util extends FunSuite {
   val w = WhiteCell
   val b = BlackCell
   val e = WhiteCell
@@ -17,6 +17,36 @@ class BoardTest extends FunSuite {
     val b2 = Board.fromString(n, str2.stripMargin)
     assert(b1.put(c, p) === b2)
   }
+
+  val B1 = Board.fromString(4,
+    """
+      |_XO_
+      |XO_O
+      |_XO_
+      |____
+    """)
+
+  val B2 = Board.fromString(4,
+    """
+      |_XO_
+      |X_XO
+      |_XO_
+      |____
+    """)
+
+  val B3 = Board.fromString(5,
+    """
+      |XO_OO
+      |_XO_O
+      |__XO_
+      |_X_X_
+      |OO__X
+    """)
+
+  val G = Game(B1)
+
+}
+class BoardTest extends FunSuite with Util {
 
   test("dfs should work on basic cases") {
     val ps = List[PlacedCell](Point(1, 1) -> b, Point(1, 2) -> b)
@@ -41,6 +71,7 @@ class BoardTest extends FunSuite {
   test("capture works in bug case") {
     val ps: List[PlacedCell] = List(Point(2, 2) -> w, Point(2, 3) -> w, Point(3, 2) -> w, Point(3, 3) -> w, Point(1, 2) -> b, Point(2, 1) -> b)
     val b1 = Board(3, GoMap(ps))
+    println(b1)
     val b2 = b1.put(BlackCell, 3 -> 1)
     assert(b1.at(3 -> 1) == EmptyCell)
     assert(b2.at(3 -> 1) == BlackCell)
@@ -54,7 +85,7 @@ class BoardTest extends FunSuite {
         |ooo
         |
       """.stripMargin)
-    val expected: Set[(Point, Cell)] = Set((Point(1, 1), b), (Point(1, 2), b), (Point(1, 3), b), (Point(2, 1), w), (Point(2, 2), w), (Point(2, 3), w))
+    val expected: Set[PlacedCell] = Set((Point(1, 1), b), (Point(1, 2), b), (Point(1, 3), b), (Point(2, 1), w), (Point(2, 2), w), (Point(2, 3), w))
     val obtained = b1.cells.cells.toSet
     assert(obtained === expected)
     val b2 = Board.fromString(3, "")
@@ -131,21 +162,6 @@ class BoardTest extends FunSuite {
     assert(B.put(w, Point(1, 1)).freeCells === allCells - Point(1, 1))
   }
 
-  val B1 = Board.fromString(4,
-    """
-      |_XO_
-      |XO_O
-      |_XO_
-      |____
-    """)
-  val B2 = Board.fromString(4,
-    """
-      |_XO_
-      |X_XO
-      |_XO_
-      |____
-    """)
-  val G = Game(B1)
 
   test("Game.move OutsideOfErrorBoard") {
     assert(G.move(Place(0, 1)) === Right(OutsideOfBoardError))
@@ -184,20 +200,21 @@ class BoardTest extends FunSuite {
 
 }
 
-class BoardTestPlayground extends FunSuite {
+class BoardTestPlayground extends FunSuite with Util {
 
-  val B3 = Board.fromString(5,
-    """
-      |XO_OO
-      |_XO_O
-      |__XO_
-      |_X_X_
-      |OO__X
-    """)
-  test("Game.move occupied bug") {
+  ignore("Game.move occupied bug") {
     val g = Game(B3)
     assert(g.move(Place(1, 3)) !== Right(AlreadyOccupiedError))
   }
 
+  test("capture works in bug case") {
+    val ps: List[PlacedCell] = List(Point(2, 2) -> w, Point(2, 3) -> w, Point(3, 2) -> w, Point(3, 3) -> w, Point(1, 2) -> b, Point(2, 1) -> b)
+    val b1 = Board(3, GoMap(ps))
+    val b2 = b1.put(BlackCell, 3 -> 1)
+    println(b2)
+    assert(b1.at(3 -> 1) == EmptyCell)
+    assert(b2.at(3 -> 1) == BlackCell)
+    assert(b2.at(3 -> 2) == WhiteCell)
+  }
 
 }

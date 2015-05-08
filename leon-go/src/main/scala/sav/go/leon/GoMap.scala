@@ -5,7 +5,7 @@ case class GoMap(cells: List[PlacedCell]) {
 
   def contains(p: Point): Boolean = isDefinedAt(p)
 
-  def +(e: (Point, Cell)): GoMap = GoMap(e :: cells.filter(_.p == e._1))
+  def +(e: (Point, Cell)): GoMap = GoMap(e :: cells.filterNot(_.p == e._1))
 
   def filterNot(f: PlacedCell => Boolean): GoMap = GoMap(cells.filterNot(f))
 
@@ -15,8 +15,12 @@ case class GoMap(cells: List[PlacedCell]) {
 
   def getOrElse(p: Point, els: Cell): Cell = cells.find(_.p == p).map(_.c).getOrElse(els)
 
-
   def size: Int = cells.size
+
+  override def equals(that: Any): Boolean = that match {
+    case GoMap(c) => cells.toSet == c.toSet
+    case _ => false
+  }
 
 }
 
