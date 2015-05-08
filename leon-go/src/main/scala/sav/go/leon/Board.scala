@@ -24,7 +24,7 @@ case class Board(n: Int, cells: GoMap) {
 
   def at(p: Point): Cell = at(p.x, p.y)
 
-  val r = InclusiveRange.toList(1, n)
+  val r = Range.to(1, n)
 
   def board = r.map(x => r.map(y => at(x, y)))
 
