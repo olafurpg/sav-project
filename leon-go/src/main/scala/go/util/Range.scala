@@ -1,4 +1,5 @@
 package go.util
+import leon.collection._
 
 object Range {
 

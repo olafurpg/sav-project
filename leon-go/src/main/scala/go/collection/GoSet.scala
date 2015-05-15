@@ -27,5 +27,5 @@ case class GoSet[T](cells: List[T]) {
 }
 
 object GoSet {
-  def empty[T]: GoSet[T] = GoSet(Nil)
+  def empty[T]: GoSet[T] = GoSet[T](List[T]())
 }
