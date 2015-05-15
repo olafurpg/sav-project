@@ -1,4 +1,4 @@
-package sav.go.leon
+package go.util
 
 object Max {
   def max(x: BigInt, y: BigInt): BigInt = {
@@ -6,4 +6,3 @@ object Max {
     else x
   } ensuring(res => x <= res && y <= res)
 }
-

@@ -1,57 +1,6 @@
-package sav.go.scala
+package go.player
 
-import sav.go.leon._
-
-import scala.io.StdIn
-
-trait Player {
-  def move(g: Game): Step
-}
-
-case object HumanPlayer extends Player {
-  import Util._
-  val coordinate = """\s*(\d+) (\d+)\s*""".r
-
-  // String  => Either[Step, Error]
-  // UIEvent => Either[Step, Error]
-  def readStep(g: Game): Step = {
-    StdIn.readLine("x y to place, p to pass, q to quit: ") match {
-      case "p" => Pass
-      case "q" => {
-        println(s"Goodbye!")
-        System.exit(0)
-        ???
-      }
-      case coordinate(xStr, yStr) => {
-        val p = Place(xStr.toInt, yStr.toInt)
-        g.move(p) match {
-          case Right(OutsideOfBoardError) =>
-            println(s"$p is out of range, try again")
-            readStep(g)
-          case Right(AlreadyOccupiedError) =>
-            println(s"$p is already taken, try again")
-            readStep(g)
-          case Right(SuicideError) =>
-            println(s"$p is a suicide move, try again")
-            readStep(g)
-          case Right(KoError) =>
-            println(s"$p breaks the Ko rule, try again")
-            readStep(g)
-          case _ => p
-        }
-      }
-      case s => {
-        println(s"Input '$s' is illegal, try again")
-        readStep(g)
-      }
-    }
-  }
-  override def move(g: Game): Step = {
-    println(message("Round " + g.round, g.activePlayer.toString, s"Size: ${g.size} x ${g.size}"))
-    println(g)
-    readStep(g)
-  }
-}
+import go.core._
 
 case object ComputerPlayer extends Player {
   // TODO: Use smart heuristic to fix depth
@@ -70,6 +19,7 @@ case object ComputerPlayer extends Player {
   }
 }
 
+// TODO: game already has activePlayer
 case class AI(p: PlayerType) {
   var nodes = 0
   var errors = 0
@@ -78,7 +28,7 @@ case class AI(p: PlayerType) {
     val maximizingPlayer = g.activePlayer == p
     val mult = if (maximizingPlayer) 1 else -1
     if (depth == 0) {
-      val (friend, enemy) = g.state.cells.cells.partition(_.c == g.activePlayer.cell)
+      val (friend, enemy) = g.state.cells.cells.partition(_.c == g.activePlayer.cell) // TODO: cells.cells --> implement partition method for GoMap
       (friend.size - enemy.size) * (if (maximizingPlayer) 1 else -1) -> Pass
     }
     else {
@@ -105,4 +55,3 @@ case class AI(p: PlayerType) {
     }
   }
 }
-

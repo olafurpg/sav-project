@@ -1,4 +1,4 @@
-package sav.go.leon
+package go.core
 
 // TODO: Add rule engine
 case class Game(states: List[Board], steps: List[Step]) {
@@ -19,6 +19,7 @@ case class Game(states: List[Board], steps: List[Step]) {
     round > 1 && steps.head == Pass && steps.tail.head == Pass
   }
 
+  // TODO: move error check into rules
   def move(m: Step): Either[Game, MoveError] = m match {
     case Place(x, y) if !state.insideBoard(Point(x, y)) => Right(OutsideOfBoardError)
 
@@ -28,7 +29,7 @@ case class Game(states: List[Board], steps: List[Step]) {
 
     case p @ Place(x, y) =>
       val g = Game(state.next(m, activePlayer.cell) :: states, m :: steps)
-      if (g.state.at(Point(x, y)) == EmptyCell) Right(SuicideError)
+      if (g.state.at(Point(x, y)) == EmptyCell) Right(SuicideError) // TODO: why it's suicide?
       else if (round > 0 && g.state == states.tail.head) Right(KoError)
       else Left(g)
 
@@ -42,5 +43,3 @@ object Game {
   def apply(b: Board): Game = Game(List(b), Nil)
   def apply(n: Int): Game = Game(new Board(n))
 }
-
-

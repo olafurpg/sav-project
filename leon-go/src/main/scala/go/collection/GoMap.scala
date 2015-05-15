@@ -1,11 +1,14 @@
-package sav.go.leon
+package go.collection
+
+import go.core._
+import leon.collection._
 
 case class GoMap(cells: List[PlacedCell]) {
   def isDefinedAt(p: Point): Boolean = cells.exists(_.p == p)
 
   def contains(p: Point): Boolean = isDefinedAt(p)
 
-  def +(e: (Point, Cell)): GoMap = GoMap(e :: cells.filterNot(_.p == e._1))
+  def +(e: PlacedCell): GoMap = GoMap(e :: cells.filterNot(_.p == e.p))
 
   def filterNot(f: PlacedCell => Boolean): GoMap = GoMap(cells.filterNot(f))
 

@@ -1,4 +1,4 @@
-package sav.go.leon
+package go.core
 
 sealed trait PlayerType {
   def cell: Cell = this match {

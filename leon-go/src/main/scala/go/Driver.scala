@@ -1,6 +1,7 @@
-package sav.go.scala
+package go
 
-import sav.go.leon.Game
+import go.core._
+import go.player._
 
 object Driver {
   def takeTurns[T](a: T, b: T)(x: T): T = x match {
@@ -28,5 +29,3 @@ object Driver {
     game.toList
   }
 }
-
-

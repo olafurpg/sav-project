@@ -1,4 +1,4 @@
-package sav.go.scala
+package go.util
 
 object Util {
 
@@ -18,4 +18,3 @@ object Util {
   }
 
 }
-

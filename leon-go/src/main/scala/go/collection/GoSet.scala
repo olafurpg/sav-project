@@ -1,4 +1,6 @@
-package sav.go.leon
+package go.collection
+
+import leon.collection._
 
 case class GoSet[T](cells: List[T]) {
   def size: Int = cells.size
