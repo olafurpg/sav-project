@@ -1,5 +1,6 @@
-package sav.go.leon
+package go.core
 
+// TODO: rename to stone
 object Cell {
   def fromString(ch: Char): Cell = ch match {
     case 'X' | 'x' => BlackCell

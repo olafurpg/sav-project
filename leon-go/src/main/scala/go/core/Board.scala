@@ -1,5 +1,7 @@
-package sav.go.leon
-import leon.collection._
+package go.core
+
+import go.collection._
+import go.util.conversions._
 
 case class Point(x: Int, y: Int) {
   override def toString(): String = s"($x, $y)"
@@ -10,6 +12,8 @@ case class PlacedCell(p: Point, c: Cell) {
   override def toString(): String = s"$c$p"
 }
 
+// TODO: move logic out, board should be ignorant of game logic
+//       only care place stone, remove stone
 case class Board(n: Int, cells: GoMap) {
 
   def this(n: Int) = this(n, GoMap.empty)
@@ -24,10 +28,11 @@ case class Board(n: Int, cells: GoMap) {
 
   def at(p: Point): Cell = at(p.x, p.y)
 
-  val r = Range.to(1, n)
+  val r = go.util.Range.to(1, n)
 
   def board = r.map(x => r.map(y => at(x, y)))
 
+  // TODO: need to remember how many stones are captured
   def put(c: Cell, p: Point): Board = {
     require(insideBoard(p) && !cells.contains(p))
     val captured1 = Board(n, cells + (p -> c)).capturedCells.filterNot(_.c == c)
@@ -116,4 +121,3 @@ object Board {
     Board(N, GoMap(cells.filter(_.c != EmptyCell).toList))
   }
 }
-
