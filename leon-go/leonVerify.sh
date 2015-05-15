@@ -1,3 +1,5 @@
 #!/bin/sh
 echo Executing Leon...
-leon src/main/scala/sav/go/leon/*.scala
+
+# conversions
+leon src/main/scala/go/util/conversions.scala src/main/scala/go/core/{Point,PlacedCell,Cell}.scala

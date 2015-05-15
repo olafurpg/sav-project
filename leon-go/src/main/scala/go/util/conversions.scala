@@ -1,6 +1,8 @@
 package go.util
 
-import go.core.{Point, PlacedCell, Cell}
+import go.core.CellObject._
+import go.core.{Point, PlacedCell }
+import leon.lang.string
 
 package object conversions {
 //  type Point = (Int, Int)

@@ -1,8 +1,23 @@
 package go.util
 
-object Util {
+import leon.lang.string
+import go.core.CellObject._
+
+trait StringUtil {
 
   val debugLevel = 0
+
+  def cellFromString(ch: Char): Cell = ch match {
+    case 'X' | 'x' => BlackCell
+    case 'O' | 'o' => WhiteCell
+    case _ => EmptyCell
+  }
+
+  def cellToString(c: Cell): String = c match {
+    case WhiteCell => "O"
+    case BlackCell => "O"
+    case EmptyCell => "_"
+  }
 
 
   def log[T](msg: => T, level: Int = 0): Unit = if (level > debugLevel) {
