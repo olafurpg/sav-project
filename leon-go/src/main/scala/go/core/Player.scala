@@ -1,5 +1,5 @@
 package go.core
 
-abstract class Player {
+trait Player {
   def move(g: Game): Step
 }

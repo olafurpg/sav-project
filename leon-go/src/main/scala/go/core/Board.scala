@@ -68,7 +68,4 @@ case class Board(n: Int, cells: GoMap) {
 
   def playerCells(p: PlayerType): GoSet[Point] = GoSet(cells.cells.filter(_.c == p.cell).map(_.p))
 
-  override def toString() = {
-    mkString(board.map(mkString(_, "")), "\n", "\n", "\n")
-  }
 }
