@@ -4,11 +4,13 @@ package go.core
 object CellObject {
 
   sealed abstract class Cell {
-    def otherColor: Cell = this match {
-      case WhiteCell => BlackCell
-      case BlackCell => WhiteCell
-      case EmptyCell => EmptyCell
-    }
+    def otherColor: Cell = {
+      this match {
+        case WhiteCell => BlackCell
+        case BlackCell => WhiteCell
+        case EmptyCell => EmptyCell
+      }
+    } ensuring (res => res == EmptyCell || (res != this))
   }
 
   case object WhiteCell extends Cell
