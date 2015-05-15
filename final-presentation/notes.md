@@ -74,3 +74,8 @@ We wanted to have a modular code base
 
 Why can't we use strings? TODO: Stackoverflow
 
+Why do type parameters make the verification so much more complicated?
+
+Keep your collections simple.
+
+Nil and Option are singletons in Scala while they're case classes in Leon.
