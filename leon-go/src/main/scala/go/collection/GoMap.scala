@@ -1,16 +1,42 @@
 package go.collection
 
-import go.core._
+import go.core.{Point, PlacedCell, CellObject}
 import leon.collection._
-
 import CellObject._
 
 case class GoMap(cells: List[PlacedCell]) {
-  def isDefinedAt(p: Point): Boolean = cells.exists(_.p == p)
+  require(isSorted(cells))
+  def isDefinedAt(p: Point): Boolean = {
+    cells.exists(_.p == p)
+  }
 
   def contains(p: Point): Boolean = isDefinedAt(p)
 
-  def +(e: PlacedCell): GoMap = GoMap(e :: cells.filterNot(_.p == e.p))
+  def insSort(lst: List[PlacedCell], v: PlacedCell): List[PlacedCell] = {
+    lst match {
+      case l if l.isEmpty => List(v)
+      case _ =>
+        if (v < lst.head) {
+          v :: lst
+        } else if (v == lst.head) {
+          lst
+        } else {
+          lst.head :: insSort(lst.tail, v)
+        }
+    }
+  } ensuring(res => {
+    println(res)
+    isSorted(res)
+  })
+
+  def isSorted(lst: List[PlacedCell]): Boolean = lst match {
+    case l if l.size <= 1 => true
+    case _ =>
+      if (lst.tail.head < lst.head) false
+      else isSorted(lst.tail)
+  }
+
+  def +(e: PlacedCell): GoMap = GoMap(insSort(cells, e))
 
   def filterNot(f: PlacedCell => Boolean): GoMap = GoMap(cells.filter(x => !f(x)))
 
@@ -18,13 +44,17 @@ case class GoMap(cells: List[PlacedCell]) {
 
   def foldRight[R](z: R)(f: (PlacedCell,R) => R): R = cells.foldRight(z)(f)
 
-  def getOrElse(p: Point, els: Cell): Cell = cells.find(_.p == p).map(_.c).getOrElse(els)
+  def getOrElse(p: Point, els: Cell): Cell = {
+    cells.find(_.p == p).map(_.c).getOrElse(els)
+  } ensuring { res =>
+    if (!contains(p)) res == els
+    else true
+  }
 
-  def size: Int = cells.size.toInt
+  def size: BigInt = cells.size
 
-  override def equals(that: Any): Boolean = that match {
-    case GoMap(c) => cells.forall(c.contains) == c.forall(cells.contains)
-    case _ => false
+  def isEqualTo(that: GoMap): Boolean =  {
+    cells.forall(that.cells.contains) == that.cells.forall(cells.contains)
   }
 
 }
