@@ -1,6 +1,7 @@
 package sav.go.leon
 
 import org.scalatest.FunSuite
+import leon.collection._
 import go.collection._
 import go.core._
 import go.util.conversions._
@@ -10,6 +11,16 @@ trait Util extends FunSuite {
   val b = BlackCell
   val e = WhiteCell
 
+  def fromString(N: Int, str: String): Board = {
+    val cells = for {
+      (row, x) <- str.stripMargin.split("\n").filter(!_.isEmpty).zipWithIndex
+      (ch, y) <- {
+        row.zipWithIndex
+      }
+    } yield PlacedCell(Point(x + 1, y + 1), Cell.fromString(ch))
+    Board(N, GoMap(cells.filter(_.c != EmptyCell).toList))
+  }
+
   def dfsTest(lst: List[PlacedCell], ignore: Set[PlacedCell] = Set.empty): Unit = {
     val expected = GoSet(lst.filterNot(ignore))
     val b1 = Board(10, GoMap(lst))
@@ -17,12 +28,12 @@ trait Util extends FunSuite {
   }
 
   def moveTest(n: Int, str1: String, str2: String, c: Cell, p: Point): Unit = {
-    val b1 = Board.fromString(n, str1.stripMargin)
-    val b2 = Board.fromString(n, str2.stripMargin)
+    val b1 = fromString(n, str1.stripMargin)
+    val b2 = fromString(n, str2.stripMargin)
     assert(b1.put(c, p) === b2)
   }
 
-  val B1 = Board.fromString(4,
+  val B1 = fromString(4,
     """
       |_XO_
       |XO_O
@@ -30,7 +41,7 @@ trait Util extends FunSuite {
       |____
     """)
 
-  val B2 = Board.fromString(4,
+  val B2 = fromString(4,
     """
       |_XO_
       |X_XO
@@ -38,7 +49,7 @@ trait Util extends FunSuite {
       |____
     """)
 
-  val B3 = Board.fromString(5,
+  val B3 = fromString(5,
     """
       |XO_OO
       |_XO_O
@@ -81,8 +92,8 @@ class BoardTest extends FunSuite with Util {
     assert(b2.at(3 -> 2) == WhiteCell)
   }
 
-  test("Board.fromString works") {
-    val b1 = Board.fromString(3,
+  test("fromString works") {
+    val b1 = fromString(3,
       """
         |xxx
         |ooo
@@ -91,7 +102,7 @@ class BoardTest extends FunSuite with Util {
     val expected: Set[PlacedCell] = Set((Point(1, 1), b), (Point(1, 2), b), (Point(1, 3), b), (Point(2, 1), w), (Point(2, 2), w), (Point(2, 3), w))
     val obtained = b1.cells.cells.toSet
     assert(obtained === expected)
-    val b2 = Board.fromString(3, "")
+    val b2 = fromString(3, "")
     assert(b2.cells.cells.isEmpty)
   }
 
@@ -154,7 +165,7 @@ class BoardTest extends FunSuite with Util {
 
   test("Board.freeCells works") {
     val n = 5
-    val B = Board.fromString(n, "")
+    val B = fromString(n, "")
 
     val allCells = GoSet((for {
       x <- 1 to n
@@ -173,6 +184,7 @@ class BoardTest extends FunSuite with Util {
     assert(G.move(Place(1, 5)) === Right(OutsideOfBoardError))
   }
 
+  // Ignore because we have require statement
   test("Game.move AlreadyOccupiedError") {
     assert(G.move(Place(1, 2)) === Right(AlreadyOccupiedError))
     assert(G.move(Place(1, 3)) === Right(AlreadyOccupiedError))

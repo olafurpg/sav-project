@@ -2,6 +2,7 @@ package go.core
 
 import go.collection._
 import go.util.conversions._
+import leon.lang.string
 
 case class Point(x: Int, y: Int) {
   override def toString(): String = s"($x, $y)"
@@ -38,7 +39,6 @@ case class Board(n: Int, cells: GoMap) {
     val captured1 = Board(n, cells + (p -> c)).capturedCells.filterNot(_.c == c)
     val b1 = Board(n, (cells + (p -> c)).filterNot(x => captured1.contains(x)))
     val captured2 = b1.capturedCells.filter(_.c == c)
-//    println(s"captured = $captured1")
     Board(n, b1.cells.filterNot(x => captured2.contains(x)))
   }
 
@@ -110,14 +110,4 @@ case class Board(n: Int, cells: GoMap) {
 }
 
 object Board {
-
-  def fromString(N: Int, str: String): Board = {
-    val cells = for {
-      (row, x) <- str.stripMargin.split("\n").filter(!_.isEmpty).zipWithIndex
-      (ch, y) <- {
-        row.zipWithIndex
-      }
-    } yield PlacedCell(Point(x + 1, y + 1), Cell.fromString(ch))
-    Board(N, GoMap(cells.filter(_.c != EmptyCell).toList))
-  }
 }
