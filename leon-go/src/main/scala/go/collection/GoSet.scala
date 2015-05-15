@@ -3,16 +3,15 @@ package go.collection
 import leon.collection._
 
 case class GoSet[T](cells: List[T]) {
-  def size: Int = cells.size
-
+  def size: Int = cells.size.toInt
 
   def foldLeft[R](z: R)(f: (R, T) => R): R = cells.foldLeft(z)(f)
 
-  def -(e: T): GoSet[T] = GoSet[T](cells.filterNot(_ == e))
+  def -(e: T): GoSet[T] = GoSet[T](cells.filter(_ != e))
 
-  def +(e: T): GoSet[T] = GoSet[T](e :: cells.filterNot(_ == e))
+  def +(e: T): GoSet[T] = GoSet[T](e :: cells.filter(_ != e))
 
-  def ++(that: GoSet[T]): GoSet[T] = GoSet[T](cells ++ that.cells.filterNot(cells.contains))
+  def ++(that: GoSet[T]): GoSet[T] = GoSet[T](cells ++ that.cells.filter(x => !cells.contains(x)))
 
   def contains(e: T): Boolean = cells.contains(e)
 
@@ -20,7 +19,7 @@ case class GoSet[T](cells: List[T]) {
 
   def filter(f: T => Boolean): GoSet[T] = GoSet(cells.filter(f))
 
-  def filterNot(f: T => Boolean): GoSet[T] = GoSet(cells.filterNot(f))
+  def filterNot(f: T => Boolean): GoSet[T] = GoSet(cells.filter(x => !f(x)))
 
   override def equals(that: Any): Boolean = that match {
     case GoSet(thoseCells: List[T]) => thoseCells.forall(cells.contains) && cells.forall(thoseCells.contains)
