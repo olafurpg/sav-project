@@ -21,10 +21,8 @@ case class GoSet[T](cells: List[T]) {
 
   def filterNot(f: T => Boolean): GoSet[T] = GoSet(cells.filter(x => !f(x)))
 
-  override def equals(that: Any): Boolean = that match {
-    case GoSet(thoseCells: List[T]) => thoseCells.forall(cells.contains) && cells.forall(thoseCells.contains)
-    case _ => false
-  }
+  def isEqualTo(that: GoSet[T]): Boolean =
+    that.cells.forall(cells.contains) && cells.forall(that.cells.contains)
 
 }
 
