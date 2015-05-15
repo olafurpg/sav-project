@@ -2,7 +2,7 @@ package go.core
 
 import CellObject._
 import leon.collection._
-import leon.lang.string
+import PlayerTypeObject._
 
 // TODO: Add rule engine
 case class Game(states: List[Board], steps: List[Step]) {

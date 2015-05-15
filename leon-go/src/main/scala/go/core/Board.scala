@@ -5,6 +5,7 @@ import go.util.conversions._
 import leon.lang.string
 import CellObject._
 
+import PlayerTypeObject._
 
 
 

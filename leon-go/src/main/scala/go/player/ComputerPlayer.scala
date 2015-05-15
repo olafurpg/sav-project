@@ -1,6 +1,7 @@
 package go.player
 
 import go.core._
+import PlayerTypeObject._
 
 case object ComputerPlayer extends Player {
   // TODO: Use smart heuristic to fix depth
