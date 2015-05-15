@@ -6,11 +6,14 @@ import go.collection.GoSet
 object CaptureLogic {
   def put(p: Point, c: Cell, b: Board): Board = {
     val pc = PlacedCell(p, c)
-    val board1 = Board(b.n, b.cells + pc)
+
+    val board1 = b.put(c, p)
     val captured1 = capturedCells(board1).filterNot(_.c == c)
-    val board2 = Board(b.n, (b.cells + pc).filterNot(x => captured1.contains(x)))
+
+    val board2 = board1.remove(captured1)
     val captured2 = capturedCells(board2).filter(_.c == c)
-    Board(b.n, board2.cells.filterNot(x => captured2.contains(x)))
+
+    board2.remove(captured2)
   }
 
   def hasLiberty(b: Board)(p: PlacedCell): Boolean = b.neighboors(p.p).exists(_.c == EmptyCell)

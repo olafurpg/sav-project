@@ -62,7 +62,12 @@ case class Board(n: Int, cells: GoMap) {
 
   def emptyNeighors(p: Point): List[PlacedCell] =
     neighboors(p).filter(_.c == EmptyCell)
+
   def full: Boolean = cells.size == n * n
+
+  def remove(p: Point): Board = Board(n, cells.filterNot(_ == p))
+  
+  def remove(ps: GoSet[PlacedCell]): Board = Board(n, cells.filterNot(ps.contains))
 
   def playerCells(p: PlayerType): GoSet[Point] = GoSet(cells.cells.filter(_.c == p.cell).map(_.p))
 

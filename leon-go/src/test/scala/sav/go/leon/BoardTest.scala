@@ -30,7 +30,7 @@ trait Util extends FunSuite {
   def moveTest(n: Int, str1: String, str2: String, c: Cell, p: Point): Unit = {
     val b1 = fromString(n, str1.stripMargin)
     val b2 = fromString(n, str2.stripMargin)
-    assert(b1.put(c, p) === b2)
+    assert(CaptureLogic.put(p, c, b1) === b2)
   }
 
   val B1 = fromString(4,
