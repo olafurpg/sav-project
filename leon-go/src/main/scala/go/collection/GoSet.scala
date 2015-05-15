@@ -1,31 +1,60 @@
 package go.collection
 
 import leon.collection._
+import leon.lang._
 
-case class GoSet[T](cells: List[T]) {
-  def size: Int = cells.size.toInt
 
-  def foldLeft[R](z: R)(f: (R, T) => R): R = cells.foldLeft(z)(f)
+case class GoSet[PlacedCell](cells: GoList[PlacedCell]) {
+  def size: BigInt = {
+    cells.size
+  } ensuring(_ >= 0)
 
-  def -(e: T): GoSet[T] = GoSet[T](cells.filter(_ != e))
+  def foldLeft[R](z: R)(f: (R, PlacedCell) => R): R = cells.foldLeft(z)(f)
 
-  def +(e: T): GoSet[T] = GoSet[T](e :: cells.filter(_ != e))
+  def -(e: PlacedCell): GoSet[PlacedCell] = {
+    GoSet[PlacedCell](cells - e)
+  } ensuring(!_.contains(e))
+  // Doesn't terminate
+  // ensuring(!_.contains(e))
 
-  def ++(that: GoSet[T]): GoSet[T] = GoSet[T](cells ++ that.cells.filter(x => !cells.contains(x)))
+  def +(e: PlacedCell): GoSet[PlacedCell] = {
+    GoSet[PlacedCell](e :: cells.filter(_ != e))
+  } ensuring(res => res.contains(e))
 
-  def contains(e: T): Boolean = cells.contains(e)
+  def ++(that: GoSet[PlacedCell]): GoSet[PlacedCell] = GoSet[PlacedCell](cells ++ that.cells.filter(x => !cells.contains(x)))
 
-  def exists(f: T => Boolean): Boolean = cells.exists(f)
+  def contains(e: PlacedCell): Boolean = {
+    exists(_ == e)
+  }
+  // Doesn't terminate
+  //  ensuring { res =>
+  //    res == find(_ == e).isDefined
+  //  }
 
-  def filter(f: T => Boolean): GoSet[T] = GoSet(cells.filter(f))
+  def find(f: PlacedCell => Boolean): GoOption[PlacedCell] = {
+    if (cells.isEmpty) GoNone[PlacedCell]()
+    else if (f(cells.head)) GoSome(cells.head)
+    else GoSet(cells.tail).find(f)
+  }
 
-  def filterNot(f: T => Boolean): GoSet[T] = GoSet(cells.filter(x => !f(x)))
+  def exists(f: PlacedCell => Boolean): Boolean = {
+    if (cells.isEmpty) false
+    else if (f(cells.head)) true
+    else GoSet(cells.tail).exists(f)
+  }
 
-  def isEqualTo(that: GoSet[T]): Boolean =
+  def map[U](f: PlacedCell => U): GoList[U] = {
+    cells.map(f)
+  }
+
+  def filter(f: PlacedCell => Boolean): GoSet[PlacedCell] = GoSet(cells.filter(f))
+
+  def filterNot(f: PlacedCell => Boolean): GoSet[PlacedCell] = GoSet(cells.filter(x => !f(x)))
+
+  def isEqualTo(that: GoSet[PlacedCell]): Boolean =
     that.cells.forall(cells.contains) && cells.forall(that.cells.contains)
-
 }
 
 object GoSet {
-  def empty[T]: GoSet[T] = GoSet[T](List[T]())
+  def empty[T]: GoSet[T] = GoSet[T](GoNil[T]())
 }

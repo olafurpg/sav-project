@@ -13,6 +13,11 @@ trait Util extends FunSuite with StringUtil {
   val b = BlackCell
   val e = WhiteCell
 
+  implicit def iterable2GoList[T](it: Iterable[T]): GoList[T] = {
+    if (it.isEmpty) GoNil()
+    else GoCons(it.head, iterable2GoList(it.tail))
+  }
+
   def fromString(N: Int, str: String): Board = {
     val cells = for {
       (row, x) <- str.stripMargin.split("\n").filter(!_.isEmpty).zipWithIndex
@@ -20,7 +25,7 @@ trait Util extends FunSuite with StringUtil {
         row.zipWithIndex
       }
     } yield PlacedCell(Point(x + 1, y + 1), cellFromString(ch))
-    Board(N, GoMap(cells.filter(_.c != EmptyCell).toList))
+    Board(N, GoMap(iterable2GoList(cells.filter(_.c != EmptyCell))))
   }
 
   def dfsTest(lst: List[PlacedCell], ignore: Set[PlacedCell] = Set.empty): Unit = {
@@ -107,8 +112,8 @@ class BoardTest extends FunSuite with Util {
         |ooo
         |
       """.stripMargin)
-    val expected: Set[PlacedCell] = Set((Point(1, 1), b), (Point(1, 2), b), (Point(1, 3), b), (Point(2, 1), w), (Point(2, 2), w), (Point(2, 3), w))
-    val obtained = b1.cells.cells.toSet
+    val expected: GoList[PlacedCell] = List(pc(1, 1, b), pc(1, 2, b), pc(1, 3, b), pc(2, 1, w), pc(2, 2, w), pc(2, 3, w))
+    val obtained = b1.cells.cells
     assert(obtained === expected)
     val b2 = fromString(3, "")
     assert(b2.cells.cells.isEmpty)
@@ -178,10 +183,10 @@ class BoardTest extends FunSuite with Util {
     val allCells = GoSet((for {
       x <- 1 to n
       y <- 1 to n
-    } yield Point(x, y)).toList)
+    } yield Point(x, y)))
 
-    assert(B.freeCells === allCells)
-    assert(B.put(w, Point(1, 1)).freeCells === allCells - Point(1, 1))
+    assert(B.freeCells.map(_.p) === allCells.cells)
+    assert(B.put(w, Point(1, 1)).freeCells.map(_.p) === (allCells - Point(1, 1)).cells)
   }
 
 

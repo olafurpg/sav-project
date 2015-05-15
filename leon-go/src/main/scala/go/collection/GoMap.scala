@@ -4,7 +4,7 @@ import go.core.{Point, PlacedCell, CellObject}
 import leon.collection._
 import CellObject._
 
-case class GoMap(cells: List[PlacedCell]) {
+case class GoMap(cells: GoList[PlacedCell]) {
   require(isSorted(cells))
   def isDefinedAt(p: Point): Boolean = {
     cells.exists(_.p == p)
@@ -12,10 +12,10 @@ case class GoMap(cells: List[PlacedCell]) {
 
   def contains(p: Point): Boolean = isDefinedAt(p)
 
-  def insSort(lst: List[PlacedCell], v: PlacedCell): List[PlacedCell] = {
+  def insSort(lst: GoList[PlacedCell], v: PlacedCell): GoList[PlacedCell] = {
     require(isSorted(lst))
     lst match {
-      case l if l.isEmpty => List(v)
+      case l if l.isEmpty => GoCons(v, GoNil())
       case _ =>
         if (v < lst.head) {
           v :: lst
@@ -29,7 +29,7 @@ case class GoMap(cells: List[PlacedCell]) {
     isSorted(res)
   })
 
-  def isSorted(lst: List[PlacedCell]): Boolean = lst match {
+  def isSorted(lst: GoList[PlacedCell]): Boolean = lst match {
     case l if l.size <= 1 => true
     case _ =>
       if (lst.tail.head < lst.head) false
@@ -59,5 +59,5 @@ case class GoMap(cells: List[PlacedCell]) {
 }
 
 object GoMap {
-  def empty: GoMap = GoMap(List[PlacedCell]())
+  def empty: GoMap = GoMap(GoNil[PlacedCell]())
 }

@@ -7,9 +7,6 @@ import CellObject._
 
 import PlayerTypeObject._
 
-
-
-
 // TODO: move logic out, board should be ignorant of game logic
 //       only care place stone, remove stone
 case class Board(n: Int, cells: GoMap) {
@@ -37,35 +34,35 @@ case class Board(n: Int, cells: GoMap) {
     Board(n, cells + PlacedCell(p, c))
   }
 
-  def freeCells: GoSet[Point] = GoSet((for {
+  def freeCells: GoSet[PlacedCell] = GoSet((for {
     x <- r
     y <- r
-  } yield Point(x, y)).filterNot(cells.isDefinedAt))
+  } yield Point(x, y)).filterNot(cells.isDefinedAt).map(x => PlacedCell(x, EmptyCell)))
 
-  def neighboors(x: Int, y: Int): List[PlacedCell] =
-    List((x + 1, y), (x, y + 1), (x - 1, y), (x, y - 1)).map(tpl2Point).filter(insideBoard).map(x => PlacedCell(x, at(x)))
+  def neighboors(x: Int, y: Int): GoList[PlacedCell] =
+    GoCons((x + 1, y), GoCons((x, y + 1), GoCons((x - 1, y), GoCons((x, y - 1), GoNil())))).map(tpl2Point).filter(insideBoard).map(x => PlacedCell(x, at(x)))
 
-  def neighboors(p: Point): List[PlacedCell] =
+  def neighboors(p: Point): GoList[PlacedCell] =
     neighboors(p.x, p.y)
 
-  def neighboors(p: Point, c: Cell): List[PlacedCell] =
+  def neighboors(p: Point, c: Cell): GoList[PlacedCell] =
     neighboors(p.x, p.y).filter(_.c == c)
 
-  def sameColorNeighbors(p: PlacedCell): List[PlacedCell] =
+  def sameColorNeighbors(p: PlacedCell): GoList[PlacedCell] =
     neighboors(p.p, p.c)
 
-  def oppositeColorNeighbors(p: Point): List[PlacedCell] =
+  def oppositeColorNeighbors(p: Point): GoList[PlacedCell] =
     neighboors(p, at(p).otherColor)
 
-  def emptyNeighors(p: Point): List[PlacedCell] =
+  def emptyNeighors(p: Point): GoList[PlacedCell] =
     neighboors(p).filter(_.c == EmptyCell)
 
-  def full: Boolean = cells.size == n * n
+  def full: Boolean = cells.size == BigInt(n).pow(2)
 
   def remove(p: Point): Board = Board(n, cells.filterNot(_.p == p))
 
   def remove(ps: GoSet[PlacedCell]): Board = Board(n, cells.filterNot(ps.contains))
 
-  def playerCells(p: PlayerType): GoSet[Point] = GoSet(cells.cells.filter(_.c == p.cell).map(_.p))
+  def playerCells(p: PlayerType): GoSet[PlacedCell] = GoSet(cells.cells.filter(_.c == p.cell))
 
 }

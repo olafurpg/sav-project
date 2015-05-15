@@ -5,4 +5,4 @@ echo Executing Leon...
 # leon src/main/scala/go/util/conversions.scala src/main/scala/go/core/{Point,PlacedCell,Cell,PlayerType}.scala
 
 # Collections
-leon src/main/scala/go/collection/GoMap.scala src/main/scala/go/core/{Point,PlacedCell,Cell}.scala
+leon src/main/scala/go/collection/{GoSet,GoOption,GoMap,GoList}.scala src/main/scala/go/core/{Point,PlacedCell,Cell}.scala
