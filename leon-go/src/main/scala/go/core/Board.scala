@@ -3,15 +3,11 @@ package go.core
 import go.collection._
 import go.util.conversions._
 import leon.lang.string
+import CellObject._
 
-case class Point(x: Int, y: Int) {
-  override def toString(): String = s"($x, $y)"
-  def tpl: (Int, Int) = x -> y
-}
 
-case class PlacedCell(p: Point, c: Cell) {
-  override def toString(): String = s"$c$p"
-}
+
+
 
 // TODO: move logic out, board should be ignorant of game logic
 //       only care place stone, remove stone
@@ -65,8 +61,8 @@ case class Board(n: Int, cells: GoMap) {
 
   def full: Boolean = cells.size == n * n
 
-  def remove(p: Point): Board = Board(n, cells.filterNot(_ == p))
-  
+  def remove(p: Point): Board = Board(n, cells.filterNot(_.p == p))
+
   def remove(ps: GoSet[PlacedCell]): Board = Board(n, cells.filterNot(ps.contains))
 
   def playerCells(p: PlayerType): GoSet[Point] = GoSet(cells.cells.filter(_.c == p.cell).map(_.p))
@@ -74,7 +70,4 @@ case class Board(n: Int, cells: GoMap) {
   override def toString() = {
     mkString(board.map(mkString(_, "")), "\n", "\n", "\n")
   }
-}
-
-object Board {
 }

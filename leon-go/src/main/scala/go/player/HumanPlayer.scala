@@ -1,10 +1,10 @@
 package go.player
 
 import go.core._
+import go.util.StringUtil
 import scala.io.StdIn
 
-case object HumanPlayer extends Player {
-  import go.util.Util._
+case object HumanPlayer extends Player with StringUtil {
   val coordinate = """\s*(\d+) (\d+)\s*""".r
 
   // String  => Either[Step, Error]

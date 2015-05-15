@@ -1,7 +1,8 @@
 package go.core
 
-sealed abstract class Step
+import go.core.CellObject.EmptyCell
 
+sealed abstract class Step
 case object Pass extends Step
 case class Place(x: Int, y: Int) extends Step
 

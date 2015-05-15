@@ -3,6 +3,8 @@ package go.collection
 import go.core._
 import leon.collection._
 
+import CellObject._
+
 case class GoMap(cells: List[PlacedCell]) {
   def isDefinedAt(p: Point): Boolean = cells.exists(_.p == p)
 

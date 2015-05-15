@@ -1,5 +1,6 @@
 package go.core
 
+import CellObject._
 import leon.collection._
 import leon.lang.string
 

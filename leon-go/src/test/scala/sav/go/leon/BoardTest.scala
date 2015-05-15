@@ -1,12 +1,14 @@
 package sav.go.leon
 
+import go.util.StringUtil
 import org.scalatest.FunSuite
 import leon.collection._
 import go.collection._
 import go.core._
 import go.util.conversions._
+import CellObject._
 
-trait Util extends FunSuite {
+trait Util extends FunSuite with StringUtil {
   val w = WhiteCell
   val b = BlackCell
   val e = WhiteCell
@@ -17,7 +19,7 @@ trait Util extends FunSuite {
       (ch, y) <- {
         row.zipWithIndex
       }
-    } yield PlacedCell(Point(x + 1, y + 1), Cell.fromString(ch))
+    } yield PlacedCell(Point(x + 1, y + 1), cellFromString(ch))
     Board(N, GoMap(cells.filter(_.c != EmptyCell).toList))
   }
 

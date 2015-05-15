@@ -1,4 +1,5 @@
 package go.core
+import CellObject._
 
 sealed abstract class PlayerType {
   def cell: Cell = this match {
