@@ -33,36 +33,17 @@ case class Board(n: Int, cells: GoMap) {
 
   def board = r.map(x => r.map(y => at(x, y)))
 
+
   // TODO: need to remember how many stones are captured
   def put(c: Cell, p: Point): Board = {
-    require(insideBoard(p) && !cells.contains(p))
-    val captured1 = Board(n, cells + (p -> c)).capturedCells.filterNot(_.c == c)
-    val b1 = Board(n, (cells + (p -> c)).filterNot(x => captured1.contains(x)))
-    val captured2 = b1.capturedCells.filter(_.c == c)
-    Board(n, b1.cells.filterNot(x => captured2.contains(x)))
+    require(insideBoard(p) && !isOccupied(p))
+    Board(n, cells + PlacedCell(p, c))
   }
 
   def freeCells: GoSet[Point] = GoSet((for {
     x <- r
     y <- r
   } yield Point(x, y)).filterNot(cells.isDefinedAt))
-
-  def hasLiberty(p: PlacedCell): Boolean = neighboors(p.p).exists(_.c == EmptyCell)
-
-  def capturedCells: GoSet[PlacedCell] = {
-//    println(s"this = $this")
-    val e = GoSet.empty[PlacedCell]
-    cells.foldRight(e -> e) {
-      case (p, (explored, captured)) =>
-        if (explored.contains(p)) explored -> captured
-        else {
-          val component = connectedComponent(p)
-//          println(s"p = $p, component = $component, explored = $explored, captured = $captured")
-          if (component.exists(hasLiberty)) (explored ++ component, captured)
-          else (explored ++ component, captured ++ component)
-        }
-    }._2
-  }
 
   def neighboors(x: Int, y: Int): List[PlacedCell] =
     List((x + 1, y), (x, y + 1), (x - 1, y), (x, y - 1)).map(tpl2Point).filter(insideBoard).map(x => PlacedCell(x, at(x)))
@@ -81,28 +62,9 @@ case class Board(n: Int, cells: GoMap) {
 
   def emptyNeighors(p: Point): List[PlacedCell] =
     neighboors(p).filter(_.c == EmptyCell)
-
-  def connectedComponent(p: PlacedCell, visited: GoSet[PlacedCell] = GoSet.empty): GoSet[PlacedCell] = {
-    if (visited.contains(p)) visited
-    else {
-
-      val newVisited = visited + p
-      val toVisit = sameColorNeighbors(p)
-      toVisit.foldLeft(newVisited) {
-        case (b, a) =>
-          connectedComponent(a, b)
-      }
-    }
-  }
-
   def full: Boolean = cells.size == n * n
 
   def playerCells(p: PlayerType): GoSet[Point] = GoSet(cells.cells.filter(_.c == p.cell).map(_.p))
-
-  def next(m: Step, c: Cell): Board = m match {
-    case Pass => Board(n, cells)
-    case Place(x, y) => put(c, Point(x, y))
-  }
 
   override def toString() = {
     mkString(board.map(mkString(_, "")), "\n", "\n", "\n")

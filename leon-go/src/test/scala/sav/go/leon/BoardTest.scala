@@ -24,7 +24,7 @@ trait Util extends FunSuite {
   def dfsTest(lst: List[PlacedCell], ignore: Set[PlacedCell] = Set.empty): Unit = {
     val expected = GoSet(lst.filterNot(ignore))
     val b1 = Board(10, GoMap(lst))
-    assert(b1.connectedComponent(PlacedCell(Point(1, 1), b)).isEqualTo(expected))
+    assert(CaptureLogic.connectedComponent(b1, PlacedCell(Point(1, 1), b)).isEqualTo(expected))
   }
 
   def moveTest(n: Int, str1: String, str2: String, c: Cell, p: Point): Unit = {

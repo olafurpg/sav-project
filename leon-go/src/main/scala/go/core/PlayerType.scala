@@ -1,6 +1,6 @@
 package go.core
 
-sealed trait PlayerType {
+sealed abstract class PlayerType {
   def cell: Cell = this match {
     case WhitePlayer => WhiteCell
     case BlackPlayer => BlackCell

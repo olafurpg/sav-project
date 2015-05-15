@@ -29,18 +29,19 @@ case class Game(states: List[Board], steps: List[Step]) {
 
       case Place(x, y) if state.isOccupied(Point(x, y)) => Right(AlreadyOccupiedError)
 
-      case Place(x, y) if round > 1 && state.next(m, activePlayer.cell) == states(1) => Right(AlreadyOccupiedError)
+      case Place(x, y) if round > 1 && CaptureLogic.put(Point(x, y), activePlayer.cell, state) == states(1) => Right(AlreadyOccupiedError)
 
       case p @ Place(x, y) =>
-        val g = Game(state.next(m, activePlayer.cell) :: states, m :: steps)
-        if (g.state.at(Point(x, y)) == EmptyCell) Right(SuicideError) // TODO: why it's suicide?
-        else if (round > 0 && g.state == states.tail.head) Right(KoError)
-        else Left(g)
+        val newPoint = Point(x, y)
+        val newBoard = CaptureLogic.put(newPoint, activePlayer.cell, state)
+        if (newBoard.at(newPoint) == EmptyCell) Right(SuicideError)
+        else if (round > 0 && newBoard == states.tail.head) Right(KoError)
+        else Left(Game(newBoard :: states, m :: steps))
 
       case Pass => Left(Game(state :: states, m :: steps))
     }
   } ensuring { _ match {
-      case Right(AlreadyOccupiedError) => !m.isValid(state)
+      case Right(AlreadyOccupiedError) => !Step.isValid(m, state)
       case Left(g: Game) => true
       case _ => true
     }
