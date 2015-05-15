@@ -14,16 +14,14 @@ object Driver {
     val nextPlayer = takeTurns[Player](HumanPlayer, ComputerPlayer) _
     val game = Stream.iterate((HumanPlayer: Player, Game(n)))({
       // Round
-
       case (player, g) =>
         val step = player.move(g)
-        g.move(step) match {
-          case Right(err) =>
-            println(err)
-            (player, g)
-          case Left(game) =>
-            println(s"$player performed $step")
-            (nextPlayer(player), game)
+        Rule.check(g, step).fold {
+          println(s"$player performed $step")
+          (nextPlayer(player), g.move(step))
+        } { err =>
+          println(err)
+          (player, g)
         }
     }) takeWhile { case (_, g) => !g.isOver }
     game.toList

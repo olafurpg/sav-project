@@ -5,7 +5,8 @@ import go.collection.GoSet
 import CellObject._
 
 object CaptureLogic {
-  def put(p: Point, c: Cell, b: Board): Board = {
+  def put(b: Board, p: Point, c: Cell): Board = {
+
     val pc = PlacedCell(p, c)
 
     val board1 = b.put(c, p)

@@ -24,26 +24,16 @@ case class Game(states: List[Board], steps: List[Step]) {
   }
 
   // TODO: move error check into rules
-  def move(m: Step): Either[Game, MoveError] = {
-    m match {
-      case Place(x, y) if !state.insideBoard(Point(x, y)) => Right(OutsideOfBoardError)
-
-      case Place(x, y) if state.isOccupied(Point(x, y)) => Right(AlreadyOccupiedError)
-
-      case Place(x, y) if round > 1 && CaptureLogic.put(Point(x, y), activePlayer.cell, state) == states(1) => Right(AlreadyOccupiedError)
-
-      case p @ Place(x, y) =>
-        val newPoint = Point(x, y)
-        val newBoard = CaptureLogic.put(newPoint, activePlayer.cell, state)
-        if (newBoard.at(newPoint) == EmptyCell) Right(SuicideError)
-        else if (round > 0 && newBoard == states.tail.head) Right(KoError)
-        else Left(Game(newBoard :: states, m :: steps))
-
-      case Pass => Left(Game(state :: states, m :: steps))
+  def move(step: Step): Game = {
+    require(Rule.check(this, step).isDefined)
+    step match {
+      case Pass => Game(state :: states, step :: steps)
+      case Place(x, y) =>
+        val newState = CaptureLogic.put(state, Point(x, y), activePlayer.cell)
+        Game(newState :: states, step :: steps)
     }
-  } ensuring { _ match {
-      case Right(AlreadyOccupiedError) => !Step.isValid(m, state)
-      case Left(g: Game) => true
+  } ensuring {
+    _ match {
       case _ => true
     }
   }

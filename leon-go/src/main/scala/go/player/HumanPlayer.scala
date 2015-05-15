@@ -19,17 +19,17 @@ case object HumanPlayer extends Player with StringUtil {
       }
       case coordinate(xStr, yStr) => {
         val p = Place(xStr.toInt, yStr.toInt)
-        g.move(p) match {
-          case Right(OutsideOfBoardError) =>
+        Rule.check(g, p) match {
+          case Some(OutsideOfBoardError) =>
             println(s"$p is out of range, try again")
             readStep(g)
-          case Right(AlreadyOccupiedError) =>
+          case Some(AlreadyOccupiedError) =>
             println(s"$p is already taken, try again")
             readStep(g)
-          case Right(SuicideError) =>
+          case Some(SuicideError) =>
             println(s"$p is a suicide move, try again")
             readStep(g)
-          case Right(KoError) =>
+          case Some(KoError) =>
             println(s"$p breaks the Ko rule, try again")
             readStep(g)
           case _ => p

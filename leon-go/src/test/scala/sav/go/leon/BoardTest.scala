@@ -32,7 +32,7 @@ trait Util extends FunSuite with StringUtil {
   def moveTest(n: Int, str1: String, str2: String, c: Cell, p: Point): Unit = {
     val b1 = fromString(n, str1.stripMargin)
     val b2 = fromString(n, str2.stripMargin)
-    assert(CaptureLogic.put(p, c, b1) === b2)
+    assert(CaptureLogic.put(b1, p, c) === b2)
   }
 
   val B1 = fromString(4,
@@ -180,21 +180,21 @@ class BoardTest extends FunSuite with Util {
 
 
   test("Game.move OutsideOfErrorBoard") {
-    assert(G.move(Place(0, 1)) === Right(OutsideOfBoardError))
-    assert(G.move(Place(1, 0)) === Right(OutsideOfBoardError))
-    assert(G.move(Place(5, 1)) === Right(OutsideOfBoardError))
-    assert(G.move(Place(1, 5)) === Right(OutsideOfBoardError))
+    assert(Rule.check(G, Place(0, 1)) === Some(OutsideOfBoardError))
+    assert(Rule.check(G, Place(1, 0)) === Some(OutsideOfBoardError))
+    assert(Rule.check(G, Place(5, 1)) === Some(OutsideOfBoardError))
+    assert(Rule.check(G, Place(1, 5)) === Some(OutsideOfBoardError))
   }
 
   // Ignore because we have require statement
   test("Game.move AlreadyOccupiedError") {
-    assert(G.move(Place(1, 2)) === Right(AlreadyOccupiedError))
-    assert(G.move(Place(1, 3)) === Right(AlreadyOccupiedError))
-    assert(G.move(Place(2, 1)) === Right(AlreadyOccupiedError))
-    assert(G.move(Place(2, 2)) === Right(AlreadyOccupiedError))
-    assert(G.move(Place(2, 4)) === Right(AlreadyOccupiedError))
-    assert(G.move(Place(3, 2)) === Right(AlreadyOccupiedError))
-    assert(G.move(Place(3, 3)) === Right(AlreadyOccupiedError))
+    assert(Rule.check(G, Place(1, 2)) === Some(AlreadyOccupiedError))
+    assert(Rule.check(G, Place(1, 3)) === Some(AlreadyOccupiedError))
+    assert(Rule.check(G, Place(2, 1)) === Some(AlreadyOccupiedError))
+    assert(Rule.check(G, Place(2, 2)) === Some(AlreadyOccupiedError))
+    assert(Rule.check(G, Place(2, 4)) === Some(AlreadyOccupiedError))
+    assert(Rule.check(G, Place(3, 2)) === Some(AlreadyOccupiedError))
+    assert(Rule.check(G, Place(3, 3)) === Some(AlreadyOccupiedError))
   }
 
   test("Game.move SuicideError") {
@@ -203,7 +203,7 @@ class BoardTest extends FunSuite with Util {
     val ko1 = Place(2, 3)
     val ko2 = Place(2, 2)
     val g2 = Game(List(B2, B1), List(ko1))
-    assert(g.move(suicide) === Right(SuicideError))
+    assert(Rule.check(g, suicide) === Some(SuicideError))
   }
 
   test("Game.move KoError") {
@@ -212,7 +212,7 @@ class BoardTest extends FunSuite with Util {
     val ko1 = Place(2, 3)
     val ko2 = Place(2, 2)
     val g2 = Game(List(B2, B1), List(ko1))
-    assert(g2.move(ko2) === Right(KoError))
+    assert(Rule.check(g2, ko2) === Some(KoError))
   }
 
 }

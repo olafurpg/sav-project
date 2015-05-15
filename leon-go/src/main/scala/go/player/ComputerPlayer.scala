@@ -33,25 +33,24 @@ case class AI(p: PlayerType) {
       ((friend.size - enemy.size) * (if (maximizingPlayer) 1 else -1)).toInt -> Pass
     }
     else {
-      g.move(Pass) match {
-        case Left(passGame) =>
-          val startScore = minimax(passGame, depth - 1)._1
+      Rule.check(g, Pass) match {
+        // Pass is illegal for some reason
+        case Some(_) => (if (maximizingPlayer) Int.MaxValue else Int.MinValue, Pass)
+        case _ =>
+          val startScore = minimax(g.move(Pass), depth - 1)._1
           g.state.freeCells.foldLeft((startScore, Pass: Step)) { case ((currScore, step), p) =>
             val newStep = Place(p.x, p.y)
-            g.move(newStep) match {
-              case Left(nextGame) =>
-                val score = minimax(nextGame, depth - 1)._1
+            Rule.check(g, newStep) match {
+              case None =>
+                val score = minimax(g.move(newStep), depth - 1)._1
                 if (maximizingPlayer && score > currScore) (score, newStep)
                 else if (!maximizingPlayer && score < currScore) (score, newStep)
                 else (currScore, step)
-              case Right(_) => {
+              case _ =>
                 errors += 1
                 currScore -> step
-              }
             }
           }
-        // Pass is illegal for some reason
-        case Right(_) => (if (maximizingPlayer) Int.MaxValue else Int.MinValue, Pass)
       }
     }
   }
