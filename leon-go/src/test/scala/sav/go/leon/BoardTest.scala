@@ -1,6 +1,9 @@
 package sav.go.leon
 
 import org.scalatest.FunSuite
+import go.collection._
+import go.core._
+import go.util.conversions._
 
 trait Util extends FunSuite {
   val w = WhiteCell
