@@ -29,7 +29,7 @@ case class AI(p: PlayerType) {
     val mult = if (maximizingPlayer) 1 else -1
     if (depth == 0) {
       val (friend, enemy) = g.state.cells.cells.partition(_.c == g.activePlayer.cell) // TODO: cells.cells --> implement partition method for GoMap
-      (friend.size - enemy.size) * (if (maximizingPlayer) 1 else -1) -> Pass
+      ((friend.size - enemy.size) * (if (maximizingPlayer) 1 else -1)).toInt -> Pass
     }
     else {
       g.move(Pass) match {

@@ -1,8 +1,13 @@
 package go
+
 import leon.collection._
 
 package object collection {
-  def mkString[T](lst: List[T], sep: String): String = lst.mkString(sep)
-  def mkString[T](lst: List[T], start: String, sep: String, end: String): String = lst.mkString(start, sep, end)
+  def mkString[T](lst: List[T], sep: String): String = mkString(lst, "", sep, "")
 
+  def mkString[T](lst: List[T], start: String, sep: String, end: String): String = lst match {
+    case l if l.size == 0 => ""
+    case l if l.size == 1 => start + l.head.toString + end
+    case l if l.size > 1 => start + l.head.toString + sep + mkString(l.tail, "", sep, "") + end
+  }
 }

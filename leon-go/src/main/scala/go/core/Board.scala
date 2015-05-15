@@ -105,7 +105,7 @@ case class Board(n: Int, cells: GoMap) {
   }
 
   override def toString() = {
-    board.map(_.mkString("")).mkString("\n", "\n", "\n")
+    mkString(board.map(mkString(_, "")), "\n", "\n", "\n")
   }
 }
 
