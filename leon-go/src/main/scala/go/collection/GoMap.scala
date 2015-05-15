@@ -13,6 +13,7 @@ case class GoMap(cells: List[PlacedCell]) {
   def contains(p: Point): Boolean = isDefinedAt(p)
 
   def insSort(lst: List[PlacedCell], v: PlacedCell): List[PlacedCell] = {
+    require(isSorted(lst))
     lst match {
       case l if l.isEmpty => List(v)
       case _ =>
@@ -25,7 +26,6 @@ case class GoMap(cells: List[PlacedCell]) {
         }
     }
   } ensuring(res => {
-    println(res)
     isSorted(res)
   })
 
@@ -36,7 +36,10 @@ case class GoMap(cells: List[PlacedCell]) {
       else isSorted(lst.tail)
   }
 
-  def +(e: PlacedCell): GoMap = GoMap(insSort(cells, e))
+  def +(e: PlacedCell): GoMap = {
+    require(isSorted(cells))
+    GoMap(insSort(cells, e))
+  }
 
   def filterNot(f: PlacedCell => Boolean): GoMap = GoMap(cells.filter(x => !f(x)))
 
@@ -52,10 +55,6 @@ case class GoMap(cells: List[PlacedCell]) {
   }
 
   def size: BigInt = cells.size
-
-  def isEqualTo(that: GoMap): Boolean =  {
-    cells.forall(that.cells.contains) == that.cells.forall(cells.contains)
-  }
 
 }
 
