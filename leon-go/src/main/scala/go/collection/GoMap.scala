@@ -11,8 +11,10 @@ case class GoMap(cells: List[PlacedCell]) {
 
   def contains(p: Point): Boolean = isDefinedAt(p)
 
+  def isEmpty: Boolean = cells.isEmpty
+
   def insSort(lst: List[PlacedCell], v: PlacedCell): List[PlacedCell] = {
-    require(GoMap.allValidPoints(lst) && v.isValid)
+    require(GoMap.isSorted(lst) && GoMap.allValidPoints(lst) && v.isValid)
 //    require(GoMap.isValid(lst) && v.p.insideRange)
     lst match {
       case l if l.isEmpty => List(v)
@@ -26,17 +28,20 @@ case class GoMap(cells: List[PlacedCell]) {
         }
     }
   } ensuring(res => {
-    GoMap.isSorted(res)
+    GoMap.isSorted(res) && GoMap.allValidPoints(res)
   })
 
   def +(e: PlacedCell): GoMap = {
-    require(GoMap.allValidPoints(cells) && e.isValid)
+    require(GoMap.isSorted(cells) && GoMap.allValidPoints(cells) && e.isValid)
     GoMap(insSort(cells, e))
-  }
+  } ensuring(res => res.contains(e.p))
 
   def filterNot(f: PlacedCell => Boolean): GoMap = GoMap(cells.filter(x => !f(x)))
 
-  def filter(f: PlacedCell => Boolean): GoMap = GoMap(cells.filter(f))
+  def filter(f: PlacedCell => Boolean): GoMap = {
+    GoMap(cells.filter(f))
+  } ensuring(res => cells.forall(x => !f(x) || res.contains(x.p)))
+
 
   def foldRight[R](z: R)(f: (PlacedCell,R) => R): R = cells.foldRight(z)(f)
 
