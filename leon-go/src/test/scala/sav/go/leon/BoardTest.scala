@@ -193,21 +193,21 @@ class BoardTest extends FunSuite with Util {
 
 
   test("Game.move OutsideOfErrorBoard") {
-    assert(Rule.check(G, Place(0, 1)) === Some(OutsideOfBoardError))
-    assert(Rule.check(G, Place(1, 0)) === Some(OutsideOfBoardError))
-    assert(Rule.check(G, Place(5, 1)) === Some(OutsideOfBoardError))
-    assert(Rule.check(G, Place(1, 5)) === Some(OutsideOfBoardError))
+    assert(RuleEngine.check(G, Place(0, 1)) === Some(OutsideOfBoardError))
+    assert(RuleEngine.check(G, Place(1, 0)) === Some(OutsideOfBoardError))
+    assert(RuleEngine.check(G, Place(5, 1)) === Some(OutsideOfBoardError))
+    assert(RuleEngine.check(G, Place(1, 5)) === Some(OutsideOfBoardError))
   }
 
   // Ignore because we have require statement
   test("Game.move AlreadyOccupiedError") {
-    assert(Rule.check(G, Place(1, 2)) === Some(AlreadyOccupiedError))
-    assert(Rule.check(G, Place(1, 3)) === Some(AlreadyOccupiedError))
-    assert(Rule.check(G, Place(2, 1)) === Some(AlreadyOccupiedError))
-    assert(Rule.check(G, Place(2, 2)) === Some(AlreadyOccupiedError))
-    assert(Rule.check(G, Place(2, 4)) === Some(AlreadyOccupiedError))
-    assert(Rule.check(G, Place(3, 2)) === Some(AlreadyOccupiedError))
-    assert(Rule.check(G, Place(3, 3)) === Some(AlreadyOccupiedError))
+    assert(RuleEngine.check(G, Place(1, 2)) === Some(AlreadyOccupiedError))
+    assert(RuleEngine.check(G, Place(1, 3)) === Some(AlreadyOccupiedError))
+    assert(RuleEngine.check(G, Place(2, 1)) === Some(AlreadyOccupiedError))
+    assert(RuleEngine.check(G, Place(2, 2)) === Some(AlreadyOccupiedError))
+    assert(RuleEngine.check(G, Place(2, 4)) === Some(AlreadyOccupiedError))
+    assert(RuleEngine.check(G, Place(3, 2)) === Some(AlreadyOccupiedError))
+    assert(RuleEngine.check(G, Place(3, 3)) === Some(AlreadyOccupiedError))
   }
 
   test("Game.move SuicideError") {
@@ -216,7 +216,7 @@ class BoardTest extends FunSuite with Util {
     val ko1 = Place(2, 3)
     val ko2 = Place(2, 2)
     val g2 = Game(List(B2, B1), List(ko1))
-    assert(Rule.check(g, suicide) === Some(SuicideError))
+    assert(RuleEngine.check(g, suicide) === Some(SuicideError))
   }
 
   test("Game.move KoError") {
@@ -225,7 +225,7 @@ class BoardTest extends FunSuite with Util {
     val ko1 = Place(2, 3)
     val ko2 = Place(2, 2)
     val g2 = Game(List(B2, B1), List(ko1))
-    assert(Rule.check(g2, ko2) === Some(KoError))
+    assert(RuleEngine.check(g2, ko2) === Some(KoError))
   }
 
 }

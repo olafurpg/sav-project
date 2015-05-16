@@ -1,6 +1,5 @@
 package go.core
 
-// TODO: rename to stone
 object CellObject {
 
   sealed abstract class Cell {
@@ -17,4 +16,3 @@ object CellObject {
   case object BlackCell extends Cell
   case object EmptyCell extends Cell
 }
-

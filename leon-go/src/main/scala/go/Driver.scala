@@ -16,13 +16,13 @@ object Driver {
       // Round
       case (player, g) =>
         val step = player.move(g)
-        Rule.check(g, step).fold {
+        RuleEngine.next(g, step).fold({ game =>
           println(s"$player performed $step")
-          (nextPlayer(player), g.move(step))
-        } { err =>
+          (nextPlayer(player), game)
+        }, { err =>
           println(err)
           (player, g)
-        }
+        })
     }) takeWhile { case (_, g) => !g.isOver }
     game.toList
   }

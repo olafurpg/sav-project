@@ -19,7 +19,7 @@ case object HumanPlayer extends Player with StringUtil {
       }
       case coordinate(xStr, yStr) => {
         val p = Place(xStr.toInt, yStr.toInt)
-        Rule.check(g, p) match {
+        RuleEngine.check(g, p) match {
           case Some(OutsideOfBoardError) =>
             println(s"$p is out of range, try again")
             readStep(g)

@@ -4,7 +4,6 @@ import CellObject._
 import leon.collection._
 import PlayerTypeObject._
 
-// TODO: Add rule engine
 case class Game(states: List[Board], steps: List[Step]) {
   //  require(s.size > 0)
 
@@ -21,21 +20,6 @@ case class Game(states: List[Board], steps: List[Step]) {
 
   def isOver: Boolean = {
     round > 1 && steps.head == Pass && steps.tail.head == Pass
-  }
-
-  // TODO: move error check into rules
-  def move(step: Step): Game = {
-    require(Rule.check(this, step).isDefined)
-    step match {
-      case Pass => Game(state :: states, step :: steps)
-      case Place(x, y) =>
-        val newState = CaptureLogic.put(state, Point(x, y), activePlayer.cell)
-        Game(newState :: states, step :: steps)
-    }
-  } ensuring {
-    _ match {
-      case _ => true
-    }
   }
 
   override def toString(): String = state.toString()
