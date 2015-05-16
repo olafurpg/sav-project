@@ -4,6 +4,7 @@ import leon.collection._
 import go.collection._
 import go.util.conversions._
 import CellObject._
+import go.util.LogicUtil._
 import PlayerTypeObject._
 
 case class Board(n: BigInt, cells: GoMap) {
@@ -26,9 +27,20 @@ case class Board(n: BigInt, cells: GoMap) {
 
   def at(pc: PlacedCell): Cell = at(pc.p.x, pc.p.y)
 
+  def empty(p: Point): Boolean = at(p.x, p.y) == EmptyCell
+
+  def empty(pc: PlacedCell): Boolean = empty(pc.p)
+
   val r = go.util.Range.to(1, n)
 
   def board = r.map(x => r.map(y => at(x, y)))
+
+  def allPoints = for {
+    x <- r
+    y <- r
+  } yield Point(x, y)
+
+  def allPlacedCells = allPoints.map(x => PlacedCell(x, at(x)))
 
   def put(c: Cell, p: Point): Board = {
     require(isValid && insideBoard(p) && !isOccupied(p))
@@ -72,9 +84,21 @@ case class Board(n: BigInt, cells: GoMap) {
 
   def full: Boolean = cells.size == n * n
 
-  def remove(p: Point): Board = Board(n, cells.filterNot(_.p == p))
+  def remove(p: Point): Board = {
+    require(isValid && p.isValid)
+    Board(n, cells.filterNot(_.p == p))
+  } ensuring(_.at(p) == EmptyCell)
 
-  def remove(ps: GoSet): Board = Board(n, cells.filterNot(ps.contains))
+  def remove(ps: GoSet): Board = {
+    require(isValid && ps.isValid)
+    Board(n, cells.filterNot(ps.contains))
+  } ensuring {
+    res => allPlacedCells.forall { x => {
+        implies(ps.contains(x), res.empty(x)) &&
+          implies(!ps.contains(x), x.c == res.at(x))
+      }
+    }
+  }
 
   def playerCells(p: PlayerType): GoSet = GoSet(cells.filter(_.c == p.cell))
 
