@@ -9,17 +9,22 @@ import PlayerTypeObject._
 
 case class Board(n: BigInt, cells: GoMap) {
 
-  def isValid: Boolean = Point.insideRange(n) && cells.isValid
+  def isValid: Boolean = {
+    n > 0 && n < Point.LIMIT && cells.isValid && cells.forall(insideBoard)
+  }
 
   def this(n: BigInt) = this(n, GoMap.empty)
 
   def inRange(x: BigInt) = 0 < x && x <= n
 
-  def insideBoard(p: Point) = inRange(p.x) && inRange(p.y)
+  def insideBoard(p: Point) = inRange(p.x) && inRange(p.y) && p.isValid
 
   def insideBoard(pc: PlacedCell) = inRange(pc.p.x) && inRange(pc.p.y)
 
-  def isOccupied(p: Point) = cells.isDefinedAt(p)
+  def isOccupied(p: Point) = {
+    require(insideBoard(p))
+    cells.isDefinedAt(p)
+  }
 
   def at(x: BigInt, y: BigInt): Cell = cells.getOrElse(Point(x, y), EmptyCell)
 

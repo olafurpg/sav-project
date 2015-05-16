@@ -6,6 +6,7 @@ import CellObject._
 
 object CaptureLogic {
   def put(b: Board, p: Point, c: Cell): Board = {
+    require(b.isValid && b.insideBoard(p) && !b.isOccupied(p))
 
     val pc = PlacedCell(p, c)
 
@@ -16,12 +17,16 @@ object CaptureLogic {
     val captured2 = capturedCells(board2).filter(_.c == c)
 
     board2.remove(captured2)
+  } ensuring { res =>
+    capturedCells(res).isEmpty
   }
 
-  def hasLiberty(b: Board)(p: PlacedCell): Boolean = b.neighbors(p.p).exists(_.c == EmptyCell)
+  def hasLiberty(b: Board)(p: PlacedCell): Boolean = {
+    b.neighbors(p.p).exists(_.c == EmptyCell)
+  }
 
   def capturedCells(b: Board): GoSet = {
-    //    println(s"this = $this")
+    require(b.isValid)
     val e = GoSet.empty
     b.cells.foldRight(e -> e) {
       case (p, (explored, captured)) =>
@@ -37,6 +42,11 @@ object CaptureLogic {
 
 
   def connectedComponent(board: Board, p: PlacedCell, visited: GoSet = GoSet.empty): GoSet = {
+    require(board.isValid &&
+      board.cells.contains(p) &&
+      visited.isValid &&
+      visited.forall(board.cells.contains)
+    )
     if (visited.contains(p)) visited
     else {
 
@@ -47,6 +57,9 @@ object CaptureLogic {
           connectedComponent(board, a, b)
       }
     }
+  } ensuring { res =>
+    // TODO
+    res.forall(board.insideBoard)
   }
 
 }

@@ -6,6 +6,8 @@ import leon.collection._
 case class GoSet(m: GoMap) {
   def isValid: Boolean = m.isValid
 
+  def isEmpty: Boolean = m.isEmpty
+
   def size: BigInt = m.size
 
   def foldLeft[R](z: R)(f: (R, PlacedCell) => R): R = m.foldLeft(z)(f)
@@ -25,6 +27,8 @@ case class GoSet(m: GoMap) {
   def contains(e: PlacedCell): Boolean = m.contains(e.p)
 
   def exists(f: PlacedCell => Boolean): Boolean = m.exists(f)
+
+  def forall(f: PlacedCell => Boolean): Boolean = m.forall(f)
 
   def filter(f: PlacedCell => Boolean): GoSet = GoSet(m.filter(f))
 

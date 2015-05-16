@@ -11,8 +11,9 @@ echo Executing Leon...
 # leon src/main/scala/go/core/{Point,PlacedCell,Cell}.scala
 
 # Board
-# --functions="Board\$neighboors" \
 leon --debug=timers --timeout=3 \
+                                --functions="capturedCells" \
+                                src/main/scala/go/core/CaptureLogic.scala \
                                 src/main/scala/go/core/Board.scala \
                                 src/main/scala/go/collection/*.scala \
                                 src/main/scala/go/core/{Point,PlacedCell,Cell,PlayerType}.scala \

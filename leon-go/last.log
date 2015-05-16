@@ -1,159 +1,35 @@
-[[34m  Info  [0m]  - Now considering 'precond. (call noDuplicates($this.cells))' VC for GoMap$isValid @13:51...
-[[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'precond. (call isSorted($this.cells))' VC for GoMap$isValid @13:74...
-[[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'postcondition' VC for GoMap$$plus$plus @25:14...
+[[34m  Info  [0m]  - Now considering 'precond. (call connectedComponent(b, x0$1))' VC for capturedCells @35:27...
+[[31m Error  [0m]  => INVALID
+[[31m Error  [0m] Found counter-example:
+[[31m Error  [0m]   b    -> Board(1, GoMap(List[PlacedCell]()))
+[[31m Error  [0m]   e    -> GoSet(GoMap(List[PlacedCell]()))
+[[31m Error  [0m]   x0$1 -> PlacedCell(Point(3, 4), BlackCell)
+[[31m Error  [0m]   x1$1 -> (GoSet(GoMap(List[PlacedCell]())), GoSet(GoMap(List[PlacedCell]())))
+[[34m  Info  [0m]  - Now considering 'precond. (call x1$1._1 ++ component)' VC for capturedCells @37:49...
 [[33mWarning [0m]  => UNKNOWN
-[[34m  Info  [0m]  - Now considering 'precond. (call ($this + m.cells.head()) ++ GoMap(m.cells.tail()))' VC for GoMap$$plus$plus @24:10...
+[[34m  Info  [0m]  - Now considering 'precond. (call x1$1._1 ++ component)' VC for capturedCells @38:17...
 [[33mWarning [0m]  => UNKNOWN
-[[34m  Info  [0m]  - Now considering 'precond. (call $this + m.cells.head())' VC for GoMap$$plus$plus @24:11...
-[[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'precond. (call m.cells.head())' VC for GoMap$$plus$plus @24:18...
-[[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'precond. (call m.cells.tail())' VC for GoMap$$plus$plus @24:41...
-[[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'postcondition' VC for GoMap$$plus @30:14...
+[[34m  Info  [0m]  - Now considering 'precond. (call x1$1._2 ++ component)' VC for capturedCells @38:40...
 [[33mWarning [0m]  => UNKNOWN
-[[34m  Info  [0m]  - Now considering 'precond. (call insSort($this.cells, e))' VC for GoMap$$plus @29:11...
-[[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'postcondition' VC for GoMap$filter @40:14...
-[[33mWarning [0m]  => UNKNOWN
-[[34m  Info  [0m]  - Now considering 'postcondition' VC for GoMap$getOrElse @48:16...
-[[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'precond. (call lst.tail())' VC for noDuplicates @65:11...
-[[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'precond. (call lst.head())' VC for noDuplicates @65:29...
-[[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'precond. (call noDuplicates(lst.tail()))' VC for noDuplicates @65:42...
-[[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'precond. (call lst.tail())' VC for noDuplicates @65:55...
-[[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'precond. (call lst.tail().head().<(lst.head()))' VC for isSorted @73:13...
-[[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'precond. (call lst.tail().head())' VC for isSorted @73:13...
-[[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'precond. (call lst.tail())' VC for isSorted @73:13...
-[[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'precond. (call lst.head())' VC for isSorted @73:29...
-[[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'precond. (call isSorted(lst.tail()))' VC for isSorted @74:14...
-[[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'precond. (call lst.tail())' VC for isSorted @74:23...
-[[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'postcondition' VC for insSort @96:14...
-[[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'precond. (call v.<(lst.head()))' VC for insSort @88:13...
-[[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'precond. (call lst.head())' VC for insSort @88:17...
-[[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'precond. (call lst.head())' VC for insSort @90:25...
-[[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'precond. (call lst.head())' VC for insSort @93:11...
-[[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'precond. (call insSort(lst.tail(), v))' VC for insSort @93:23...
-[[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'precond. (call lst.tail())' VC for insSort @93:31...
-[[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'precond. (call $this.m + e)' VC for GoSet$$plus @17:11...
-[[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'precond. (call $this.m ++ that.m.filter((x : PlacedCell) => ¬$this.m.contains(x.p)))' VC for GoSet$$plus$plus @22:11...
-[[33mWarning [0m]  => UNKNOWN
-[[34m  Info  [0m]  - Now considering 'postcondition' VC for Board$put @48:15...
-[[33mWarning [0m]  => UNKNOWN
-[[34m  Info  [0m]  - Now considering 'precond. (call $this.cells + PlacedCell(p, c))' VC for Board$put @47:14...
-[[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'postcondition' VC for Board$neighbors @58:15...
-[[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'precond. (call $this.neighbors(p.x, p.y))' VC for Board$neighbors @62:5...
-[[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'precond. (call $this.neighbors(p.x, p.y))' VC for Board$neighbors @67:5...
-[[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'postcondition' VC for Board$sameColorNeighbors @73:14...
-[[33mWarning [0m]  => UNKNOWN
-[[34m  Info  [0m]  - Now considering 'precond. (call $this.neighbors(p.p, p.c))' VC for Board$sameColorNeighbors @72:5...
-[[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'precond. (call $this.neighbors(p, $this.at(p).otherColor()))' VC for Board$oppositeColorNeighbors @77:5...
-[[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'precond. (call $this.neighbors(p))' VC for Board$emptyNeighors @82:5...
-[[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'postcondition' VC for Board$remove @90:14...
-[[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'postcondition' VC for Board$remove @96:5...
-[[33mWarning [0m]  => UNKNOWN
-[[34m  Info  [0m]  - Now considering 'postcondition' VC for Cell$otherColor @13:17...
-[[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'match exhaustiveness' VC for Cell$otherColor @8:7...
-[[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'precond. (call $this.p.<(that.p))' VC for PlacedCell$$less @10:5...
-[[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'match exhaustiveness' VC for PlayerType$cell @8:7...
-[[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'postcondition' VC for PlayerType$nextPlayer @18:16...
-[[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'match exhaustiveness' VC for PlayerType$nextPlayer @14:7...
-[[34m  Info  [0m]  => VALID
 [[34m  Info  [0m]   ┌──────────────────────┐
-[[34m  Info  [0m] ╔═╡ Verification Summary ╞══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
-[[34m  Info  [0m] ║ └──────────────────────┘                                                                                                                          ║
-[[34m  Info  [0m] ║ Board$emptyNeighors           precond. (call $this.neighbors(p))                                                    82:5   valid    Z3-f    0.003 ║
-[[34m  Info  [0m] ║ Board$neighbors               postcondition                                                                         58:15  valid    Z3-f    0.117 ║
-[[34m  Info  [0m] ║ Board$neighbors               precond. (call $this.neighbors(p.x, p.y))                                             62:5   valid    Z3-f    0.003 ║
-[[34m  Info  [0m] ║ Board$neighbors               precond. (call $this.neighbors(p.x, p.y))                                             67:5   valid    Z3-f    0.004 ║
-[[34m  Info  [0m] ║ Board$oppositeColorNeighbors  precond. (call $this.neighbors(p, $this.at(p).otherColor()))                          77:5   valid    Z3-f    0.003 ║
-[[34m  Info  [0m] ║ Board$put                     postcondition                                                                         48:15  unknown  Z3-f    3.046 ║
-[[34m  Info  [0m] ║ Board$put                     precond. (call $this.cells + PlacedCell(p, c))                                        47:14  valid    Z3-f    0.016 ║
-[[34m  Info  [0m] ║ Board$remove                  postcondition                                                                         90:14  valid    Z3-f    0.037 ║
-[[34m  Info  [0m] ║ Board$remove                  postcondition                                                                         96:5   unknown  Z3-f    3.038 ║
-[[34m  Info  [0m] ║ Board$sameColorNeighbors      postcondition                                                                         73:14  unknown  Z3-f    3.045 ║
-[[34m  Info  [0m] ║ Board$sameColorNeighbors      precond. (call $this.neighbors(p.p, p.c))                                             72:5   valid    Z3-f    0.003 ║
-[[34m  Info  [0m] ║ Cell$otherColor               match exhaustiveness                                                                  8:7    valid    Z3-f    0.003 ║
-[[34m  Info  [0m] ║ Cell$otherColor               postcondition                                                                         13:17  valid    Z3-f    0.004 ║
-[[34m  Info  [0m] ║ GoMap$$plus                   postcondition                                                                         30:14  unknown  Z3-f    3.602 ║
-[[34m  Info  [0m] ║ GoMap$$plus                   precond. (call insSort($this.cells, e))                                               29:11  valid    Z3-f    0.005 ║
-[[34m  Info  [0m] ║ GoMap$$plus$plus              postcondition                                                                         25:14  unknown  Z3-f    3.047 ║
-[[34m  Info  [0m] ║ GoMap$$plus$plus              precond. (call $this + m.cells.head())                                                24:11  valid    Z3-f    0.026 ║
-[[34m  Info  [0m] ║ GoMap$$plus$plus              precond. (call ($this + m.cells.head()) ++ GoMap(m.cells.tail()))                     24:10  unknown  Z3-f    3.036 ║
-[[34m  Info  [0m] ║ GoMap$$plus$plus              precond. (call m.cells.head())                                                        24:18  valid    Z3-f    0.007 ║
-[[34m  Info  [0m] ║ GoMap$$plus$plus              precond. (call m.cells.tail())                                                        24:41  valid    Z3-f    0.009 ║
-[[34m  Info  [0m] ║ GoMap$filter                  postcondition                                                                         40:14  unknown  Z3-f    3.030 ║
-[[34m  Info  [0m] ║ GoMap$getOrElse               postcondition                                                                         48:16  valid    Z3-f    0.016 ║
-[[34m  Info  [0m] ║ GoMap$isValid                 precond. (call isSorted($this.cells))                                                 13:74  valid    Z3-f    0.005 ║
-[[34m  Info  [0m] ║ GoMap$isValid                 precond. (call noDuplicates($this.cells))                                             13:51  valid    Z3-f    0.031 ║
-[[34m  Info  [0m] ║ GoSet$$plus                   precond. (call $this.m + e)                                                           17:11  valid    Z3-f    0.012 ║
-[[34m  Info  [0m] ║ GoSet$$plus$plus              precond. (call $this.m ++ that.m.filter((x : PlacedCell) => ¬$this.m.contains(x.p)))  22:11  unknown  Z3-f    3.039 ║
-[[34m  Info  [0m] ║ PlacedCell$$less              precond. (call $this.p.<(that.p))                                                     10:5   valid    Z3-f    0.003 ║
-[[34m  Info  [0m] ║ PlayerType$cell               match exhaustiveness                                                                  8:7    valid    Z3-f    0.003 ║
-[[34m  Info  [0m] ║ PlayerType$nextPlayer         match exhaustiveness                                                                  14:7   valid    Z3-f    0.002 ║
-[[34m  Info  [0m] ║ PlayerType$nextPlayer         postcondition                                                                         18:16  valid    Z3-f    0.003 ║
-[[34m  Info  [0m] ║ insSort                       postcondition                                                                         96:14  valid    Z3-f    0.061 ║
-[[34m  Info  [0m] ║ insSort                       precond. (call insSort(lst.tail(), v))                                                93:23  valid    Z3-f    0.015 ║
-[[34m  Info  [0m] ║ insSort                       precond. (call lst.head())                                                            93:11  valid    Z3-f    0.010 ║
-[[34m  Info  [0m] ║ insSort                       precond. (call lst.head())                                                            88:17  valid    Z3-f    0.007 ║
-[[34m  Info  [0m] ║ insSort                       precond. (call lst.head())                                                            90:25  valid    Z3-f    0.007 ║
-[[34m  Info  [0m] ║ insSort                       precond. (call lst.tail())                                                            93:31  valid    Z3-f    0.009 ║
-[[34m  Info  [0m] ║ insSort                       precond. (call v.<(lst.head()))                                                       88:13  valid    Z3-f    0.011 ║
-[[34m  Info  [0m] ║ isSorted                      precond. (call isSorted(lst.tail()))                                                  74:14  valid    Z3-f    0.009 ║
-[[34m  Info  [0m] ║ isSorted                      precond. (call lst.head())                                                            73:29  valid    Z3-f    0.005 ║
-[[34m  Info  [0m] ║ isSorted                      precond. (call lst.tail())                                                            73:13  valid    Z3-f    0.005 ║
-[[34m  Info  [0m] ║ isSorted                      precond. (call lst.tail())                                                            74:23  valid    Z3-f    0.010 ║
-[[34m  Info  [0m] ║ isSorted                      precond. (call lst.tail().head())                                                     73:13  valid    Z3-f    0.007 ║
-[[34m  Info  [0m] ║ isSorted                      precond. (call lst.tail().head().<(lst.head()))                                       73:13  valid    Z3-f    0.009 ║
-[[34m  Info  [0m] ║ noDuplicates                  precond. (call lst.head())                                                            65:29  valid    Z3-f    0.005 ║
-[[34m  Info  [0m] ║ noDuplicates                  precond. (call lst.tail())                                                            65:55  valid    Z3-f    0.005 ║
-[[34m  Info  [0m] ║ noDuplicates                  precond. (call lst.tail())                                                            65:11  valid    Z3-f    0.004 ║
-[[34m  Info  [0m] ║ noDuplicates                  precond. (call noDuplicates(lst.tail()))                                              65:42  valid    Z3-f    0.008 ║
-[[34m  Info  [0m] ╟┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄╢
-[[34m  Info  [0m] ║ total: 47     valid: 39     invalid: 0      unknown 8                                                                                      25.385 ║
-[[34m  Info  [0m] ╚═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+[[34m  Info  [0m] ╔═╡ Verification Summary ╞═══════════════════════════════════════════════════════════════════╗
+[[34m  Info  [0m] ║ └──────────────────────┘                                                                   ║
+[[34m  Info  [0m] ║ capturedCells  precond. (call connectedComponent(b, x0$1))   35:27  invalid  Z3-f    0.137 ║
+[[34m  Info  [0m] ║ capturedCells  precond. (call x1$1._1 ++ component)          37:49  unknown  Z3-f    3.055 ║
+[[34m  Info  [0m] ║ capturedCells  precond. (call x1$1._1 ++ component)          38:17  unknown  Z3-f    3.044 ║
+[[34m  Info  [0m] ║ capturedCells  precond. (call x1$1._2 ++ component)          38:40  unknown  Z3-f    3.047 ║
+[[34m  Info  [0m] ╟┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄╢
+[[34m  Info  [0m] ║ total: 4      valid: 0      invalid: 1      unknown 3                                9.283 ║
+[[34m  Info  [0m] ╚════════════════════════════════════════════════════════════════════════════════════════════╝
 [[35m Debug  [0m]   ┌────────┐
 [[35m Debug  [0m] ╔═╡ Timers ╞═════════════════════════════════════════════════════════════════════════════════╗
 [[35m Debug  [0m] ║ └────────┘                                                                                 ║
-[[35m Debug  [0m] ║ name                           min         avg              max       n              total ║
+[[35m Debug  [0m] ║ name                          min            avg              max     n              total ║
 [[35m Debug  [0m] ╟┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄╢
-[[35m Debug  [0m] ║ ├ total                                                                           30842 ms ║
-[[35m Debug  [0m] ║ ├ frontend                                                                         3783 ms ║
+[[35m Debug  [0m] ║ ├ total                                                                           13863 ms ║
+[[35m Debug  [0m] ║ ├ frontend                                                                         3325 ms ║
 [[35m Debug  [0m] ║ └ solvers                                                                                  ║
 [[35m Debug  [0m] ║   └ z3                                                                                     ║
-[[35m Debug  [0m] ║     ├ init                    0 ms        0 ms            24 ms      47              41 ms ║
-[[35m Debug  [0m] ║     └ check                   0 ms       67 ms          2431 ms     346           23467 ms ║
+[[35m Debug  [0m] ║     ├ init                   0 ms           5 ms            20 ms     4              21 ms ║
+[[35m Debug  [0m] ║     └ check                  0 ms         129 ms          2588 ms    63            8159 ms ║
 [[35m Debug  [0m] ╚════════════════════════════════════════════════════════════════════════════════════════════╝
