@@ -13,7 +13,7 @@ case class GoMap(cells: List[PlacedCell]) {
   def contains(p: Point): Boolean = isDefinedAt(p)
 
   def insSort(lst: List[PlacedCell], v: PlacedCell): List[PlacedCell] = {
-    require(isSorted(lst))
+    require(isValid(lst) && v.p.insideRange)
     lst match {
       case l if l.isEmpty => List(v)
       case _ =>
@@ -29,15 +29,20 @@ case class GoMap(cells: List[PlacedCell]) {
     isSorted(res)
   })
 
-  def isSorted(lst: List[PlacedCell]): Boolean = lst match {
-    case l if l.size <= 1 => true
-    case _ =>
-      if (lst.tail.head < lst.head) false
-      else isSorted(lst.tail)
+  def isSorted(lst: List[PlacedCell]): Boolean = {
+    require(lst.forall(_.isValid))
+    lst match {
+      case l if l.size <= 1 => true
+      case _ =>
+        if (lst.tail.head < lst.head) false
+        else isSorted(lst.tail)
+    }
   }
 
+  def isValid(lst: List[PlacedCell]): Boolean = isSorted(lst) && lst.forall(_.p.insideRange)
+
   def +(e: PlacedCell): GoMap = {
-    require(isSorted(cells))
+    require(isValid(cells) && e.isValid)
     GoMap(insSort(cells, e))
   }
 
