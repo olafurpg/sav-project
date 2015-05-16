@@ -20,9 +20,9 @@ object CaptureLogic {
 
   def hasLiberty(b: Board)(p: PlacedCell): Boolean = b.neighboors(p.p).exists(_.c == EmptyCell)
 
-  def capturedCells(b: Board): GoSet[PlacedCell] = {
+  def capturedCells(b: Board): GoSet = {
     //    println(s"this = $this")
-    val e = GoSet.empty[PlacedCell]
+    val e = GoSet.empty
     b.cells.foldRight(e -> e) {
       case (p, (explored, captured)) =>
         if (explored.contains(p)) explored -> captured
@@ -36,7 +36,7 @@ object CaptureLogic {
   }
 
 
-  def connectedComponent(board: Board, p: PlacedCell, visited: GoSet[PlacedCell] = GoSet.empty): GoSet[PlacedCell] = {
+  def connectedComponent(board: Board, p: PlacedCell, visited: GoSet = GoSet.empty): GoSet = {
     if (visited.contains(p)) visited
     else {
 

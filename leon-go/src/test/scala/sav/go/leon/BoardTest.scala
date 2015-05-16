@@ -23,8 +23,8 @@ trait Util extends FunSuite with StringUtil {
     Board(N, GoMap(cells.filter(_.c != EmptyCell).toList))
   }
 
-  def dfsTest(lst: List[PlacedCell], ignore: Set[PlacedCell] = Set.empty): Unit = {
-    val expected = GoSet(lst.filterNot(ignore))
+  def dfsTest(lst: List[PlacedCell], ignore: GoSet = GoSet.empty): Unit = {
+    val expected = GoSet(GoMap(lst.filterNot(ignore.contains)))
     val b1 = Board(10, GoMap(lst))
     assert(CaptureLogic.connectedComponent(b1, PlacedCell(Point(1, 1), b)).isEqualTo(expected))
   }
@@ -70,7 +70,7 @@ class BoardTest extends FunSuite with Util {
   test("CaptureLogic.connectedComponent works") {
     val board = Board(3, GoMap(points))
 
-    assert(CaptureLogic.connectedComponent(board, points.head).isEqualTo(GoSet(points)))
+    assert(CaptureLogic.connectedComponent(board, points.head).isEqualTo(GoSet(GoMap(points))))
   }
 
   test("Board constructor works") {
@@ -175,13 +175,13 @@ class BoardTest extends FunSuite with Util {
     val n = 5
     val B = fromString(n, "")
 
-    val allCells = GoSet((for {
+    val allCells = (for {
       x <- 1 to n
       y <- 1 to n
-    } yield Point(x, y)).toList)
+    } yield PlacedCell(Point(x, y), EmptyCell)).toList
 
-    assert(B.freeCells === allCells)
-    assert(B.put(w, Point(1, 1)).freeCells === allCells - Point(1, 1))
+    assert(B.freeCells.m.cells === allCells)
+    assert(B.put(w, Point(1, 1)).freeCells.m.cells === allCells.tail)
   }
 
 

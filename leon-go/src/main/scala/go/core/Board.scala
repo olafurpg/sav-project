@@ -7,9 +7,6 @@ import CellObject._
 
 import PlayerTypeObject._
 
-
-
-
 // TODO: move logic out, board should be ignorant of game logic
 //       only care place stone, remove stone
 case class Board(n: Int, cells: GoMap) {
@@ -37,10 +34,10 @@ case class Board(n: Int, cells: GoMap) {
     Board(n, cells + PlacedCell(p, c))
   }
 
-  def freeCells: GoSet[Point] = GoSet((for {
+  def freeCells: GoSet = GoSet(GoMap(for {
     x <- r
     y <- r
-  } yield Point(x, y)).filterNot(cells.isDefinedAt))
+  } yield PlacedCell(Point(x, y), EmptyCell)).filterNot(x => cells.isDefinedAt(x.p)))
 
   def neighboors(x: Int, y: Int): List[PlacedCell] =
     List((x + 1, y), (x, y + 1), (x - 1, y), (x, y - 1)).map(tpl2Point).filter(insideBoard).map(x => PlacedCell(x, at(x)))
@@ -64,8 +61,8 @@ case class Board(n: Int, cells: GoMap) {
 
   def remove(p: Point): Board = Board(n, cells.filterNot(_.p == p))
 
-  def remove(ps: GoSet[PlacedCell]): Board = Board(n, cells.filterNot(ps.contains))
+  def remove(ps: GoSet): Board = Board(n, cells.filterNot(ps.contains))
 
-  def playerCells(p: PlayerType): GoSet[Point] = GoSet(cells.cells.filter(_.c == p.cell).map(_.p))
+  def playerCells(p: PlayerType): GoSet = GoSet(cells.filter(_.c == p.cell))
 
 }
