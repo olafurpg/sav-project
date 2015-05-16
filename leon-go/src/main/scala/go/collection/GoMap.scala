@@ -3,6 +3,7 @@ package go.collection
 import go.core.{Point, PlacedCell, CellObject}
 import leon.collection._
 import CellObject._
+import GoMap._
 
 case class GoMap(cells: List[PlacedCell]) {
   def isDefinedAt(p: Point): Boolean = {
@@ -14,8 +15,7 @@ case class GoMap(cells: List[PlacedCell]) {
   def isEmpty: Boolean = cells.isEmpty
 
   def insSort(lst: List[PlacedCell], v: PlacedCell): List[PlacedCell] = {
-    require(GoMap.isSorted(lst) && GoMap.allValidPoints(lst) && v.isValid)
-//    require(GoMap.isValid(lst) && v.p.insideRange)
+    require(isSorted(lst) && allValidPoints(lst) && v.isValid)
     lst match {
       case l if l.isEmpty => List(v)
       case _ =>
@@ -28,11 +28,11 @@ case class GoMap(cells: List[PlacedCell]) {
         }
     }
   } ensuring(res => {
-    GoMap.isSorted(res) && GoMap.allValidPoints(res)
+    isSorted(res) && allValidPoints(res)
   })
 
   def +(e: PlacedCell): GoMap = {
-    require(GoMap.isSorted(cells) && GoMap.allValidPoints(cells) && e.isValid)
+    require(isSorted(cells) && allValidPoints(cells) && e.isValid)
     GoMap(insSort(cells, e))
   } ensuring(res => res.contains(e.p))
 
@@ -57,11 +57,11 @@ case class GoMap(cells: List[PlacedCell]) {
 
 object GoMap {
   def allValidPoints(lst: List[PlacedCell]): Boolean = {
-    lst.forall(_.p.insideRange)
+    lst.forall(_.isValid)
   }
 
   def isSorted(lst: List[PlacedCell]): Boolean = {
-    require(lst.forall(_.isValid))
+    require(allValidPoints(lst))
     lst match {
       case l if l.size <= 1 => true
       case _ =>
