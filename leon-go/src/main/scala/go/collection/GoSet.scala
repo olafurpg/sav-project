@@ -4,15 +4,23 @@ import go.core.PlacedCell
 import leon.collection._
 
 case class GoSet(m: GoMap) {
-  def size: Int = m.size.toInt
+  def isValid: Boolean = m.isValid
+
+  def size: BigInt = m.size
 
   def foldLeft[R](z: R)(f: (R, PlacedCell) => R): R = m.foldLeft(z)(f)
 
   def -(e: PlacedCell): GoSet = GoSet(m.filter(_ != e))
 
-  def +(e: PlacedCell): GoSet = GoSet(m + e)
+  def +(e: PlacedCell): GoSet = {
+    require(isValid && e.isValid)
+    GoSet(m + e)
+  }
 
-  def ++(that: GoSet): GoSet = GoSet(m ++ that.m.filter(x => !m.contains(x.p)))
+  def ++(that: GoSet): GoSet = {
+    require(isValid && that.isValid)
+    GoSet(m ++ that.m.filter(x => !m.contains(x.p)))
+  }
 
   def contains(e: PlacedCell): Boolean = m.contains(e.p)
 

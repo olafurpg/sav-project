@@ -10,6 +10,9 @@ case class GoMap(cells: List[PlacedCell]) {
     cells.exists(_.p == p)
   }
 
+
+  def isValid: Boolean = allValidPoints(cells) && noDuplicates(cells) && isSorted(cells)
+
   def contains(p: Point): Boolean = isDefinedAt(p)
 
   def contains(p: PlacedCell): Boolean = isDefinedAt(p.p)
@@ -17,10 +20,10 @@ case class GoMap(cells: List[PlacedCell]) {
   def isEmpty: Boolean = cells.isEmpty
 
   def ++(m: GoMap): GoMap = {
-    require(isValid(this) && isValid(m))
+    require(this.isValid && m.isValid)
     if (m.isEmpty) this
     else (this + m.cells.head) ++ GoMap(m.cells.tail)
-  } ensuring(res => isValid(res))
+  } ensuring(_.isValid)
 
   def +(e: PlacedCell): GoMap = {
     require(isSorted(cells) && allValidPoints(cells) && e.isValid)
@@ -52,7 +55,6 @@ case class GoMap(cells: List[PlacedCell]) {
 }
 
 object GoMap {
-  def isValid(m: GoMap) = allValidPoints(m.cells) && noDuplicates(m.cells) && isSorted(m.cells)
 
   def allValidPoints(lst: List[PlacedCell]): Boolean = {
     lst.forall(_.isValid)
