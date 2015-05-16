@@ -23,8 +23,8 @@ trait Util extends FunSuite with StringUtil {
     Board(N, GoMap(cells.filter(_.c != EmptyCell).toList))
   }
 
-  def dfsTest(lst: List[PlacedCell], ignore: Set[PlacedCell] = Set.empty): Unit = {
-    val expected = GoSet(lst.filterNot(ignore))
+  def dfsTest(lst: List[PlacedCell], ignore: GoSet = GoSet.empty): Unit = {
+    val expected = GoSet(GoMap(lst.filterNot(ignore.contains)))
     val b1 = Board(10, GoMap(lst))
     assert(CaptureLogic.connectedComponent(b1, PlacedCell(Point(1, 1), b)).isEqualTo(expected))
   }
@@ -65,33 +65,39 @@ trait Util extends FunSuite with StringUtil {
 }
 class BoardTest extends FunSuite with Util {
 
-  test("dfs should work on basic cases") {
-    val ps = List[PlacedCell](Point(1, 1) -> b, Point(1, 2) -> b)
-    val pss = PlacedCell(Point(2, 1), b) :: ps
-    val psss: List[PlacedCell] = Point(2, 2) -> w :: pss
-    val bbbb: List[PlacedCell] = Point(2, 2) -> b :: pss
-    dfsTest(ps)
-    dfsTest(pss)
-    dfsTest(psss, Set(Point(2, 2) -> w))
-    dfsTest(bbbb)
+  val points = List(pc(1,1,b), pc(1, 2, b), pc(2, 1, b), pc(2, 2, b))
+  def pc(x: Int, y: Int, c: Cell) = PlacedCell(Point(x, y), c)
+  test("CaptureLogic.connectedComponent works") {
+    val board = Board(3, GoMap(points))
+
+    assert(CaptureLogic.connectedComponent(board, points.head).isEqualTo(GoSet(GoMap(points))))
   }
 
-  test("basic put works") {
-    val ps = List(PlacedCell(Point(1, 1), b))
-    val b1 = Board(2, GoMap(ps))
+  test("Board constructor works") {
+    val b1 = Board(3, GoMap(points))
     assert(b1.at(1 -> 1) === BlackCell)
-    assert(b1.at(1 -> 2) === EmptyCell)
-    assert(b1.at(2 -> 1) === EmptyCell)
-    assert(b1.at(2 -> 2) === EmptyCell)
+    assert(b1.at(1 -> 2) === BlackCell)
+    assert(b1.at(2 -> 1) === BlackCell)
+    assert(b1.at(2 -> 2) === BlackCell)
+    assert(b1.at(3 -> 1) === EmptyCell)
+    assert(b1.at(3 -> 2) === EmptyCell)
+    assert(b1.at(3 -> 3) === EmptyCell)
+    assert(b1.at(1 -> 3) === EmptyCell)
+    assert(b1.at(2 -> 3) === EmptyCell)
   }
 
-  test("capture works in bug case") {
-    val ps: List[PlacedCell] = List(Point(2, 2) -> w, Point(2, 3) -> w, Point(3, 2) -> w, Point(3, 3) -> w, Point(1, 2) -> b, Point(2, 1) -> b)
-    val b1 = Board(3, GoMap(ps))
-    val b2 = b1.put(BlackCell, 3 -> 1)
-    assert(b1.at(3 -> 1) == EmptyCell)
-    assert(b2.at(3 -> 1) == BlackCell)
-    assert(b2.at(3 -> 2) == WhiteCell)
+  test("Board.put works") {
+    val b1 = Board(3, GoMap(points)).put(w, Point(3, 3))
+
+    assert(b1.at(1 -> 1) === BlackCell)
+    assert(b1.at(1 -> 2) === BlackCell)
+    assert(b1.at(2 -> 1) === BlackCell)
+    assert(b1.at(2 -> 2) === BlackCell)
+    assert(b1.at(3 -> 1) === EmptyCell)
+    assert(b1.at(3 -> 2) === EmptyCell)
+    assert(b1.at(3 -> 3) === WhiteCell)
+    assert(b1.at(1 -> 3) === EmptyCell)
+    assert(b1.at(2 -> 3) === EmptyCell)
   }
 
   test("fromString works") {
@@ -169,13 +175,13 @@ class BoardTest extends FunSuite with Util {
     val n = 5
     val B = fromString(n, "")
 
-    val allCells = GoSet((for {
+    val allCells = (for {
       x <- 1 to n
       y <- 1 to n
-    } yield Point(x, y)).toList)
+    } yield PlacedCell(Point(x, y), EmptyCell)).toList
 
-    assert(B.freeCells === allCells)
-    assert(B.put(w, Point(1, 1)).freeCells === allCells - Point(1, 1))
+    assert(B.freeCells.m.cells === allCells)
+    assert(B.put(w, Point(1, 1)).freeCells.m.cells === allCells.tail)
   }
 
 

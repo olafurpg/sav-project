@@ -3,4 +3,11 @@ package go.core
 import leon.lang.string
 import CellObject._
 
-case class PlacedCell(p: Point, c: Cell)
+case class PlacedCell(p: Point, c: Cell) {
+  def isValid: Boolean = p.insideRange
+  def <(that: PlacedCell): Boolean = {
+    require(isValid && that.isValid)
+    p < that.p
+  }
+
+}

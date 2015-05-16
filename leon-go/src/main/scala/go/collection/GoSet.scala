@@ -1,31 +1,40 @@
 package go.collection
 
+import go.core.PlacedCell
 import leon.collection._
 
-case class GoSet[T](cells: List[T]) {
-  def size: Int = cells.size.toInt
+case class GoSet(m: GoMap) {
+  def isValid: Boolean = m.isValid
 
-  def foldLeft[R](z: R)(f: (R, T) => R): R = cells.foldLeft(z)(f)
+  def size: BigInt = m.size
 
-  def -(e: T): GoSet[T] = GoSet[T](cells.filter(_ != e))
+  def foldLeft[R](z: R)(f: (R, PlacedCell) => R): R = m.foldLeft(z)(f)
 
-  def +(e: T): GoSet[T] = GoSet[T](e :: cells.filter(_ != e))
+  def -(e: PlacedCell): GoSet = GoSet(m.filter(_ != e))
 
-  def ++(that: GoSet[T]): GoSet[T] = GoSet[T](cells ++ that.cells.filter(x => !cells.contains(x)))
+  def +(e: PlacedCell): GoSet = {
+    require(isValid && e.isValid)
+    GoSet(m + e)
+  }
 
-  def contains(e: T): Boolean = cells.contains(e)
+  def ++(that: GoSet): GoSet = {
+    require(isValid && that.isValid)
+    GoSet(m ++ that.m.filter(x => !m.contains(x.p)))
+  }
 
-  def exists(f: T => Boolean): Boolean = cells.exists(f)
+  def contains(e: PlacedCell): Boolean = m.contains(e.p)
 
-  def filter(f: T => Boolean): GoSet[T] = GoSet(cells.filter(f))
+  def exists(f: PlacedCell => Boolean): Boolean = m.exists(f)
 
-  def filterNot(f: T => Boolean): GoSet[T] = GoSet(cells.filter(x => !f(x)))
+  def filter(f: PlacedCell => Boolean): GoSet = GoSet(m.filter(f))
 
-  def isEqualTo(that: GoSet[T]): Boolean =
-    that.cells.forall(cells.contains) && cells.forall(that.cells.contains)
+  def filterNot(f: PlacedCell => Boolean): GoSet = GoSet(m.filter(x => !f(x)))
+
+  def isEqualTo(that: GoSet): Boolean =
+    that.m.forall(m.contains) && m.forall(that.m.contains)
 
 }
 
 object GoSet {
-  def empty[T]: GoSet[T] = GoSet[T](List[T]())
+  def empty: GoSet = GoSet(GoMap.empty)
 }

@@ -1,5 +1,5 @@
 package go.util
-import leon.collection._
+import leon.collection.List
 
 object Range {
 
