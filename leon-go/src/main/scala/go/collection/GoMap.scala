@@ -10,7 +10,6 @@ case class GoMap(cells: List[PlacedCell]) {
     cells.exists(_.p == p)
   }
 
-
   def isValid: Boolean = allValidPoints(cells) && noDuplicates(cells) && isSorted(cells)
 
   def contains(p: Point): Boolean = isDefinedAt(p)

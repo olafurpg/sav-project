@@ -1,61 +1,74 @@
 package go.core
 
+import leon.collection._
 import go.collection._
 import go.util.conversions._
-import leon.lang.string
 import CellObject._
-
 import PlayerTypeObject._
 
-// TODO: move logic out, board should be ignorant of game logic
-//       only care place stone, remove stone
-case class Board(n: Int, cells: GoMap) {
+case class Board(n: BigInt, cells: GoMap) {
 
-  def this(n: Int) = this(n, GoMap.empty)
+  def isValid: Boolean = Point.insideRange(n) && cells.isValid
 
-  def inRange(x: Int) = 0 < x && x <= n
+  def this(n: BigInt) = this(n, GoMap.empty)
+
+  def inRange(x: BigInt) = 0 < x && x <= n
 
   def insideBoard(p: Point) = inRange(p.x) && inRange(p.y)
 
+  def insideBoard(pc: PlacedCell) = inRange(pc.p.x) && inRange(pc.p.y)
+
   def isOccupied(p: Point) = cells.isDefinedAt(p)
 
-  def at(x: Int, y: Int): Cell = cells.getOrElse(Point(x, y), EmptyCell)
+  def at(x: BigInt, y: BigInt): Cell = cells.getOrElse(Point(x, y), EmptyCell)
 
   def at(p: Point): Cell = at(p.x, p.y)
+
+  def at(pc: PlacedCell): Cell = at(pc.p.x, pc.p.y)
 
   val r = go.util.Range.to(1, n)
 
   def board = r.map(x => r.map(y => at(x, y)))
 
-
-  // TODO: need to remember how many stones are captured
   def put(c: Cell, p: Point): Board = {
-    require(insideBoard(p) && !isOccupied(p))
+    require(isValid && insideBoard(p) && !isOccupied(p))
     Board(n, cells + PlacedCell(p, c))
-  }
+  } ensuring (_.at(p) == c)
 
   def freeCells: GoSet = GoSet(GoMap(for {
     x <- r
     y <- r
   } yield PlacedCell(Point(x, y), EmptyCell)).filterNot(x => cells.isDefinedAt(x.p)))
 
-  def neighboors(x: Int, y: Int): List[PlacedCell] =
-    List((x + 1, y), (x, y + 1), (x - 1, y), (x, y - 1)).map(tpl2Point).filter(insideBoard).map(x => PlacedCell(x, at(x)))
+  def neighbors(x: BigInt, y: BigInt): List[PlacedCell] = {
+    require(isValid)
+    List((x + 1, y), (x, y + 1), (x - 1, y), (x, y - 1)).map(bigIntTuple2Point).filter(insideBoard).map(x => PlacedCell(x, at(x)))
+  } ensuring (_.forall(insideBoard))
 
-  def neighboors(p: Point): List[PlacedCell] =
-    neighboors(p.x, p.y)
+  def neighbors(p: Point): List[PlacedCell] = {
+    require(isValid)
+    neighbors(p.x, p.y)
+  }
 
-  def neighboors(p: Point, c: Cell): List[PlacedCell] =
-    neighboors(p.x, p.y).filter(_.c == c)
+  def neighbors(p: Point, c: Cell): List[PlacedCell] = {
+    require(isValid)
+    neighbors(p.x, p.y).filter(_.c == c)
+  }
 
-  def sameColorNeighbors(p: PlacedCell): List[PlacedCell] =
-    neighboors(p.p, p.c)
+  def sameColorNeighbors(p: PlacedCell): List[PlacedCell] = {
+    require(isValid)
+    neighbors(p.p, p.c)
+  } ensuring(_.forall(x => x.c == at(p)))
 
-  def oppositeColorNeighbors(p: Point): List[PlacedCell] =
-    neighboors(p, at(p).otherColor)
+  def oppositeColorNeighbors(p: Point): List[PlacedCell] = {
+    require(isValid)
+    neighbors(p, at(p).otherColor)
+  }
 
-  def emptyNeighors(p: Point): List[PlacedCell] =
-    neighboors(p).filter(_.c == EmptyCell)
+  def emptyNeighors(p: Point): List[PlacedCell] = {
+    require(isValid)
+    neighbors(p).filter(_.c == EmptyCell)
+  }
 
   def full: Boolean = cells.size == n * n
 

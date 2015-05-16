@@ -13,6 +13,13 @@ trait Util extends FunSuite with StringUtil {
   val b = BlackCell
   val e = WhiteCell
 
+
+  implicit def intTuple2Point(tpl: (Int, Int)): Point = Point(tpl._1, tpl._2)
+
+  implicit def bt2p(tpl: (BigInt, BigInt)): Point = bigIntTuple2Point(tpl)
+
+  implicit def t2pc(tpl: (Point, Cell)): PlacedCell = tpl2PlacedCell(tpl)
+
   def fromString(N: Int, str: String): Board = {
     val cells = for {
       (row, x) <- str.stripMargin.split("\n").filter(!_.isEmpty).zipWithIndex
