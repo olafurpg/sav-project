@@ -79,3 +79,5 @@ Why do type parameters make the verification so much more complicated?
 Keep your collections simple.
 
 Nil and Option are singletons in Scala while they're case classes in Leon.
+
+Functions parameter to leon is useful, but it's annoying to type "Object\$method"

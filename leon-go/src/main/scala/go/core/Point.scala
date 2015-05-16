@@ -1,16 +1,18 @@
 package go.core
 
-case class Point(x: Int, y: Int) {
-  require(insideRange(x, y))
+import Point._
 
-  def insideRange: Boolean = insideRange(x) && insideRange(y)
+case class Point(x: BigInt, y: BigInt) {
+  require(isValid(x, y))
 
-  def insideRange(n: Int, m: Int): Boolean = insideRange(n) && insideRange(m)
+  def isValid: Boolean = isValid(x) && isValid(y)
 
-  def insideRange(n: Int): Boolean = n >= -1 && n < 10
+  def isValid(n: BigInt, m: BigInt): Boolean = isValid(n) && isValid(m)
+
+  def isValid(n: BigInt): Boolean = n >= -1 && n < LIMIT
 
   def <(that: Point): Boolean = {
-    require(insideRange && that.insideRange)
+    require(isValid && that.isValid)
     if (x < that.x) true
     else if (x > that.x) false
     else y < that.y
@@ -18,3 +20,7 @@ case class Point(x: Int, y: Int) {
 }
 
 
+object Point {
+  def LIMIT: BigInt = BigInt(10)
+  def insideRange(n: BigInt): Boolean = n >= -1 && n < LIMIT
+}

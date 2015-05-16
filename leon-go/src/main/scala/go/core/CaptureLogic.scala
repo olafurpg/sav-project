@@ -18,7 +18,7 @@ object CaptureLogic {
     board2.remove(captured2)
   }
 
-  def hasLiberty(b: Board)(p: PlacedCell): Boolean = b.neighboors(p.p).exists(_.c == EmptyCell)
+  def hasLiberty(b: Board)(p: PlacedCell): Boolean = b.neighbors(p.p).exists(_.c == EmptyCell)
 
   def capturedCells(b: Board): GoSet = {
     //    println(s"this = $this")

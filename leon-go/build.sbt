@@ -13,6 +13,8 @@ libraryDependencies ++= Seq(
 
 val leonVerification = Def.taskKey[Unit]("Verify leon files")
 
+watchSources += new File("leonVerify.sh")
+
 leonVerification in Compile := {
   // We execute the scala tests before running leon verification
   (test in Test).value
