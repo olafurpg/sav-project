@@ -5,7 +5,7 @@ echo Executing Leon...
 # leon src/main/scala/go/util/conversions.scala src/main/scala/go/core/{Point,PlacedCell,Cell,PlayerType}.scala
 
 # Collections
-leon src/main/scala/go/collection/GoMap.scala src/main/scala/go/core/{Point,PlacedCell,Cell}.scala
+leon --debug=timers --timeout=3 src/main/scala/go/collection/GoMap.scala src/main/scala/go/core/{Point,PlacedCell,Cell}.scala
 
 # Point
 # leon src/main/scala/go/core/{Point,PlacedCell,Cell}.scala
