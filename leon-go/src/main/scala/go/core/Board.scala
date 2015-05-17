@@ -18,27 +18,40 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
 
   def insideBoard(pc: PlacedCell) = inRange(pc.p.x) && inRange(pc.p.y)
 
-  def isOccupied(p: Point) = cells.isDefinedAt(p)
+  def isOccupied(p: Point) = {
+    require(isValid)
+    cells.isDefinedAt(p)
+  }
 
-  def at(x: BigInt, y: BigInt): Cell = cells.getOrElse(Point(x, y), EmptyCell)
+  def at(x: BigInt, y: BigInt): Cell = {
+    require(isValid)
+    cells.getOrElse(Point(x, y), EmptyCell)
+  }
 
-  def at(p: Point): Cell = at(p.x, p.y)
-
-  def at(pc: PlacedCell): Cell = at(pc.p.x, pc.p.y)
+  def at(p: Point): Cell = {
+    require(isValid)
+    at(p.x, p.y)
+  }
 
   val r = go.util.Range.to(1, n)
 
-  def board = r.map(x => r.map(y => at(x, y)))
+  def board = {
+    require(isValid)
+    r.map(x => r.map(y => at(x, y)))
+  }
 
   def put(c: Cell, p: Point): Board = {
     require(isValid && insideBoard(p) && !isOccupied(p))
     Board(n, cells + (p, c))
   } ensuring (_.at(p) == c)
 
-  def freeCells: GoSet[PlacedCell] = GoSet(for {
-    x <- r
-    y <- r
-  } yield PlacedCell(Point(x, y), EmptyCell)).filterNot(x => cells.isDefinedAt(x.p))
+  def freeCells: GoSet[PlacedCell] = {
+    require(isValid)
+    GoSet(for {
+      x <- r
+      y <- r
+    } yield PlacedCell(Point(x, y), EmptyCell)).filterNot(x => cells.isDefinedAt(x.p))
+  }
 
   def neighbors(x: BigInt, y: BigInt): List[PlacedCell] = {
     require(isValid)
@@ -58,7 +71,7 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
   def sameColorNeighbors(p: PlacedCell): List[PlacedCell] = {
     require(isValid)
     neighbors(p.p, p.c)
-  } ensuring(_.forall(x => x.c == at(p)))
+  } ensuring(_.forall(x => x.c == p.c))
 
   def oppositeColorNeighbors(p: Point): List[PlacedCell] = {
     require(isValid)

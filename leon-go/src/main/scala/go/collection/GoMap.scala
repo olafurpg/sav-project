@@ -4,38 +4,45 @@ import go.core.{Point, PlacedCell, CellObject}
 import leon.collection._
 import CellObject._
 import GoMap._
+import leon.annotation._
 
 case class GoMap[K, V](pairs: List[(K, V)]) {
+  @library
   def isDefinedAt(k: K): Boolean = {
+    require(isValid)
     pairs.exists(_._1 == k)
+  } ensuring { res =>
+    (res && pairs.filter(_._1 == k).size == 1) ||
+    (!res && pairs.filter(_._1 == k).size == 0)
   }
 
   def isValid: Boolean = {
     if (isEmpty) true
-    else !GoMap(pairs.tail).contains(pairs.head._1) && GoMap(pairs.tail).isValid
+    else pairs.tail.filter(_._1 == pairs.head._1).size == 0 && GoMap(pairs.tail).isValid
   }
 
-  def contains(k: K): Boolean = isDefinedAt(k)
+  def contains(k: K): Boolean = {
+    require(isValid)
+    isDefinedAt(k)
+  } ensuring(_ == isDefinedAt(k))
 
   def isEmpty: Boolean = pairs.isEmpty
 
   def keys: List[K] = pairs.map(_._1)
 
-  //TODO: more strict semantic verfication
   def +(pair: (K, V)): GoMap[K, V] = {
     require(isValid && !contains(pair._1))
     this + (pair._1, pair._2)
   }
 
-  //TODO: more strict semantic verfication
   // Insertion assumes to such key exist
   def +(k: K, v: V): GoMap[K, V] = {
     require(isValid && !contains(k))
     GoMap((k, v)::pairs)
-  } ensuring(res => res.pairs.exists(_ == (k, v)) && res.isValid)
+  } ensuring(res => res.isEqual(GoMap((k, v)::pairs)) && res.isValid)
 
-  //TODO: more strict semantic verification
   // Delete assumes such key exists
+  @library
   def -(k: K): GoMap[K, V] = {
     require(isValid && contains(k))
     GoMap(pairs.filter(_._1 != k))
@@ -57,11 +64,17 @@ case class GoMap[K, V](pairs: List[(K, V)]) {
 
   def foldLeft[R](z: R)(f: (R, (K, V)) => R): R = pairs.foldLeft(z)(f)
 
+  def get(k: K) = {
+    require(isValid && contains(k))
+    pairs.filter(_._1 == k).head._2
+  } ensuring(res => pairs.exists(_ == (k, res)))
+
   def getOrElse(k: K, els: V): V = {
+    require(isValid)
     pairs.find(_._1 == k).map(_._2).getOrElse(els)
   } ensuring { res =>
-    if (!contains(k)) res == els
-    else true
+    (!contains(k) && res == els) ||
+    (contains(k) && res == get(k))
   }
 
   def map[R](f: ((K, V)) => R): List[R] = pairs.map(f)

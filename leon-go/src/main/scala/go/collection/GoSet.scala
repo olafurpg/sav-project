@@ -16,14 +16,17 @@ case class GoSet[T](elements: List[T]) {
 
   def foldLeft[R](z: R)(f: (R, T) => R): R = elements.foldLeft(z) { (r, e) => f(r, e) }
 
-  def -(e: T): GoSet[T] = GoSet(elements.filter(_ != e))
+  def -(e: T): GoSet[T] = {
+    require(isValid && contains(e))
+    GoSet(elements.filter(_ != e))
+  } ensuring(res => isEqualTo(res + e) && res.isValid)
 
   def --(es: GoSet[T]) = filterNot(es.contains)
 
   def +(e: T): GoSet[T] = {
-    require(isValid)
+    require(isValid && !contains(e))
     GoSet(e::elements)
-  }
+  } ensuring (res => res.isEqualTo(GoSet(e::elements)) && res.isValid)
 
   def ++(that: GoSet[T]): GoSet[T] = {
     require(isValid && that.isValid)
@@ -41,8 +44,7 @@ case class GoSet[T](elements: List[T]) {
   def filterNot(f: T => Boolean): GoSet[T] = GoSet(elements.filter(x => !f(x)))
 
   def isEqualTo(that: GoSet[T]): Boolean =
-    that.elements.forall(x => elements.contains(x)) &&
-      elements.forall(x => that.elements.contains(x))
+    that.elements.forall(elements.contains) && elements.forall(that.elements.contains)
 
   def toList = elements
 }
