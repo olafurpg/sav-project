@@ -3,12 +3,12 @@ package go.core
 import leon.collection._
 import go.collection._
 import go.util.conversions._
+import go.util.Range._
 import CellObject._
 import PlayerTypeObject._
 
 case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
-
-  def isValid: Boolean = n > 0 && n <= 10 && cells.keys.forall(insideBoard) && cells.isValid
+  def isValid: Boolean = n > 1 && n <= 10 && cells.keys.forall(insideBoard) && cells.isValid
 
   def this(n: BigInt) = this(n, GoMap.empty)
 
@@ -36,11 +36,9 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
     at(p.x, p.y)
   }
 
-  val r = go.util.Range.to(1, n)
-
   def board = {
     require(isValid)
-    r.map(x => r.map(y => at(x, y)))
+    to(1, n).map(x => to(1, n).map(y => at(x, y)))
   }
 
   def put(c: Cell, p: Point): Board = {
@@ -50,12 +48,20 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
     n == res.n && cells + (p, c) == res.cells
   }
 
-  def freeCells: GoSet[PlacedCell] = {
+  def freeCells: GoSet[Point] = {
     require(isValid)
-    GoSet(for {
-      x <- r
-      y <- r
-    } yield PlacedCell(Point(x, y), EmptyCell)).filterNot(x => cells.isDefinedAt(x.p))
+    val points = GoSet(for {
+      x <- to(1, n)
+      y <- to(1, n)
+    } yield Point(x, y))
+
+    require(points.isValid) // should be valid
+
+    points.filterNot(cells.isDefinedAt)
+  } ensuring { res =>
+    val points = for(x <- to(1, n); y <- to(1, n)) yield Point(x, y)
+    points.forall(p => res.contains(p) || cells.isDefinedAt(p)) &&
+    res.forall(!cells.isDefinedAt(_))
   }
 
   def neighbors(x: BigInt, y: BigInt): List[PlacedCell] = {

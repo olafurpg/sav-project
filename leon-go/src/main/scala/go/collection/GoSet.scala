@@ -23,7 +23,10 @@ case class GoSet[T](elements: List[T]) {
     GoSet(elements.filter(_ != e))
   } ensuring(res => isEqualTo(res + e) && res.isValid)
 
-  def --(es: GoSet[T]) = filterNot(es.contains)
+  def --(es: GoSet[T]) = {
+    require(isValid && es.forall(contains))
+    filterNot(es.contains)
+  }
 
   @library
   def +(e: T): GoSet[T] = {
@@ -40,11 +43,18 @@ case class GoSet[T](elements: List[T]) {
 
   def contains(e: T): Boolean = elements.contains(e)
 
-  def exists(f: T => Boolean): Boolean = elements.exists(x => f(x))
+  def exists(f: T => Boolean): Boolean = elements.exists(f)
 
-  def filter(f: T => Boolean): GoSet[T] = GoSet(elements.filter(x => f(x)))
+  def forall(f: T => Boolean): Boolean = elements.forall(f)
 
-  def filterNot(f: T => Boolean): GoSet[T] = GoSet(elements.filter(x => !f(x)))
+  def filter(f: T => Boolean): GoSet[T] = GoSet(elements.filter(f))
+
+  def filterNot(f: T => Boolean): GoSet[T] = {
+    require(isValid)
+    GoSet(elements.filter(!f(_)))
+  } ensuring { res =>
+    elements.filter(!f(_)) == res.elements
+  }
 
   def isEqualTo(that: GoSet[T]): Boolean =
     that.elements.forall(elements.contains) && elements.forall(that.elements.contains)

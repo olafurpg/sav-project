@@ -186,7 +186,7 @@ class BoardTest extends FunSuite with Util {
     val allCells = (for {
       x <- 1 to n
       y <- 1 to n
-    } yield PlacedCell(Point(x, y), EmptyCell)).toList
+    } yield Point(x, y)).toList
 
     assert(B.freeCells.toList === allCells)
     assert(B.put(w, Point(1, 1)).freeCells.toList === allCells.tail)

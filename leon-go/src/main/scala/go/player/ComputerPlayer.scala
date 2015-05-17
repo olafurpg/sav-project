@@ -38,8 +38,7 @@ case class AI(p: PlayerType) {
         case Right(_) => (if (maximizingPlayer) Int.MaxValue else Int.MinValue, Pass)
         case Left(newGame) =>
           val startScore = minimax(newGame, depth - 1)._1
-          g.state.freeCells.foldLeft((startScore, Pass: Step)) { case ((currScore, step), pc) =>
-            val PlacedCell(p, _) = pc
+          g.state.freeCells.foldLeft((startScore, Pass: Step)) { case ((currScore, step), p) =>
             val newStep = Place(p.x, p.y)
             RuleEngine.next(g, newStep) match {
               case Left(newGame) =>
