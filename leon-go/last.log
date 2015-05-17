@@ -1,0 +1,115 @@
+[[33mWarning [0m] The Z3 native interface is not available, falling back to smt-z3.
+[[34m  Info  [0m]  - Now considering 'precond. (call $this.pairs.tail())' VC for GoMap$isValid @15:17...
+[[34m  Info  [0m]  => VALID
+[[34m  Info  [0m]  - Now considering 'precond. (call $this.pairs.head())' VC for GoMap$isValid @15:38...
+[[34m  Info  [0m]  => VALID
+[[34m  Info  [0m]  - Now considering 'precond. (call $this.pairs.tail())' VC for GoMap$isValid @15:62...
+[[34m  Info  [0m]  => VALID
+[[34m  Info  [0m]  - Now considering 'precond. (call $this.+(pair._1, pair._2))' VC for GoMap$$plus @27:5...
+[[34m  Info  [0m]  => VALID
+[[34m  Info  [0m]  - Now considering 'postcondition' VC for GoMap$$plus @35:14...
+[[34m  Info  [0m]  => VALID
+[[34m  Info  [0m]  - Now considering 'postcondition' VC for GoMap$$minus @42:14...
+[[33mWarning [0m]  => UNKNOWN
+[[34m  Info  [0m]  - Now considering 'postcondition' VC for GoMap$filter @54:14...
+Exception in thread "Thread-6" [[33mWarning [0m]  => UNKNOWN
+java.io.IOException: Stream Closed
+	at java.io.FileOutputStream.writeBytes(Native Method)
+	at java.io.FileOutputStream.write(FileOutputStream.java:315)
+	at java.io.BufferedOutputStream.flushBuffer(BufferedOutputStream.java:82)
+	at java.io.BufferedOutputStream.flush(BufferedOutputStream.java:140)
+	at java.io.FilterOutputStream.close(FilterOutputStream.java:158)
+	at sun.nio.cs.StreamEncoder.implClose(StreamEncoder.java:320)
+	at sun.nio.cs.StreamEncoder.close(StreamEncoder.java:149)
+	at java.io.OutputStreamWriter.close(OutputStreamWriter.java:233)
+	at java.io.BufferedWriter.close(BufferedWriter.java:266)
+	at smtlib.interpreters.ProcessInterpreter.kill(ProcessInterpreter.scala:77)
+	at smtlib.interpreters.ProcessInterpreter.interrupt(ProcessInterpreter.scala:81)
+	at leon.solvers.smtlib.SMTLIBSolver.interrupt(SMTLIBSolver.scala:77)
+	at leon.solvers.combinators.UnrollingSolver.interrupt(UnrollingSolver.scala:254)
+	at leon.utils.TimeoutFor$$anonfun$1.apply$mcV$sp(TimeoutFor.scala:34)
+	at leon.utils.TimeoutFor$Countdown.run(TimeoutFor.scala:21)
+[[34m  Info  [0m]  - Now considering 'postcondition' VC for GoMap$getOrElse @62:16...
+[[34m  Info  [0m]  => VALID
+[[34m  Info  [0m]  - Now considering 'precond. (call $this.elements.tail())' VC for GoSet$isValid @10:17...
+[[34m  Info  [0m]  => VALID
+[[34m  Info  [0m]  - Now considering 'precond. (call $this.elements.head())' VC for GoSet$isValid @10:41...
+[[34m  Info  [0m]  => VALID
+[[34m  Info  [0m]  - Now considering 'precond. (call $this.elements.tail())' VC for GoSet$isValid @10:65...
+[[34m  Info  [0m]  => VALID
+[[34m  Info  [0m]  - Now considering 'precond. (call lst.tail())' VC for noDuplicates @53:11...
+[[34m  Info  [0m]  => VALID
+[[34m  Info  [0m]  - Now considering 'precond. (call lst.head())' VC for noDuplicates @53:32...
+[[34m  Info  [0m]  => VALID
+[[34m  Info  [0m]  - Now considering 'precond. (call lst.tail())' VC for noDuplicates @53:58...
+[[34m  Info  [0m]  => VALID
+[[34m  Info  [0m]  - Now considering 'postcondition' VC for Board$put @36:15...
+[[34m  Info  [0m]  => VALID
+[[34m  Info  [0m]  - Now considering 'precond. (call $this.cells.+(p, c))' VC for Board$put @35:14...
+[[34m  Info  [0m]  => VALID
+[[34m  Info  [0m]  - Now considering 'postcondition' VC for Board$neighbors @46:15...
+[[34m  Info  [0m]  => VALID
+[[34m  Info  [0m]  - Now considering 'precond. (call $this.neighbors(p.x, p.y))' VC for Board$neighbors @50:5...
+[[34m  Info  [0m]  => VALID
+[[34m  Info  [0m]  - Now considering 'precond. (call $this.neighbors(p.x, p.y))' VC for Board$neighbors @55:5...
+[[34m  Info  [0m]  => VALID
+[[34m  Info  [0m]  - Now considering 'postcondition' VC for Board$sameColorNeighbors @61:14...
+[[33mWarning [0m]  => UNKNOWN
+[[34m  Info  [0m]  - Now considering 'precond. (call $this.neighbors(p.p, p.c))' VC for Board$sameColorNeighbors @60:5...
+[[34m  Info  [0m]  => VALID
+[[34m  Info  [0m]  - Now considering 'precond. (call $this.neighbors(p, $this.at(p).otherColor()))' VC for Board$oppositeColorNeighbors @65:5...
+[[34m  Info  [0m]  => VALID
+[[34m  Info  [0m]  - Now considering 'precond. (call $this.neighbors(p))' VC for Board$emptyNeighors @70:5...
+[[34m  Info  [0m]  => VALID
+[[34m  Info  [0m]  - Now considering 'postcondition' VC for Board$remove @78:15...
+[[34m  Info  [0m]  => VALID
+[[34m  Info  [0m]  - Now considering 'precond. (call $this.cells - p)' VC for Board$remove @77:14...
+[[34m  Info  [0m]  => VALID
+[[34m  Info  [0m]  - Now considering 'postcondition' VC for Cell$otherColor @12:17...
+[[34m  Info  [0m]  => VALID
+[[34m  Info  [0m]  - Now considering 'match exhaustiveness' VC for Cell$otherColor @7:7...
+[[34m  Info  [0m]  => VALID
+[[34m  Info  [0m]  - Now considering 'match exhaustiveness' VC for PlayerType$cell @8:7...
+[[34m  Info  [0m]  => VALID
+[[34m  Info  [0m]   ┌──────────────────────┐
+[[34m  Info  [0m] ╔═╡ Verification Summary ╞══════════════════════════════════════════════════════════════════════════════════════════════════════╗
+[[34m  Info  [0m] ║ └──────────────────────┘                                                                                                      ║
+[[34m  Info  [0m] ║ Board$emptyNeighors           precond. (call $this.neighbors(p))                            70:5   valid    U:smt-z3    0.009 ║
+[[34m  Info  [0m] ║ Board$neighbors               postcondition                                                 46:15  valid    U:smt-z3    0.767 ║
+[[34m  Info  [0m] ║ Board$neighbors               precond. (call $this.neighbors(p.x, p.y))                     50:5   valid    U:smt-z3    0.009 ║
+[[34m  Info  [0m] ║ Board$neighbors               precond. (call $this.neighbors(p.x, p.y))                     55:5   valid    U:smt-z3    0.015 ║
+[[34m  Info  [0m] ║ Board$oppositeColorNeighbors  precond. (call $this.neighbors(p, $this.at(p).otherColor()))  65:5   valid    U:smt-z3    0.012 ║
+[[34m  Info  [0m] ║ Board$put                     postcondition                                                 36:15  valid    U:smt-z3    0.179 ║
+[[34m  Info  [0m] ║ Board$put                     precond. (call $this.cells.+(p, c))                           35:14  valid    U:smt-z3    0.022 ║
+[[34m  Info  [0m] ║ Board$remove                  postcondition                                                 78:15  valid    U:smt-z3    0.059 ║
+[[34m  Info  [0m] ║ Board$remove                  precond. (call $this.cells - p)                               77:14  valid    U:smt-z3    0.029 ║
+[[34m  Info  [0m] ║ Board$sameColorNeighbors      postcondition                                                 61:14  unknown  U:smt-z3    3.027 ║
+[[34m  Info  [0m] ║ Board$sameColorNeighbors      precond. (call $this.neighbors(p.p, p.c))                     60:5   valid    U:smt-z3    0.009 ║
+[[34m  Info  [0m] ║ Cell$otherColor               match exhaustiveness                                          7:7    valid    U:smt-z3    0.011 ║
+[[34m  Info  [0m] ║ Cell$otherColor               postcondition                                                 12:17  valid    U:smt-z3    0.012 ║
+[[34m  Info  [0m] ║ GoMap$$minus                  postcondition                                                 42:14  unknown  U:smt-z3    3.032 ║
+[[34m  Info  [0m] ║ GoMap$$plus                   postcondition                                                 35:14  valid    U:smt-z3    0.171 ║
+[[34m  Info  [0m] ║ GoMap$$plus                   precond. (call $this.+(pair._1, pair._2))                     27:5   valid    U:smt-z3    0.012 ║
+[[34m  Info  [0m] ║ GoMap$filter                  postcondition                                                 54:14  unknown  U:smt-z3    3.051 ║
+[[34m  Info  [0m] ║ GoMap$getOrElse               postcondition                                                 62:16  valid    U:smt-z3    0.096 ║
+[[34m  Info  [0m] ║ GoMap$isValid                 precond. (call $this.pairs.head())                            15:38  valid    U:smt-z3    0.055 ║
+[[34m  Info  [0m] ║ GoMap$isValid                 precond. (call $this.pairs.tail())                            15:17  valid    U:smt-z3    0.353 ║
+[[34m  Info  [0m] ║ GoMap$isValid                 precond. (call $this.pairs.tail())                            15:62  valid    U:smt-z3    0.100 ║
+[[34m  Info  [0m] ║ GoSet$isValid                 precond. (call $this.elements.head())                         10:41  valid    U:smt-z3    0.021 ║
+[[34m  Info  [0m] ║ GoSet$isValid                 precond. (call $this.elements.tail())                         10:17  valid    U:smt-z3    0.014 ║
+[[34m  Info  [0m] ║ GoSet$isValid                 precond. (call $this.elements.tail())                         10:65  valid    U:smt-z3    0.032 ║
+[[34m  Info  [0m] ║ PlayerType$cell               match exhaustiveness                                          8:7    valid    U:smt-z3    0.010 ║
+[[34m  Info  [0m] ║ noDuplicates                  precond. (call lst.head())                                    53:32  valid    U:smt-z3    0.015 ║
+[[34m  Info  [0m] ║ noDuplicates                  precond. (call lst.tail())                                    53:58  valid    U:smt-z3    0.021 ║
+[[34m  Info  [0m] ║ noDuplicates                  precond. (call lst.tail())                                    53:11  valid    U:smt-z3    0.013 ║
+[[34m  Info  [0m] ╟┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄╢
+[[34m  Info  [0m] ║ total: 28     valid: 25     invalid: 0      unknown 3                                                                  11.156 ║
+[[34m  Info  [0m] ╚═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+[[35m Debug  [0m]   ┌────────┐
+[[35m Debug  [0m] ╔═╡ Timers ╞═════════════════════════════════════════════════════════════════════════════════╗
+[[35m Debug  [0m] ║ └────────┘                                                                                 ║
+[[35m Debug  [0m] ║ name                                min        avg       max    n                    total ║
+[[35m Debug  [0m] ╟┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄╢
+[[35m Debug  [0m] ║ ├ total                                                                           26643 ms ║
+[[35m Debug  [0m] ║ └ frontend                                                                        11032 ms ║
+[[35m Debug  [0m] ╚════════════════════════════════════════════════════════════════════════════════════════════╝
