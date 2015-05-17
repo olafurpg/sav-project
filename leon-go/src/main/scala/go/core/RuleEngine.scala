@@ -1,13 +1,19 @@
 package go.core
 
 import go.core.CellObject.EmptyCell
+import go.core.PlayerTypeObject._
 
 object RuleEngine {
+  def nextPlayer(game: Game): PlayerType = game.activePlayer match {
+    case WhitePlayer => BlackPlayer
+    case BlackPlayer => WhitePlayer
+  }
+
   def next(game: Game, step: Step): Either[Game, MoveError] = {
     import game._
 
     step match {
-      case Pass => Left(Game(game.states, Pass::game.steps, game.activePlayer.nextPlayer))
+      case Pass => Left(Game(game.states, Pass::game.steps, nextPlayer(game)))
 
       case Place(x, y) if !state.insideBoard(Point(x, y)) => Right(OutsideOfBoardError)
 
@@ -20,7 +26,7 @@ object RuleEngine {
         val newBoard = CaptureLogic.put(state, newPoint, activePlayer.cell)
         if (newBoard.at(newPoint) == EmptyCell) Right(SuicideError)
         else if (round > 0 && newBoard == states.tail.head) Right(KoError)
-        else Left(Game(newBoard :: states, step :: steps, game.activePlayer.nextPlayer))
+        else Left(Game(newBoard :: states, step :: steps, nextPlayer(game)))
     }
   } ensuring { res =>
     res match {
