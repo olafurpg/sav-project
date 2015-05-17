@@ -7,6 +7,7 @@ import go.collection._
 import go.core._
 import go.util.conversions._
 import CellObject._
+import PlayerTypeObject._
 
 trait Util extends FunSuite with StringUtil {
   val w = WhiteCell
@@ -213,9 +214,6 @@ class BoardTest extends FunSuite with Util {
   test("Game.move SuicideError") {
     val g = Game(B1)
     val suicide = Place(1, 4)
-    val ko1 = Place(2, 3)
-    val ko2 = Place(2, 2)
-    val g2 = Game(List(B2, B1), List(ko1))
     assert(RuleEngine.check(g, suicide) === Some(SuicideError))
   }
 
@@ -224,7 +222,7 @@ class BoardTest extends FunSuite with Util {
     val suicide = Place(1, 4)
     val ko1 = Place(2, 3)
     val ko2 = Place(2, 2)
-    val g2 = Game(List(B2, B1), List(ko1))
+    val g2 = Game(List(B2, B1), List(ko1), WhitePlayer)
     assert(RuleEngine.check(g2, ko2) === Some(KoError))
   }
 

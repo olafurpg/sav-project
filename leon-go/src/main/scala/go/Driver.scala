@@ -1,29 +1,20 @@
 package go
 
+import go.core.PlayerTypeObject._
 import go.core._
 import go.player._
 
 object Driver {
-  def takeTurns[T](a: T, b: T)(x: T): T = x match {
-    case `a` => b
-    case _ => a
+  def main(args: Array[String]): Unit = {
+    run(Game(5), Map(WhitePlayer -> HumanPlayer, BlackPlayer -> ComputerPlayer))
   }
 
-  def main(args: Array[String]): Unit = {
-    val n = 5
-    val nextPlayer = takeTurns[Player](HumanPlayer, ComputerPlayer) _
-    val game = Stream.iterate((HumanPlayer: Player, Game(n)))({
-      // Round
-      case (player, g) =>
-        val step = player.move(g)
-        RuleEngine.next(g, step).fold({ game =>
-          println(s"$player performed $step")
-          (nextPlayer(player), game)
-        }, { err =>
-          println(err)
-          (player, g)
-        })
-    }) takeWhile { case (_, g) => !g.isOver }
-    game.toList
+  def run(game: Game, players: Map[PlayerType, Player]): Unit = {
+    if (!RuleEngine.isOver(game)) {
+      RuleEngine.next(game, players(game.activePlayer).move(game)) match {
+        case Left(game) => run(game, players)
+        case Right(err) => println(err); run(game, players)
+      }
+    }
   }
 }

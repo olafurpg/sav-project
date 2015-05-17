@@ -7,7 +7,7 @@ object RuleEngine {
     import game._
 
     step match {
-      case Pass => Left(Game(state :: states, step :: steps))
+      case Pass => Left(game.copy(activePlayer = game.activePlayer.nextPlayer))
 
       case Place(x, y) if !state.insideBoard(Point(x, y)) => Right(OutsideOfBoardError)
 
@@ -20,7 +20,7 @@ object RuleEngine {
         val newBoard = CaptureLogic.put(state, newPoint, activePlayer.cell)
         if (newBoard.at(newPoint) == EmptyCell) Right(SuicideError)
         else if (round > 0 && newBoard == states.tail.head) Right(KoError)
-        else Left(Game(newBoard :: states, step :: steps))
+        else Left(Game(newBoard :: states, step :: steps, game.activePlayer.nextPlayer))
     }
   } ensuring { res =>
     res match {
@@ -35,4 +35,8 @@ object RuleEngine {
   }
 
   def isValid(game: Game, step: Step): Boolean = check(game, step).isEmpty
+
+  def isOver(game: Game): Boolean = {
+    game.round > 1 && game.steps.head == Pass && game.steps.tail.head == Pass
+  }
 }
