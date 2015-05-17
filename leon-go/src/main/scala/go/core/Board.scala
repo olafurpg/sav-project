@@ -6,9 +6,9 @@ import go.util.conversions._
 import CellObject._
 import PlayerTypeObject._
 
-case class Board(n: BigInt, cells: GoMap) {
+case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
 
-  def isValid: Boolean = Point.insideRange(n) && cells.isValid
+  def isValid: Boolean = cells.keys.forall(insideBoard) && cells.isValid
 
   def this(n: BigInt) = this(n, GoMap.empty)
 
@@ -32,13 +32,13 @@ case class Board(n: BigInt, cells: GoMap) {
 
   def put(c: Cell, p: Point): Board = {
     require(isValid && insideBoard(p) && !isOccupied(p))
-    Board(n, cells + PlacedCell(p, c))
+    Board(n, cells + (p, c))
   } ensuring (_.at(p) == c)
 
-  def freeCells: GoSet = GoSet(GoMap(for {
+  def freeCells: GoSet[PlacedCell] = GoSet(for {
     x <- r
     y <- r
-  } yield PlacedCell(Point(x, y), EmptyCell)).filterNot(x => cells.isDefinedAt(x.p)))
+  } yield PlacedCell(Point(x, y), EmptyCell)).filterNot(x => cells.isDefinedAt(x.p))
 
   def neighbors(x: BigInt, y: BigInt): List[PlacedCell] = {
     require(isValid)
@@ -72,10 +72,12 @@ case class Board(n: BigInt, cells: GoMap) {
 
   def full: Boolean = cells.size == n * n
 
-  def remove(p: Point): Board = Board(n, cells.filterNot(_.p == p))
+  def remove(p: Point): Board = {
+    require(isValid && insideBoard(p) && isOccupied(p))
+    Board(n, cells - p)
+  } ensuring (!_.isOccupied(p))
 
-  def remove(ps: GoSet): Board = Board(n, cells.filterNot(ps.contains))
+  def remove(ps: GoSet[Point]): Board = Board(n, cells -- ps)
 
-  def playerCells(p: PlayerType): GoSet = GoSet(cells.filter(_.c == p.cell))
-
+  def isEqual(that: Board) = this.n == that.n && this.cells.isEqual(that.cells)
 }

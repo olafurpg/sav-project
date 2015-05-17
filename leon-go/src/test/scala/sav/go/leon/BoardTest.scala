@@ -28,19 +28,19 @@ trait Util extends FunSuite with StringUtil {
         row.zipWithIndex
       }
     } yield PlacedCell(Point(x + 1, y + 1), cellFromString(ch))
-    Board(N, GoMap(cells.filter(_.c != EmptyCell).toList))
+    Board(N, GoMap.board(cells.filter(_.c != EmptyCell).toList))
   }
 
-  def dfsTest(lst: List[PlacedCell], ignore: GoSet = GoSet.empty): Unit = {
-    val expected = GoSet(GoMap(lst.filterNot(ignore.contains)))
-    val b1 = Board(10, GoMap(lst))
+  def dfsTest(lst: List[PlacedCell], ignore: GoSet[PlacedCell] = GoSet.empty): Unit = {
+    val expected = GoSet(lst.filterNot(ignore.contains))
+    val b1 = Board(10, GoMap.board(lst))
     assert(CaptureLogic.connectedComponent(b1, PlacedCell(Point(1, 1), b)).isEqualTo(expected))
   }
 
   def moveTest(n: Int, str1: String, str2: String, c: Cell, p: Point): Unit = {
     val b1 = fromString(n, str1.stripMargin)
     val b2 = fromString(n, str2.stripMargin)
-    assert(CaptureLogic.put(b1, p, c) === b2)
+    assert(CaptureLogic.put(b1, p, c).isEqual(b2))
   }
 
   val B1 = fromString(4,
@@ -76,13 +76,13 @@ class BoardTest extends FunSuite with Util {
   val points = List(pc(1,1,b), pc(1, 2, b), pc(2, 1, b), pc(2, 2, b))
   def pc(x: Int, y: Int, c: Cell) = PlacedCell(Point(x, y), c)
   test("CaptureLogic.connectedComponent works") {
-    val board = Board(3, GoMap(points))
+    val board = Board(3, GoMap.board(points))
 
-    assert(CaptureLogic.connectedComponent(board, points.head).isEqualTo(GoSet(GoMap(points))))
+    assert(CaptureLogic.connectedComponent(board, points.head).isEqualTo(GoSet(points)))
   }
 
   test("Board constructor works") {
-    val b1 = Board(3, GoMap(points))
+    val b1 = Board(3, GoMap.board(points))
     assert(b1.at(1 -> 1) === BlackCell)
     assert(b1.at(1 -> 2) === BlackCell)
     assert(b1.at(2 -> 1) === BlackCell)
@@ -95,7 +95,7 @@ class BoardTest extends FunSuite with Util {
   }
 
   test("Board.put works") {
-    val b1 = Board(3, GoMap(points)).put(w, Point(3, 3))
+    val b1 = Board(3, GoMap.board(points)).put(w, Point(3, 3))
 
     assert(b1.at(1 -> 1) === BlackCell)
     assert(b1.at(1 -> 2) === BlackCell)
@@ -115,11 +115,11 @@ class BoardTest extends FunSuite with Util {
         |ooo
         |
       """.stripMargin)
-    val expected: Set[PlacedCell] = Set((Point(1, 1), b), (Point(1, 2), b), (Point(1, 3), b), (Point(2, 1), w), (Point(2, 2), w), (Point(2, 3), w))
-    val obtained = b1.cells.cells.toSet
+    val expected: Set[(Point, Cell)] = Set((Point(1, 1), b), (Point(1, 2), b), (Point(1, 3), b), (Point(2, 1), w), (Point(2, 2), w), (Point(2, 3), w))
+    val obtained = b1.cells.pairs.toSet
     assert(obtained === expected)
     val b2 = fromString(3, "")
-    assert(b2.cells.cells.isEmpty)
+    assert(b2.cells.isEmpty)
   }
 
   test("capturedCells works") {
@@ -188,8 +188,8 @@ class BoardTest extends FunSuite with Util {
       y <- 1 to n
     } yield PlacedCell(Point(x, y), EmptyCell)).toList
 
-    assert(B.freeCells.m.cells === allCells)
-    assert(B.put(w, Point(1, 1)).freeCells.m.cells === allCells.tail)
+    assert(B.freeCells.toList === allCells)
+    assert(B.put(w, Point(1, 1)).freeCells.toList === allCells.tail)
   }
 
 

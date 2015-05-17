@@ -5,98 +5,80 @@ import leon.collection._
 import CellObject._
 import GoMap._
 
-case class GoMap(cells: List[PlacedCell]) {
-  def isDefinedAt(p: Point): Boolean = {
-    cells.exists(_.p == p)
+case class GoMap[K, V](pairs: List[(K, V)]) {
+  def isDefinedAt(k: K): Boolean = {
+    pairs.exists(_._1 == k)
   }
 
-  def isValid: Boolean = allValidPoints(cells) && noDuplicates(cells) && isSorted(cells)
+  def isValid: Boolean = {
+    if (isEmpty) true
+    else !GoMap(pairs.tail).contains(pairs.head._1) && GoMap(pairs.tail).isValid
+  }
 
-  def contains(p: Point): Boolean = isDefinedAt(p)
+  def contains(k: K): Boolean = isDefinedAt(k)
 
-  def contains(p: PlacedCell): Boolean = isDefinedAt(p.p)
+  def isEmpty: Boolean = pairs.isEmpty
 
-  def isEmpty: Boolean = cells.isEmpty
+  def keys: List[K] = pairs.map(_._1)
 
-  def ++(m: GoMap): GoMap = {
-    require(this.isValid && m.isValid)
-    if (m.isEmpty) this
-    else (this + m.cells.head) ++ GoMap(m.cells.tail)
-  } ensuring(_.isValid)
+  //TODO: more strict semantic verfication
+  def +(pair: (K, V)): GoMap[K, V] = {
+    require(isValid && !contains(pair._1))
+    this + (pair._1, pair._2)
+  }
 
-  def +(e: PlacedCell): GoMap = {
-    require(isSorted(cells) && allValidPoints(cells) && e.isValid)
-    GoMap(insSort(cells, e))
-  } ensuring(res => res.contains(e.p))
+  //TODO: more strict semantic verfication
+  // Insertion assumes to such key exist
+  def +(k: K, v: V): GoMap[K, V] = {
+    require(isValid && !contains(k))
+    GoMap((k, v)::pairs)
+  } ensuring(res => res.pairs.exists(_ == (k, v)) && res.isValid)
 
-  def filterNot(f: PlacedCell => Boolean): GoMap = GoMap(cells.filter(x => !f(x)))
+  //TODO: more strict semantic verification
+  // Delete assumes such key exists
+  def -(k: K): GoMap[K, V] = {
+    require(isValid && contains(k))
+    GoMap(pairs.filter(_._1 != k))
+  } ensuring(res => !res.contains(k) && res.isValid)
 
-  def exists(f: PlacedCell => Boolean): Boolean = cells.exists(f)
+  def --(ks: GoSet[K]) = GoMap(pairs.filter(x => !ks.contains(x._1)))
 
-  def forall(f: PlacedCell => Boolean): Boolean = cells.forall(f)
+  def filterNot(f: ((K, V)) => Boolean): GoMap[K, V] = GoMap(pairs.filter(x => !f(x)))
 
-  def filter(f: PlacedCell => Boolean): GoMap = {
-    GoMap(cells.filter(f))
-  } ensuring(res => cells.forall(x => !f(x) || res.contains(x.p)))
+  def exists(f: ((K, V)) => Boolean): Boolean = pairs.exists(f)
 
-  def foldRight[R](z: R)(f: (PlacedCell,R) => R): R = cells.foldRight(z)(f)
+  def forall(f: ((K, V)) => Boolean): Boolean = pairs.forall(f)
 
-  def foldLeft[R](z: R)(f: (R, PlacedCell) => R): R = cells.foldLeft(z)(f)
+  def filter(f: ((K, V)) => Boolean): GoMap[K, V] = {
+    GoMap(pairs.filter(f))
+  } ensuring(res => pairs.forall(x => !f(x) || res.exists(_ == x)))
 
-  def getOrElse(p: Point, els: Cell): Cell = {
-    cells.find(_.p == p).map(_.c).getOrElse(els)
+  def foldRight[R](z: R)(f: ((K, V), R) => R): R = pairs.foldRight(z)(f)
+
+  def foldLeft[R](z: R)(f: (R, (K, V)) => R): R = pairs.foldLeft(z)(f)
+
+  def getOrElse(k: K, els: V): V = {
+    pairs.find(_._1 == k).map(_._2).getOrElse(els)
   } ensuring { res =>
-    if (!contains(p)) res == els
+    if (!contains(k)) res == els
     else true
   }
 
-  def size: BigInt = cells.size
+  def map[R](f: ((K, V)) => R): List[R] = pairs.map(f)
+
+  def size: BigInt = pairs.size
+
+  def isEqual(that: GoMap[K, V]): Boolean = {
+    this.size == that.size &&
+    forall(p => that.exists(q => q._1 == p._1 && q._2 == p._2)) &&
+    that.forall(p => exists(q => q._1 == p._1 && q._2 == p._2))
+  }
 }
 
 object GoMap {
-
-  def allValidPoints(lst: List[PlacedCell]): Boolean = {
-    lst.forall(_.isValid)
+  def board(list: List[go.core.PlacedCell]): GoMap[Point, Cell] = {
+    GoMap(list.map(x => x.p -> x.c))
   }
 
-  def noDuplicates(lst: List[PlacedCell]): Boolean = {
-    require(allValidPoints(lst))
-    if (lst.isEmpty) true
-    else !lst.tail.contains(lst.head) && noDuplicates(lst.tail)
-  }
-
-  def isSorted(lst: List[PlacedCell]): Boolean = {
-    require(allValidPoints(lst))
-    lst match {
-      case l if l.size <= 1 => true
-      case _ =>
-        if (lst.tail.head < lst.head) false
-        else isSorted(lst.tail)
-    }
-  }
-
-  def construct(cells: List[PlacedCell]): GoMap = {
-    require(allValidPoints(cells))
-    GoMap(cells)
-  }
-
-  def insSort(lst: List[PlacedCell], v: PlacedCell): List[PlacedCell] = {
-    require(isSorted(lst) && allValidPoints(lst) && v.isValid)
-    lst match {
-      case l if l.isEmpty => List(v)
-      case _ =>
-        if (v < lst.head) {
-          v :: lst
-        } else if (v == lst.head) {
-          lst
-        } else {
-          lst.head :: insSort(lst.tail, v)
-        }
-    }
-  } ensuring(res => {
-    isSorted(res) && allValidPoints(res)
-  })
-
-
-  def empty: GoMap = GoMap(List[PlacedCell]())
+  def empty[K, V]: GoMap[K, V] = GoMap(List[(K, V)]())
 }

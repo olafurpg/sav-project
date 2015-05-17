@@ -25,12 +25,12 @@ object RuleEngine {
         val newPoint = Point(x, y)
         val newBoard = CaptureLogic.put(state, newPoint, activePlayer.cell)
         if (newBoard.at(newPoint) == EmptyCell) Right(SuicideError)
-        else if (round > 0 && newBoard == states.tail.head) Right(KoError)
+        else if (round > 0 && newBoard.isEqual(states.tail.head)) Right(KoError)
         else Left(Game(newBoard :: states, step :: steps, nextPlayer(game)))
     }
   } ensuring { res =>
     res match {
-      case Left(_) => !Step.isValid(step, game.state)
+      case Left(_) => Step.isValid(step, game.state)
       case Right(_) => true
     }
   }
