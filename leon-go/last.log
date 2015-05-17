@@ -11,99 +11,55 @@
 [[34m  Info  [0m]  => VALID
 [[34m  Info  [0m]  - Now considering 'precond. (call $this.+(pair._1, pair._2))' VC for GoMap$$plus @35:5...
 [[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'postcondition' VC for GoMap$$plus @42:14...
-[[33mWarning [0m]  => UNKNOWN
-[[34m  Info  [0m]  - Now considering 'postcondition' VC for GoMap$filter @61:14...
-[[33mWarning [0m]  => UNKNOWN
-[[34m  Info  [0m]  - Now considering 'postcondition' VC for GoMap$get @70:14...
-[[33mWarning [0m]  => UNKNOWN
-[[34m  Info  [0m]  - Now considering 'precond. (call $this.pairs.filter((x$11 : (K, V)) => (x$11._1 == k)).head())' VC for GoMap$get @69:5...
+[[34m  Info  [0m]  - Now considering 'precond. (call $this.elements.tail())' VC for GoSet$isValid @11:17...
 [[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'postcondition' VC for GoMap$getOrElse @75:16...
-[[33mWarning [0m]  => UNKNOWN
-[[34m  Info  [0m]  - Now considering 'precond. (call $this.elements.tail())' VC for GoSet$isValid @10:17...
+[[34m  Info  [0m]  - Now considering 'precond. (call $this.elements.head())' VC for GoSet$isValid @11:41...
 [[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'precond. (call $this.elements.head())' VC for GoSet$isValid @10:41...
+[[34m  Info  [0m]  - Now considering 'precond. (call $this.elements.tail())' VC for GoSet$isValid @11:65...
 [[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'precond. (call $this.elements.tail())' VC for GoSet$isValid @10:65...
+[[34m  Info  [0m]  - Now considering 'precond. (call lst.tail())' VC for noDuplicates @58:11...
 [[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'postcondition' VC for GoSet$$minus @22:14...
-[[33mWarning [0m]  => UNKNOWN
-Exception in thread "Thread-14" java.io.IOException: Stream Closed
-	at java.io.FileOutputStream.writeBytes(Native Method)
-	at java.io.FileOutputStream.write(FileOutputStream.java:315)
-	at java.io.BufferedOutputStream.flushBuffer(BufferedOutputStream.java:82)
-	at java.io.BufferedOutputStream.flush(BufferedOutputStream.java:140)
-	at java.io.FilterOutputStream.close(FilterOutputStream.java:158)
-	at sun.nio.cs.StreamEncoder.implClose(StreamEncoder.java:320)
-	at sun.nio.cs.StreamEncoder.close(StreamEncoder.java:149)
-	at java.io.OutputStreamWriter.close(OutputStreamWriter.java:233)
-	at java.io.BufferedWriter.close(BufferedWriter.java:266)
-	at smtlib.interpreters.ProcessInterpreter.kill(ProcessInterpreter.scala:77)
-	at smtlib.interpreters.ProcessInterpreter.interrupt(ProcessInterpreter.scala:81)
-	at leon.solvers.smtlib.SMTLIBSolver.interrupt(SMTLIBSolver.scala:77)
-	at leon.solvers.combinators.UnrollingSolver.interrupt(UnrollingSolver.scala:254)
-	at leon.utils.TimeoutFor$$anonfun$1.apply$mcV$sp(TimeoutFor.scala:34)
-	at leon.utils.TimeoutFor$Countdown.run(TimeoutFor.scala:21)
-[[34m  Info  [0m]  - Now considering 'postcondition' VC for GoSet$$plus @29:15...
-[[33mWarning [0m]  => UNKNOWN
-[[34m  Info  [0m]  - Now considering 'precond. (call lst.tail())' VC for noDuplicates @55:11...
+[[34m  Info  [0m]  - Now considering 'precond. (call lst.head())' VC for noDuplicates @58:32...
 [[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'precond. (call lst.head())' VC for noDuplicates @55:32...
-[[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'precond. (call lst.tail())' VC for noDuplicates @55:58...
+[[34m  Info  [0m]  - Now considering 'precond. (call lst.tail())' VC for noDuplicates @58:58...
 [[34m  Info  [0m]  => VALID
 [[34m  Info  [0m]  - Now considering 'precond. (call $this.cells.isDefinedAt(p))' VC for Board$isOccupied @23:5...
 [[34m  Info  [0m]  => VALID
+[[34m  Info  [0m]  - Now considering 'postcondition' VC for Board$at @29:16...
+[[34m  Info  [0m]  => VALID
 [[34m  Info  [0m]  - Now considering 'precond. (call $this.cells.getOrElse(Point(x, y), EmptyCell))' VC for Board$at @28:5...
 [[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'precond. (call $this.at(p.x, p.y))' VC for Board$at @33:5...
+[[34m  Info  [0m]  - Now considering 'precond. (call $this.at(p.x, p.y))' VC for Board$at @36:5...
 [[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'precond. (call $this.at(x, y))' VC for Board$board @40:27...
+[[34m  Info  [0m]  - Now considering 'precond. (call $this.at(x, y))' VC for Board$board @43:27...
 [[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'postcondition' VC for Board$put @46:15...
-Exception in thread "Thread-23" java.io.IOException: Stream Closed
-	at java.io.FileOutputStream.writeBytes(Native Method)
-	at java.io.FileOutputStream.write(FileOutputStream.java:315)
-	at java.io.BufferedOutputStream.flushBuffer(BufferedOutputStream.java:82)
-	at java.io.BufferedOutputStream.flush(BufferedOutputStream.java:140)
-	at java.io.FilterOutputStream.close(FilterOutputStream.java:158)
-	at sun.nio.cs.StreamEncoder.implClose(StreamEncoder.java:320)
-	at sun.nio.cs.StreamEncoder.close(StreamEncoder.java:149)
-	at java.io.OutputStreamWriter.close(OutputStreamWriter.java:233)
-	at java.io.BufferedWriter.close(BufferedWriter.java:266)
-	at smtlib.interpreters.ProcessInterpreter.kill(ProcessInterpreter.scala:77)
-	at smtlib.interpreters.ProcessInterpreter.interrupt(ProcessInterpreter.scala:81)
-	at leon.solvers.smtlib.SMTLIBSolver.interrupt(SMTLIBSolver.scala:77)
-	at leon.solvers.combinators.UnrollingSolver.interrupt(UnrollingSolver.scala:254)
-	at leon.utils.TimeoutFor$$anonfun$1.apply$mcV$sp(TimeoutFor.scala:34)
-	at leon.utils.TimeoutFor$Countdown.run(TimeoutFor.scala:21)
-[[33mWarning [0m]  => UNKNOWN
-[[34m  Info  [0m]  - Now considering 'precond. (call $this.cells.+(p, c))' VC for Board$put @45:14...
+[[34m  Info  [0m]  - Now considering 'postcondition' VC for Board$put @49:16...
 [[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'precond. (call $this.cells.isDefinedAt(x.p))' VC for Board$freeCells @53:64...
+[[34m  Info  [0m]  - Now considering 'precond. (call $this.cells.+(p, c))' VC for Board$put @48:14...
 [[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'postcondition' VC for Board$neighbors @59:15...
+[[34m  Info  [0m]  - Now considering 'precond. (call $this.cells.isDefinedAt(x.p))' VC for Board$freeCells @58:64...
 [[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'precond. (call $this.at(x))' VC for Board$neighbors @58:124...
+[[34m  Info  [0m]  - Now considering 'postcondition' VC for Board$neighbors @64:15...
 [[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'precond. (call $this.neighbors(p.x, p.y))' VC for Board$neighbors @63:5...
+[[34m  Info  [0m]  - Now considering 'precond. (call $this.at(x))' VC for Board$neighbors @63:124...
 [[34m  Info  [0m]  => VALID
 [[34m  Info  [0m]  - Now considering 'precond. (call $this.neighbors(p.x, p.y))' VC for Board$neighbors @68:5...
 [[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'postcondition' VC for Board$sameColorNeighbors @74:14...
+[[34m  Info  [0m]  - Now considering 'precond. (call $this.neighbors(p.x, p.y))' VC for Board$neighbors @73:5...
 [[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'precond. (call $this.neighbors(p.p, p.c))' VC for Board$sameColorNeighbors @73:5...
+[[34m  Info  [0m]  - Now considering 'postcondition' VC for Board$sameColorNeighbors @79:14...
 [[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'precond. (call $this.neighbors(p, $this.at(p).otherColor()))' VC for Board$oppositeColorNeighbors @78:5...
+[[34m  Info  [0m]  - Now considering 'precond. (call $this.neighbors(p.p, p.c))' VC for Board$sameColorNeighbors @78:5...
 [[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'precond. (call $this.at(p))' VC for Board$oppositeColorNeighbors @78:18...
+[[34m  Info  [0m]  - Now considering 'precond. (call $this.neighbors(p, $this.at(p).otherColor()))' VC for Board$oppositeColorNeighbors @83:5...
 [[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'precond. (call $this.neighbors(p))' VC for Board$emptyNeighors @83:5...
+[[34m  Info  [0m]  - Now considering 'precond. (call $this.at(p))' VC for Board$oppositeColorNeighbors @83:18...
 [[34m  Info  [0m]  => VALID
-[[34m  Info  [0m]  - Now considering 'postcondition' VC for Board$remove @91:15...
-[[33mWarning [0m]  => UNKNOWN
-[[34m  Info  [0m]  - Now considering 'precond. (call $this.cells - p)' VC for Board$remove @90:14...
+[[34m  Info  [0m]  - Now considering 'precond. (call $this.neighbors(p))' VC for Board$emptyNeighors @88:5...
+[[34m  Info  [0m]  => VALID
+[[34m  Info  [0m]  - Now considering 'postcondition' VC for Board$remove @96:16...
+[[34m  Info  [0m]  => VALID
+[[34m  Info  [0m]  - Now considering 'precond. (call $this.cells - p)' VC for Board$remove @95:14...
 [[34m  Info  [0m]  => VALID
 [[34m  Info  [0m]  - Now considering 'postcondition' VC for Cell$otherColor @12:17...
 [[34m  Info  [0m]  => VALID
@@ -112,56 +68,50 @@ Exception in thread "Thread-23" java.io.IOException: Stream Closed
 [[34m  Info  [0m]  - Now considering 'match exhaustiveness' VC for PlayerType$cell @8:7...
 [[34m  Info  [0m]  => VALID
 [[34m  Info  [0m]   ┌──────────────────────┐
-[[34m  Info  [0m] ╔═╡ Verification Summary ╞═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
-[[34m  Info  [0m] ║ └──────────────────────┘                                                                                                                       ║
-[[34m  Info  [0m] ║ Board$at                      precond. (call $this.at(p.x, p.y))                                            33:5    valid    U:smt-z3    0.008 ║
-[[34m  Info  [0m] ║ Board$at                      precond. (call $this.cells.getOrElse(Point(x, y), EmptyCell))                 28:5    valid    U:smt-z3    0.023 ║
-[[34m  Info  [0m] ║ Board$board                   precond. (call $this.at(x, y))                                                40:27   valid    U:smt-z3    0.009 ║
-[[34m  Info  [0m] ║ Board$emptyNeighors           precond. (call $this.neighbors(p))                                            83:5    valid    U:smt-z3    0.008 ║
-[[34m  Info  [0m] ║ Board$freeCells               precond. (call $this.cells.isDefinedAt(x.p))                                  53:64   valid    U:smt-z3    0.018 ║
-[[34m  Info  [0m] ║ Board$isOccupied              precond. (call $this.cells.isDefinedAt(p))                                    23:5    valid    U:smt-z3    0.021 ║
-[[34m  Info  [0m] ║ Board$neighbors               postcondition                                                                 59:15   valid    U:smt-z3    0.847 ║
-[[34m  Info  [0m] ║ Board$neighbors               precond. (call $this.at(x))                                                   58:124  valid    U:smt-z3    0.008 ║
-[[34m  Info  [0m] ║ Board$neighbors               precond. (call $this.neighbors(p.x, p.y))                                     68:5    valid    U:smt-z3    0.008 ║
-[[34m  Info  [0m] ║ Board$neighbors               precond. (call $this.neighbors(p.x, p.y))                                     63:5    valid    U:smt-z3    0.007 ║
-[[34m  Info  [0m] ║ Board$oppositeColorNeighbors  precond. (call $this.at(p))                                                   78:18   valid    U:smt-z3    0.013 ║
-[[34m  Info  [0m] ║ Board$oppositeColorNeighbors  precond. (call $this.neighbors(p, $this.at(p).otherColor()))                  78:5    valid    U:smt-z3    0.010 ║
-[[34m  Info  [0m] ║ Board$put                     postcondition                                                                 46:15   unknown  U:smt-z3    3.115 ║
-[[34m  Info  [0m] ║ Board$put                     precond. (call $this.cells.+(p, c))                                           45:14   valid    U:smt-z3    0.019 ║
-[[34m  Info  [0m] ║ Board$remove                  postcondition                                                                 91:15   unknown  U:smt-z3    3.057 ║
-[[34m  Info  [0m] ║ Board$remove                  precond. (call $this.cells - p)                                               90:14   valid    U:smt-z3    0.018 ║
-[[34m  Info  [0m] ║ Board$sameColorNeighbors      postcondition                                                                 74:14   valid    U:smt-z3    2.129 ║
-[[34m  Info  [0m] ║ Board$sameColorNeighbors      precond. (call $this.neighbors(p.p, p.c))                                     73:5    valid    U:smt-z3    0.009 ║
-[[34m  Info  [0m] ║ Cell$otherColor               match exhaustiveness                                                          7:7     valid    U:smt-z3    0.007 ║
-[[34m  Info  [0m] ║ Cell$otherColor               postcondition                                                                 12:17   valid    U:smt-z3    0.011 ║
-[[34m  Info  [0m] ║ GoMap$$plus                   postcondition                                                                 42:14   unknown  U:smt-z3    3.048 ║
-[[34m  Info  [0m] ║ GoMap$$plus                   precond. (call $this.+(pair._1, pair._2))                                     35:5    valid    U:smt-z3    0.053 ║
-[[34m  Info  [0m] ║ GoMap$contains                postcondition                                                                 27:14   valid    U:smt-z3    0.020 ║
-[[34m  Info  [0m] ║ GoMap$contains                precond. (call $this.isDefinedAt(k))                                          26:5    valid    U:smt-z3    0.016 ║
-[[34m  Info  [0m] ║ GoMap$filter                  postcondition                                                                 61:14   unknown  U:smt-z3    3.047 ║
-[[34m  Info  [0m] ║ GoMap$get                     postcondition                                                                 70:14   unknown  U:smt-z3    3.164 ║
-[[34m  Info  [0m] ║ GoMap$get                     precond. (call $this.pairs.filter((x$11 : (K, V)) => (x$11._1 == k)).head())  69:5    valid    U:smt-z3    0.055 ║
-[[34m  Info  [0m] ║ GoMap$getOrElse               postcondition                                                                 75:16   unknown  U:smt-z3    3.038 ║
-[[34m  Info  [0m] ║ GoMap$isValid                 precond. (call $this.pairs.head())                                            21:36   valid    U:smt-z3    0.030 ║
-[[34m  Info  [0m] ║ GoMap$isValid                 precond. (call $this.pairs.tail())                                            21:70   valid    U:smt-z3    0.332 ║
-[[34m  Info  [0m] ║ GoMap$isValid                 precond. (call $this.pairs.tail())                                            21:10   valid    U:smt-z3    0.391 ║
-[[34m  Info  [0m] ║ GoSet$$minus                  postcondition                                                                 22:14   unknown  U:smt-z3    3.030 ║
-[[34m  Info  [0m] ║ GoSet$$plus                   postcondition                                                                 29:15   unknown  U:smt-z3    3.041 ║
-[[34m  Info  [0m] ║ GoSet$isValid                 precond. (call $this.elements.head())                                         10:41   valid    U:smt-z3    0.011 ║
-[[34m  Info  [0m] ║ GoSet$isValid                 precond. (call $this.elements.tail())                                         10:65   valid    U:smt-z3    0.023 ║
-[[34m  Info  [0m] ║ GoSet$isValid                 precond. (call $this.elements.tail())                                         10:17   valid    U:smt-z3    0.020 ║
-[[34m  Info  [0m] ║ PlayerType$cell               match exhaustiveness                                                          8:7     valid    U:smt-z3    0.007 ║
-[[34m  Info  [0m] ║ noDuplicates                  precond. (call lst.head())                                                    55:32   valid    U:smt-z3    0.010 ║
-[[34m  Info  [0m] ║ noDuplicates                  precond. (call lst.tail())                                                    55:58   valid    U:smt-z3    0.015 ║
-[[34m  Info  [0m] ║ noDuplicates                  precond. (call lst.tail())                                                    55:11   valid    U:smt-z3    0.009 ║
-[[34m  Info  [0m] ╟┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄╢
-[[34m  Info  [0m] ║ total: 40     valid: 32     invalid: 0      unknown 8                                                                                   28.705 ║
-[[34m  Info  [0m] ╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+[[34m  Info  [0m] ╔═╡ Verification Summary ╞══════════════════════════════════════════════════════════════════════════════════════════════════════╗
+[[34m  Info  [0m] ║ └──────────────────────┘                                                                                                      ║
+[[34m  Info  [0m] ║ Board$at                      postcondition                                                  29:16   valid  U:smt-z3    0.063 ║
+[[34m  Info  [0m] ║ Board$at                      precond. (call $this.at(p.x, p.y))                             36:5    valid  U:smt-z3    0.013 ║
+[[34m  Info  [0m] ║ Board$at                      precond. (call $this.cells.getOrElse(Point(x, y), EmptyCell))  28:5    valid  U:smt-z3    0.029 ║
+[[34m  Info  [0m] ║ Board$board                   precond. (call $this.at(x, y))                                 43:27   valid  U:smt-z3    0.011 ║
+[[34m  Info  [0m] ║ Board$emptyNeighors           precond. (call $this.neighbors(p))                             88:5    valid  U:smt-z3    0.009 ║
+[[34m  Info  [0m] ║ Board$freeCells               precond. (call $this.cells.isDefinedAt(x.p))                   58:64   valid  U:smt-z3    0.032 ║
+[[34m  Info  [0m] ║ Board$isOccupied              precond. (call $this.cells.isDefinedAt(p))                     23:5    valid  U:smt-z3    0.064 ║
+[[34m  Info  [0m] ║ Board$neighbors               postcondition                                                  64:15   valid  U:smt-z3    1.407 ║
+[[34m  Info  [0m] ║ Board$neighbors               precond. (call $this.at(x))                                    63:124  valid  U:smt-z3    0.014 ║
+[[34m  Info  [0m] ║ Board$neighbors               precond. (call $this.neighbors(p.x, p.y))                      73:5    valid  U:smt-z3    0.011 ║
+[[34m  Info  [0m] ║ Board$neighbors               precond. (call $this.neighbors(p.x, p.y))                      68:5    valid  U:smt-z3    0.013 ║
+[[34m  Info  [0m] ║ Board$oppositeColorNeighbors  precond. (call $this.at(p))                                    83:18   valid  U:smt-z3    0.010 ║
+[[34m  Info  [0m] ║ Board$oppositeColorNeighbors  precond. (call $this.neighbors(p, $this.at(p).otherColor()))   83:5    valid  U:smt-z3    0.015 ║
+[[34m  Info  [0m] ║ Board$put                     postcondition                                                  49:16   valid  U:smt-z3    0.028 ║
+[[34m  Info  [0m] ║ Board$put                     precond. (call $this.cells.+(p, c))                            48:14   valid  U:smt-z3    0.038 ║
+[[34m  Info  [0m] ║ Board$remove                  postcondition                                                  96:16   valid  U:smt-z3    0.611 ║
+[[34m  Info  [0m] ║ Board$remove                  precond. (call $this.cells - p)                                95:14   valid  U:smt-z3    0.020 ║
+[[34m  Info  [0m] ║ Board$sameColorNeighbors      postcondition                                                  79:14   valid  U:smt-z3    2.799 ║
+[[34m  Info  [0m] ║ Board$sameColorNeighbors      precond. (call $this.neighbors(p.p, p.c))                      78:5    valid  U:smt-z3    0.009 ║
+[[34m  Info  [0m] ║ Cell$otherColor               match exhaustiveness                                           7:7     valid  U:smt-z3    0.007 ║
+[[34m  Info  [0m] ║ Cell$otherColor               postcondition                                                  12:17   valid  U:smt-z3    0.012 ║
+[[34m  Info  [0m] ║ GoMap$$plus                   precond. (call $this.+(pair._1, pair._2))                      35:5    valid  U:smt-z3    0.015 ║
+[[34m  Info  [0m] ║ GoMap$contains                postcondition                                                  27:14   valid  U:smt-z3    0.012 ║
+[[34m  Info  [0m] ║ GoMap$contains                precond. (call $this.isDefinedAt(k))                           26:5    valid  U:smt-z3    0.014 ║
+[[34m  Info  [0m] ║ GoMap$isValid                 precond. (call $this.pairs.head())                             21:36   valid  U:smt-z3    0.025 ║
+[[34m  Info  [0m] ║ GoMap$isValid                 precond. (call $this.pairs.tail())                             21:10   valid  U:smt-z3    0.389 ║
+[[34m  Info  [0m] ║ GoMap$isValid                 precond. (call $this.pairs.tail())                             21:70   valid  U:smt-z3    0.331 ║
+[[34m  Info  [0m] ║ GoSet$isValid                 precond. (call $this.elements.head())                          11:41   valid  U:smt-z3    0.056 ║
+[[34m  Info  [0m] ║ GoSet$isValid                 precond. (call $this.elements.tail())                          11:65   valid  U:smt-z3    0.048 ║
+[[34m  Info  [0m] ║ GoSet$isValid                 precond. (call $this.elements.tail())                          11:17   valid  U:smt-z3    0.024 ║
+[[34m  Info  [0m] ║ PlayerType$cell               match exhaustiveness                                           8:7     valid  U:smt-z3    0.008 ║
+[[34m  Info  [0m] ║ noDuplicates                  precond. (call lst.head())                                     58:32   valid  U:smt-z3    0.013 ║
+[[34m  Info  [0m] ║ noDuplicates                  precond. (call lst.tail())                                     58:58   valid  U:smt-z3    0.046 ║
+[[34m  Info  [0m] ║ noDuplicates                  precond. (call lst.tail())                                     58:11   valid  U:smt-z3    0.013 ║
+[[34m  Info  [0m] ╟┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄╢
+[[34m  Info  [0m] ║ total: 34     valid: 34     invalid: 0      unknown 0                                                                   6.209 ║
+[[34m  Info  [0m] ╚═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
 [[35m Debug  [0m]   ┌────────┐
 [[35m Debug  [0m] ╔═╡ Timers ╞═════════════════════════════════════════════════════════════════════════════════╗
 [[35m Debug  [0m] ║ └────────┘                                                                                 ║
 [[35m Debug  [0m] ║ name                                min        avg       max    n                    total ║
 [[35m Debug  [0m] ╟┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄╢
-[[35m Debug  [0m] ║ ├ total                                                                           44997 ms ║
-[[35m Debug  [0m] ║ └ frontend                                                                        11649 ms ║
+[[35m Debug  [0m] ║ ├ total                                                                           22636 ms ║
+[[35m Debug  [0m] ║ └ frontend                                                                        11770 ms ║
 [[35m Debug  [0m] ╚════════════════════════════════════════════════════════════════════════════════════════════╝
