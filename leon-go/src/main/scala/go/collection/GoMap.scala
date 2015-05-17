@@ -36,6 +36,7 @@ case class GoMap[K, V](pairs: List[(K, V)]) {
   }
 
   // Insertion assumes to such key exist
+  @library
   def +(k: K, v: V): GoMap[K, V] = {
     require(isValid && !contains(k))
     GoMap((k, v)::pairs)
@@ -46,7 +47,7 @@ case class GoMap[K, V](pairs: List[(K, V)]) {
   def -(k: K): GoMap[K, V] = {
     require(isValid && contains(k))
     GoMap(pairs.filter(_._1 != k))
-  } ensuring(res => !res.contains(k) && res.isValid)
+  } ensuring(res => isEqual(GoMap((k, get(k))::pairs)) && res.isValid)
 
   def --(ks: GoSet[K]) = GoMap(pairs.filter(x => !ks.contains(x._1)))
 
@@ -56,6 +57,7 @@ case class GoMap[K, V](pairs: List[(K, V)]) {
 
   def forall(f: ((K, V)) => Boolean): Boolean = pairs.forall(f)
 
+  @library
   def filter(f: ((K, V)) => Boolean): GoMap[K, V] = {
     GoMap(pairs.filter(f))
   } ensuring(res => pairs.forall(x => !f(x) || res.exists(_ == x)))
@@ -64,11 +66,13 @@ case class GoMap[K, V](pairs: List[(K, V)]) {
 
   def foldLeft[R](z: R)(f: (R, (K, V)) => R): R = pairs.foldLeft(z)(f)
 
+  @library
   def get(k: K) = {
     require(isValid && contains(k))
     pairs.filter(_._1 == k).head._2
   } ensuring(res => pairs.exists(_ == (k, res)))
 
+  @library
   def getOrElse(k: K, els: V): V = {
     require(isValid)
     pairs.find(_._1 == k).map(_._2).getOrElse(els)

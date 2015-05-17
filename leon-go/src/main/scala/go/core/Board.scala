@@ -8,15 +8,15 @@ import PlayerTypeObject._
 
 case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
 
-  def isValid: Boolean = cells.keys.forall(insideBoard) && cells.isValid
+  def isValid: Boolean = n > 0 && n <= 10 && cells.keys.forall(insideBoard) && cells.isValid
 
   def this(n: BigInt) = this(n, GoMap.empty)
 
   def inRange(x: BigInt) = 0 < x && x <= n
 
-  def insideBoard(p: Point) = inRange(p.x) && inRange(p.y)
+  def insideBoard(p: Point): Boolean = inRange(p.x) && inRange(p.y)
 
-  def insideBoard(pc: PlacedCell) = inRange(pc.p.x) && inRange(pc.p.y)
+  def insideBoard(pc: PlacedCell): Boolean = insideBoard(pc.p)
 
   def isOccupied(p: Point) = {
     require(isValid)
@@ -26,6 +26,9 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
   def at(x: BigInt, y: BigInt): Cell = {
     require(isValid)
     cells.getOrElse(Point(x, y), EmptyCell)
+  } ensuring { res =>
+    (cells.contains(Point(x, y)) && res == cells.get(Point(x, y))) ||
+    (!cells.contains(Point(x, y)) && res == EmptyCell)
   }
 
   def at(p: Point): Cell = {
@@ -43,7 +46,9 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
   def put(c: Cell, p: Point): Board = {
     require(isValid && insideBoard(p) && !isOccupied(p))
     Board(n, cells + (p, c))
-  } ensuring (_.at(p) == c)
+  } ensuring { res =>
+    n == res.n && cells + (p, c) == res.cells
+  }
 
   def freeCells: GoSet[PlacedCell] = {
     require(isValid)
@@ -88,7 +93,9 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
   def remove(p: Point): Board = {
     require(isValid && insideBoard(p) && isOccupied(p))
     Board(n, cells - p)
-  } ensuring (!_.isOccupied(p))
+  } ensuring { res =>
+    n == res.n && (res.cells + (p, cells.get(p))) == cells
+  }
 
   def remove(ps: GoSet[Point]): Board = Board(n, cells -- ps)
 

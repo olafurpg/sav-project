@@ -3,6 +3,7 @@ package go.collection
 import go.core.PlacedCell
 import leon.collection._
 import GoSet._
+import leon.annotation._
 
 case class GoSet[T](elements: List[T]) {
   def isValid: Boolean = {
@@ -16,6 +17,7 @@ case class GoSet[T](elements: List[T]) {
 
   def foldLeft[R](z: R)(f: (R, T) => R): R = elements.foldLeft(z) { (r, e) => f(r, e) }
 
+  @library
   def -(e: T): GoSet[T] = {
     require(isValid && contains(e))
     GoSet(elements.filter(_ != e))
@@ -23,6 +25,7 @@ case class GoSet[T](elements: List[T]) {
 
   def --(es: GoSet[T]) = filterNot(es.contains)
 
+  @library
   def +(e: T): GoSet[T] = {
     require(isValid && !contains(e))
     GoSet(e::elements)
