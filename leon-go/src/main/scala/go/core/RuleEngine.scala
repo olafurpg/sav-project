@@ -7,7 +7,7 @@ object RuleEngine {
     import game._
 
     step match {
-      case Pass => Left(game.copy(activePlayer = game.activePlayer.nextPlayer))
+      case Pass => Left(Game(game.states, Pass::game.steps, game.activePlayer.nextPlayer))
 
       case Place(x, y) if !state.insideBoard(Point(x, y)) => Right(OutsideOfBoardError)
 
