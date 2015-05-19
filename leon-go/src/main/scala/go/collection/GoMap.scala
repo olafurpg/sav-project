@@ -17,8 +17,7 @@ case class GoMap[K, V](pairs: List[(K, V)]) {
   }
 
   def isValid: Boolean = {
-    if (isEmpty) true
-    else pairs.tail.filter(_._1 == pairs.head._1).size == 0 && GoMap(pairs.tail).isValid
+    pairs.forall(x => pairs.filter(_._1 == x._1).size == 1)
   }
 
   def contains(k: K): Boolean = {

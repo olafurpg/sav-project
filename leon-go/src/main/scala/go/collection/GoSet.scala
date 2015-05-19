@@ -7,8 +7,7 @@ import leon.annotation._
 
 case class GoSet[T](elements: List[T]) {
   def isValid: Boolean = {
-    if (isEmpty) true
-    else !GoSet(elements.tail).contains(elements.head) && GoSet(elements.tail).isValid
+    elements.forall(x => elements.filter(_ == x).size == 1)
   }
 
   def isEmpty: Boolean = elements.isEmpty
