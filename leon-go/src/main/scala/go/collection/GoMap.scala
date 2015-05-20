@@ -17,7 +17,7 @@ case class GoMap[K, V](pairs: List[(K, V)]) {
   }
 
   def isValid: Boolean = {
-    pairs.forall(x => pairs.filter(_._1 == x._1).size == 1)
+    GoMap.noDuplicates(pairs)
   }
 
   def contains(k: K): Boolean = {
@@ -94,6 +94,11 @@ case class GoMap[K, V](pairs: List[(K, V)]) {
 object GoMap {
   def board(list: List[go.core.PlacedCell]): GoMap[Point, Cell] = {
     GoMap(list.map(x => x.p -> x.c))
+  }
+
+  // use list operation to express predicate, as list is verified
+  def noDuplicates[K, V](lst: List[(K, V)]): Boolean = {
+    lst.forall(x => lst.filter(_._1 == x._1).size == 1)
   }
 
   def empty[K, V]: GoMap[K, V] = GoMap(List[(K, V)]())

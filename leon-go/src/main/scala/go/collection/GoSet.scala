@@ -7,7 +7,7 @@ import leon.annotation._
 
 case class GoSet[T](elements: List[T]) {
   def isValid: Boolean = {
-    elements.forall(x => elements.filter(_ == x).size == 1)
+    GoSet.noDuplicates(elements)
   }
 
   def isEmpty: Boolean = elements.isEmpty
@@ -48,12 +48,24 @@ case class GoSet[T](elements: List[T]) {
 
   def filter(f: T => Boolean): GoSet[T] = GoSet(elements.filter(f))
 
+  @library
   def filterNot(f: T => Boolean): GoSet[T] = {
     require(isValid)
     GoSet(elements.filter(!f(_)))
   } ensuring { res =>
-    elements.filter(!f(_)) == res.elements
+    forall(p => res.contains(p) || f(p)) &&
+    res.forall(!f(_))
   }
+
+  @library
+  def product[R](that: GoSet[R]): GoSet[(T, R)] = {
+    require(isValid && that.isValid)
+
+    GoSet(for {
+      x <- elements
+      y <- that.elements
+    } yield (x, y))
+  } ensuring(_.isValid)
 
   def isEqualTo(that: GoSet[T]): Boolean =
     that.elements.forall(elements.contains) && elements.forall(that.elements.contains)
@@ -62,9 +74,9 @@ case class GoSet[T](elements: List[T]) {
 }
 
 object GoSet {
+  // use list operation to express predicate, as list is verified
   def noDuplicates[T](lst: List[T]): Boolean = {
-    if (lst.isEmpty) true
-    else !lst.tail.exists(_ == lst.head) && noDuplicates(lst.tail)
+    lst.forall(x => lst.filter(_ == x).size == 1)
   }
 
   def empty[T]: GoSet[T] = GoSet(List[T]())

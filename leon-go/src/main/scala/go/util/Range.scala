@@ -1,6 +1,7 @@
 package go.util
 import leon.collection.List
 import leon.annotation._
+import go.collection.GoSet
 
 object Range {
   @library
@@ -10,7 +11,7 @@ object Range {
   } ensuring { res =>
     res.size == to - from + 1 &&
     contains(res, from, to) &&
-    res.forall(x => res.filter(_ == x).size == 1)
+    GoSet.noDuplicates(res)
   }
 
   def contains(list: List[BigInt], from: BigInt, to: BigInt): Boolean = {

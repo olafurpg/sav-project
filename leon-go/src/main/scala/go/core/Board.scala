@@ -1,6 +1,7 @@
 package go.core
 
 import leon.collection._
+import leon.annotation._
 import go.collection._
 import go.util.conversions._
 import go.util.Range._
@@ -48,20 +49,18 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
     n == res.n && cells + (p, c) == res.cells
   }
 
+  @library
+  def allPoints: GoSet[Point] = {
+    val range = GoSet(to(1, n))
+    range.product(range).map(p => Point(p._1, p._2))
+  } ensuring(_.isValid)
+
   def freeCells: GoSet[Point] = {
     require(isValid)
-    val points = GoSet(for {
-      x <- to(1, n)
-      y <- to(1, n)
-    } yield Point(x, y))
-
-    require(points.isValid) // should be valid
-
-    points.filterNot(cells.isDefinedAt)
+    allPoints.filterNot(isOccupied)
   } ensuring { res =>
-    val points = for(x <- to(1, n); y <- to(1, n)) yield Point(x, y)
-    points.forall(p => res.contains(p) || cells.isDefinedAt(p)) &&
-    res.forall(!cells.isDefinedAt(_))
+    allPoints.forall(p => res.contains(p) || isOccupied(p)) &&
+    res.forall(!isOccupied(_))
   }
 
   def neighbors(x: BigInt, y: BigInt): List[PlacedCell] = {
