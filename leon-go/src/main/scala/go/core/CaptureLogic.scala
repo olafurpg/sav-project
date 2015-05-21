@@ -5,15 +5,16 @@ import go.collection.GoSet
 import go.core.definitions._
 
 object CaptureLogic {
-  def put(board: Board, p: Point, c: Cell): Board = {
+  def capture(board: Board, p: Point, c: Cell): Board = {
     require(board.isValid && !board.isOccupied(p) && board.insideBoard(p))
-
     val board1 = board.put(c, p)
+
+    // first capture enemy, which may make self dead stones alive
     val captured1 = capturedCells(board1).filterNot(_.c == c)
-
     val board2 = board1.remove(captured1.map(_.p))
-    val captured2 = capturedCells(board2).filter(_.c == c)
 
+    // capture self dead stones --> for suicide detection
+    val captured2 = capturedCells(board2).filter(_.c == c)
     board2.remove(captured2.map(_.p))
   }
 
@@ -35,7 +36,7 @@ object CaptureLogic {
         else (explored ++ component, captured ++ component)
       }
     }._2
-  }
+  } ensuring(_.isValid)
 
 
   def connectedComponent(board: Board, p: PlacedCell, visited: GoSet[PlacedCell] = GoSet.empty): GoSet[PlacedCell] = {
@@ -49,6 +50,6 @@ object CaptureLogic {
         connectedComponent(board, a, b)
       }
     }
-  }
+  } ensuring(_.isValid)
 
 }

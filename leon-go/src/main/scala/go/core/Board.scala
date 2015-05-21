@@ -41,11 +41,12 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
     to(1, n).map(x => to(1, n).map(y => at(x, y)))
   }
 
+  @library
   def put(c: Cell, p: Point): Board = {
     require(isValid && insideBoard(p) && !isOccupied(p))
     Board(n, cells + (p, c))
   } ensuring { res =>
-    n == res.n && cells + (p, c) == res.cells
+    n == res.n && cells + (p, c) == res.cells && res.isValid
   }
 
   @library
@@ -99,16 +100,26 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
     neighbors(p).filter(_.c == EmptyCell)
   }
 
-  def full: Boolean = cells.size == n * n
+  def full: Boolean = {
+    require(isValid)
+    cells.size == n * n
+  }
 
+  @library
   def remove(p: Point): Board = {
     require(isValid && insideBoard(p) && isOccupied(p))
     Board(n, cells - p)
   } ensuring { res =>
-    n == res.n && (res.cells + (p, cells.get(p))) == cells
+    n == res.n && (res.cells + (p, cells.get(p))).isEqual(cells) && res.isValid
   }
 
-  def remove(ps: GoSet[Point]): Board = Board(n, cells -- ps)
+  @library
+  def remove(ps: GoSet[Point]): Board = {
+    require(isValid && ps.isValid && ps.forall(p => insideBoard(p) && isOccupied(p)))
+    Board(n, cells -- ps)
+  } ensuring { res =>
+    n == res.n && ps.foldLeft(res.cells) { (acc, p) => acc + (p -> at(p)) }.isEqual(cells)
+  }
 
   def isEqual(that: Board) = this.n == that.n && this.cells.isEqual(that.cells)
 }

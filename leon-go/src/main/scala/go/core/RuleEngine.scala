@@ -5,10 +5,12 @@ import leon.annotation._
 import go.collection._
 
 object RuleEngine {
-  private def nextPlayer(game: Game): PlayerType = game.activePlayer match {
-    case WhitePlayer => BlackPlayer
-    case BlackPlayer => WhitePlayer
-  }
+  private def nextPlayer(game: Game): PlayerType = {
+    game.activePlayer match {
+      case WhitePlayer => BlackPlayer
+      case BlackPlayer => WhitePlayer
+    }
+  } ensuring(_ != game.activePlayer)
 
   def next(game: Game, step: Step): GoEither[Game, MoveError] = {
     require(game.isValid)
@@ -25,7 +27,7 @@ object RuleEngine {
 
       case p @ Place(x, y) =>
         val newPoint = Point(x, y)
-        val newBoard = CaptureLogic.put(game.state, newPoint, game.activePlayer.cell)
+        val newBoard = CaptureLogic.capture(game.state, newPoint, game.activePlayer.cell)
 
         if (newBoard.at(newPoint) == EmptyCell)
           GoRight[Game, MoveError](SuicideError)
