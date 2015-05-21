@@ -2,7 +2,7 @@ package go.util
 
 import go.core.Board
 import leon.lang.string
-import go.core.CellObject._
+import go.core.definitions._
 
 trait StringUtil {
 
@@ -16,7 +16,7 @@ trait StringUtil {
 
   def cellToString(c: Cell): String = c match {
     case WhiteCell => "O"
-    case BlackCell => "O"
+    case BlackCell => "X"
     case EmptyCell => "_"
   }
 

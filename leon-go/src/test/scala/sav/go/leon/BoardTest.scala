@@ -6,8 +6,7 @@ import leon.collection._
 import go.collection._
 import go.core._
 import go.util.conversions._
-import CellObject._
-import PlayerTypeObject._
+import go.core.definitions._
 
 trait Util extends FunSuite with StringUtil {
   val w = WhiteCell

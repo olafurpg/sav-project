@@ -1,22 +1,17 @@
 package go.core
 
-import CellObject._
 import leon.collection._
-import PlayerTypeObject._
+import go.core.definitions._
 
 case class Game(states: List[Board], steps: List[Step], activePlayer: PlayerType) {
-  //  require(s.size > 0)
-
   def state: Board = {
-    require(states.size.toInt > 0)
+    require(states.size > 0)
     states.head
   }
 
-  val round: BigInt = states.size.toInt - 1
+  val round: BigInt = states.size - 1
 
   val size: BigInt = state.n
-
-  override def toString(): String = state.toString()
 }
 
 object Game {

@@ -1,8 +1,7 @@
 package go.collection
 
-import go.core.{Point, PlacedCell, CellObject}
+import go.core.definitions._
 import leon.collection._
-import CellObject._
 import GoMap._
 import leon.annotation._
 
@@ -92,7 +91,7 @@ case class GoMap[K, V](pairs: List[(K, V)]) {
 }
 
 object GoMap {
-  def board(list: List[go.core.PlacedCell]): GoMap[Point, Cell] = {
+  def board(list: List[PlacedCell]): GoMap[Point, Cell] = {
     GoMap(list.map(x => x.p -> x.c))
   }
 

@@ -1,6 +1,7 @@
 package go.player
 
 import go.core._
+import go.core.definitions._
 import go.util.StringUtil
 import scala.io.StdIn
 

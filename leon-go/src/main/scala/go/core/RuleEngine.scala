@@ -1,45 +1,55 @@
 package go.core
 
-import go.core.CellObject.EmptyCell
-import go.core.PlayerTypeObject._
+import go.core.definitions._
+import leon.annotation._
+import go.collection._
 
 object RuleEngine {
-  def nextPlayer(game: Game): PlayerType = game.activePlayer match {
+  private def nextPlayer(game: Game): PlayerType = game.activePlayer match {
     case WhitePlayer => BlackPlayer
     case BlackPlayer => WhitePlayer
   }
 
-  def next(game: Game, step: Step): Either[Game, MoveError] = {
-    import game._
-
+  def next(game: Game, step: Step): GoEither[Game, MoveError] = {
     step match {
-      case Pass => Left(Game(game.states, Pass::game.steps, nextPlayer(game)))
+      case Pass =>
+        GoLeft[Game, MoveError](Game(game.states, Pass::game.steps, nextPlayer(game)))
 
-      case Place(x, y) if !state.insideBoard(Point(x, y)) => Right(OutsideOfBoardError)
+      case Place(x, y) if !game.state.insideBoard(Point(x, y)) =>
+        GoRight[Game, MoveError](OutsideOfBoardError)
 
-      case Place(x, y) if state.isOccupied(Point(x, y)) => Right(AlreadyOccupiedError)
-
-      case Place(x, y) if round > 1 && CaptureLogic.put(state, Point(x, y), activePlayer.cell) == states(1) => Right(AlreadyOccupiedError)
+      case Place(x, y) if game.state.isOccupied(Point(x, y)) =>
+        GoRight[Game, MoveError](AlreadyOccupiedError)
 
       case p @ Place(x, y) =>
         val newPoint = Point(x, y)
-        val newBoard = CaptureLogic.put(state, newPoint, activePlayer.cell)
-        if (newBoard.at(newPoint) == EmptyCell) Right(SuicideError)
-        else if (round > 0 && newBoard.isEqual(states.tail.head)) Right(KoError)
-        else Left(Game(newBoard :: states, step :: steps, nextPlayer(game)))
+        val newBoard = CaptureLogic.put(game.state, newPoint, game.activePlayer.cell)
+
+        if (newBoard.at(newPoint) == EmptyCell)
+          GoRight[Game, MoveError](SuicideError)
+        else if (game.round > 0 && newBoard.isEqual(game.states.tail.head))
+          GoRight[Game, MoveError](KoError)
+        else
+          GoLeft[Game, MoveError](Game(newBoard :: game.states, step :: game.steps, nextPlayer(game)))
     }
   } ensuring { res =>
     res match {
-      case Left(_) => Step.isValid(step, game.state)
-      case Right(_) => true
+      case GoLeft(newGame) =>
+        step match {
+          case Pass => newGame.activePlayer == nextPlayer(game)
+          case Place(x, y) => !game.state.isOccupied(Point(x, y))
+        }
+      case GoRight(err) => true
     }
   }
 
+  @ignore
   def check(game: Game, step: Step): Option[MoveError] = next(game, step) match {
-    case Left(g) => None
-    case Right(e) => Some(e)
+    case GoLeft(g) => None
+    case GoRight(e) => Some(e)
   }
 
+  @ignore
   def isValid(game: Game, step: Step): Boolean = check(game, step).isEmpty
 
   def isOver(game: Game): Boolean = {

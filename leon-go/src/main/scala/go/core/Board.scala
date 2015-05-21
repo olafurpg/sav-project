@@ -5,8 +5,7 @@ import leon.annotation._
 import go.collection._
 import go.util.conversions._
 import go.util.Range._
-import CellObject._
-import PlayerTypeObject._
+import go.core.definitions._
 
 case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
   def isValid: Boolean = n > 1 && n <= 10 && cells.keys.forall(insideBoard) && cells.isValid
@@ -55,6 +54,7 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
     range.product(range).map(p => Point(p._1, p._2))
   } ensuring(_.isValid)
 
+  @library
   def freeCells: GoSet[Point] = {
     require(isValid)
     allPoints.filterNot(isOccupied)
@@ -66,7 +66,13 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
   def neighbors(x: BigInt, y: BigInt): List[PlacedCell] = {
     require(isValid)
     List((x + 1, y), (x, y + 1), (x - 1, y), (x, y - 1)).map(bigIntTuple2Point).filter(insideBoard).map(x => PlacedCell(x, at(x)))
-  } ensuring (_.forall(insideBoard))
+  } ensuring { res =>
+    res.forall(insideBoard) &&
+    res.forall { pc =>
+      ((pc.p.x - x == 1 || pc.p.x - x == -1) && (pc.p.y - y == 0) ) ||
+      ((pc.p.y - y == 1 || pc.p.y - y == -1) && (pc.p.x - x == 0) )
+    }
+  }
 
   def neighbors(p: Point): List[PlacedCell] = {
     require(isValid)

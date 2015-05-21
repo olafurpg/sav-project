@@ -13,8 +13,6 @@ echo Executing Leon...
 # Board
 # --functions="Board\$neighboors" \
 leon --debug=timers --timeout=3 \
-                                src/main/scala/go/core/Board.scala \
                                 src/main/scala/go/collection/*.scala \
-                                src/main/scala/go/core/{Point,PlacedCell,Cell,PlayerType}.scala \
+                                src/main/scala/go/core/*.scala \
                                 src/main/scala/go/util/{conversions,Range}.scala
-

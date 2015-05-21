@@ -1,6 +1,5 @@
 package go.collection
 
-import go.core.PlacedCell
 import leon.collection._
 import GoSet._
 import leon.annotation._
@@ -54,7 +53,8 @@ case class GoSet[T](elements: List[T]) {
     GoSet(elements.filter(!f(_)))
   } ensuring { res =>
     forall(p => res.contains(p) || f(p)) &&
-    res.forall(!f(_))
+    res.forall(!f(_)) &&
+    res.isValid
   }
 
   @library

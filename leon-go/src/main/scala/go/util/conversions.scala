@@ -1,7 +1,6 @@
 package go.util
 
-import go.core.CellObject._
-import go.core.{Point, PlacedCell }
+import go.core.definitions._
 import leon.lang.string
 
 package object conversions {

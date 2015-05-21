@@ -2,7 +2,7 @@ package go.core
 
 import go.util.conversions._
 import go.collection.GoSet
-import CellObject._
+import go.core.definitions._
 
 object CaptureLogic {
   def put(b: Board, p: Point, c: Cell): Board = {

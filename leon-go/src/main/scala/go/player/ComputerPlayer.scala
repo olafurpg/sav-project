@@ -1,7 +1,8 @@
 package go.player
 
 import go.core._
-import PlayerTypeObject._
+import go.core.definitions._
+import go.collection._
 
 case object ComputerPlayer extends Player {
   // TODO: Use smart heuristic to fix depth
@@ -35,18 +36,18 @@ case class AI(p: PlayerType) {
     else {
       RuleEngine.next(g, Pass) match {
         // Pass is illegal for some reason
-        case Right(_) => (if (maximizingPlayer) Int.MaxValue else Int.MinValue, Pass)
-        case Left(newGame) =>
+        case GoRight(_) => (if (maximizingPlayer) Int.MaxValue else Int.MinValue, Pass)
+        case GoLeft(newGame) =>
           val startScore = minimax(newGame, depth - 1)._1
           g.state.freeCells.foldLeft((startScore, Pass: Step)) { case ((currScore, step), p) =>
             val newStep = Place(p.x, p.y)
             RuleEngine.next(g, newStep) match {
-              case Left(newGame) =>
+              case GoLeft(newGame) =>
                 val score = minimax(newGame, depth - 1)._1
                 if (maximizingPlayer && score > currScore) (score, newStep)
                 else if (!maximizingPlayer && score < currScore) (score, newStep)
                 else (currScore, step)
-              case Right(_) =>
+              case GoRight(_) =>
                 errors += 1
                 currScore -> step
             }
