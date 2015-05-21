@@ -17,25 +17,39 @@ case class GoSet[T](elements: List[T]) {
 
   @library
   def -(e: T): GoSet[T] = {
-    require(isValid && contains(e))
+    require(isValid)
     GoSet(elements.filter(_ != e))
-  } ensuring(res => isEqualTo(res + e) && res.isValid)
+  } ensuring { res =>
+    (
+      (!elements.contains(e) && isEqualTo(res)) ||
+      (elements.contains(e) && isEqualTo(GoSet(e::res.elements)))
+    ) &&
+    res.isValid
+  }
 
   def --(es: GoSet[T]) = {
-    require(isValid && es.forall(contains))
+    require(isValid)
     filterNot(es.contains)
   }
 
   @library
   def +(e: T): GoSet[T] = {
-    require(isValid && !contains(e))
-    GoSet(e::elements)
-  } ensuring (res => res.isEqualTo(GoSet(e::elements)) && res.isValid)
+    require(isValid)
+    if (elements.contains(e)) this
+    else GoSet(e::elements)
+  } ensuring { res =>
+    (
+      (elements.contains(e) && isEqualTo(res)) ||
+      (!elements.contains(e) && res.isEqualTo(GoSet(e::elements)))
+    ) &&
+    res.isValid
+  }
 
+  @library
   def ++(that: GoSet[T]): GoSet[T] = {
     require(isValid && that.isValid)
     GoSet(elements ++ that.elements.filter(x => !elements.contains(x)))
-  }
+  } ensuring(_.isValid)
 
   def map[S](f: T => S): GoSet[S] = GoSet(elements.map(f))
 

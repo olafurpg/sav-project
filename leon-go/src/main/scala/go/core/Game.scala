@@ -4,14 +4,19 @@ import leon.collection._
 import go.core.definitions._
 
 case class Game(states: List[Board], steps: List[Step], activePlayer: PlayerType) {
+  def isValid = states.size > 0 && states.forall(_.isValid)
+
   def state: Board = {
-    require(states.size > 0)
+    require(isValid)
     states.head
   }
 
-  val round: BigInt = states.size - 1
+  val round: BigInt = steps.size
 
-  val size: BigInt = state.n
+  val size: BigInt = {
+    require(isValid)
+    state.n
+  }
 }
 
 object Game {

@@ -11,6 +11,8 @@ object RuleEngine {
   }
 
   def next(game: Game, step: Step): GoEither[Game, MoveError] = {
+    require(game.isValid)
+
     step match {
       case Pass =>
         GoLeft[Game, MoveError](Game(game.states, Pass::game.steps, nextPlayer(game)))
@@ -53,6 +55,7 @@ object RuleEngine {
   def isValid(game: Game, step: Step): Boolean = check(game, step).isEmpty
 
   def isOver(game: Game): Boolean = {
+    require(game.isValid)
     game.round > 1 && game.steps.head == Pass && game.steps.tail.head == Pass
   }
 }
