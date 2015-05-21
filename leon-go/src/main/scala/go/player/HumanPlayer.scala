@@ -5,8 +5,10 @@ import go.core.definitions._
 import go.util.StringUtil
 import scala.io.StdIn
 
-case object HumanPlayer extends Player with StringUtil {
+object HumanPlayer extends Player with StringUtil {
   val coordinate = """\s*(\d+) (\d+)\s*""".r
+
+  def name = "You"
 
   // String  => Either[Step, Error]
   // UIEvent => Either[Step, Error]
@@ -42,9 +44,9 @@ case object HumanPlayer extends Player with StringUtil {
       }
     }
   }
+
   override def move(g: Game): Step = {
-    println(message("Round " + g.round, g.activePlayer.toString, s"Size: ${g.size} x ${g.size}"))
-    println(g)
+    // println(message("Round " + g.round, g.activePlayer.toString, s"Size: ${g.size} x ${g.size}"))
     readStep(g)
   }
 }

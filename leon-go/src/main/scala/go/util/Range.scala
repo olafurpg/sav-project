@@ -23,4 +23,9 @@ object Range {
     if (from >= to) List() else from :: until(from + 1, to)
   }
 
+  def test(list: List[BigInt], f: BigInt => Boolean): List[BigInt] = {
+    list.filter(f)
+  } ensuring { res =>
+    res.forall(f) && list.forall(e => res.contains(e) || !f(e))
+  }
 }

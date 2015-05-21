@@ -60,4 +60,15 @@ object RuleEngine {
     require(game.isValid)
     game.round > 1 && game.steps.head == Pass && game.steps.tail.head == Pass
   }
+
+  @ignore
+  /** Implements area scoring (VS territory scoring)
+    *
+    * A player's score is the number of stones that the player has
+    * on the board, plus the number of empty intersections surrounded
+    * by that player's stones
+    */
+  def score(game: Game): Map[PlayerType, Int] = {
+    ???
+  }
 }

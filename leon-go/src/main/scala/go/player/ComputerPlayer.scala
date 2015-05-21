@@ -5,6 +5,8 @@ import go.core.definitions._
 import go.collection._
 
 case object ComputerPlayer extends Player {
+  def name = "Alice(AI)"
+
   // TODO: Use smart heuristic to fix depth
   val MaxNodes: Int = 500000
 

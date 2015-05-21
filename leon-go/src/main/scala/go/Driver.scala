@@ -3,20 +3,32 @@ package go
 import go.core.definitions._
 import go.core._
 import go.player._
+import go.util.StringUtil
 import leon.annotation._
 import go.collection._
 
-object Driver {
+
+object Driver extends StringUtil {
   @ignore
   def main(args: Array[String]): Unit = {
-    run(Game(5), Map(BlackPlayer -> HumanPlayer,  WhitePlayer -> ComputerPlayer))
+    val game = Game(5)
+
+    println("Welcome to Go!\n")
+    println(boardToString(game.state))
+
+    run(Game(5), Map(BlackPlayer -> HumanPlayer,  WhitePlayer -> RandomPlayer))
   }
 
   @ignore
   def run(game: Game, players: Map[PlayerType, Player]): Unit = {
     if (!RuleEngine.isOver(game)) {
-      RuleEngine.next(game, players(game.activePlayer).move(game)) match {
-        case GoLeft(game) => run(game, players)
+      val player = players(game.activePlayer)
+      val step = player.move(game)
+      RuleEngine.next(game, step) match {
+        case GoLeft(g) =>
+          println(player.name + ": " + step + " Stone:" + cellToString(game.activePlayer.cell) + "\n")
+          println(boardToString(g.state))
+          run(g, players)
         case GoRight(err) => println(err); run(game, players)
       }
     }

@@ -23,6 +23,11 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
     cells.isDefinedAt(p)
   }
 
+  def isOnBoard(p: PlacedCell) = {
+    require(isValid)
+    insideBoard(p.p) && at(p.p) == p.c
+  }
+
   def at(x: BigInt, y: BigInt): Cell = {
     require(isValid)
     cells.getOrElse(Point(x, y), EmptyCell)
@@ -114,11 +119,11 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
   }
 
   @library
-  def remove(ps: GoSet[Point]): Board = {
-    require(isValid && ps.isValid && ps.forall(p => insideBoard(p) && isOccupied(p)))
-    Board(n, cells -- ps)
+  def remove(ps: GoSet[PlacedCell]): Board = {
+    require(isValid && ps.isValid && ps.forall(isOnBoard))
+    Board(n, cells -- ps.map(_.p))
   } ensuring { res =>
-    n == res.n && ps.foldLeft(res.cells) { (acc, p) => acc + (p -> at(p)) }.isEqual(cells)
+    n == res.n && ps.foldLeft(res.cells) { (acc, p) => acc + (p.p -> p.c) }.isEqual(cells)
   }
 
   def isEqual(that: Board) = this.n == that.n && this.cells.isEqual(that.cells)

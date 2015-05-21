@@ -11,11 +11,11 @@ object CaptureLogic {
 
     // first capture enemy, which may make self dead stones alive
     val captured1 = capturedCells(board1).filterNot(_.c == c)
-    val board2 = board1.remove(captured1.map(_.p))
+    val board2 = board1.remove(captured1)
 
     // capture self dead stones --> for suicide detection
     val captured2 = capturedCells(board2).filter(_.c == c)
-    board2.remove(captured2.map(_.p))
+    board2.remove(captured2)
   }
 
   def hasLiberty(board: Board)(p: PlacedCell): Boolean = {
