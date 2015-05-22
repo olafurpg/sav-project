@@ -52,27 +52,61 @@ object RuleEngine {
   }
 
   private def checkPass(oldGame: Game, newGame: Game): Boolean = {
+    require(oldGame.isValid && newGame.isValid)
+
     newGame.activePlayer == nextPlayer(oldGame) &&
     newGame.states == oldGame.states &&
     newGame.steps == Pass::oldGame.steps
   }
 
   private def checkValidPlace(oldGame: Game, newGame: Game, p: Place): Boolean = {
-    !oldGame.state.isOccupied(Point(p.x, p.y))
+    require(oldGame.isValid && newGame.isValid)
+
+    !isOutsideBoard(oldGame, p) &&
+    !isAlreadyOccupied(oldGame, p) &&
+    !isSuicide(oldGame, p) &&
+    !isKo(oldGame, p) &&
+    newGame.size == oldGame.size &&
+    newGame.steps == p::oldGame.steps &&
+    newGame.states == CaptureLogic.capture(oldGame.state, Point(p.x, p.y), oldGame.activePlayer.cell)::oldGame.states
   }
 
   private def checkErrorPlace(game: Game, err: MoveError, p: Place): Boolean = {
+    require(game.isValid)
     if (isOutsideBoard(game, p)) err == OutsideOfBoardError
     else if (isAlreadyOccupied(game, p)) err == AlreadyOccupiedError
+    else if (isSuicide(game, p)) err == SuicideError
+    else if (isKo(game, p)) err == KoError
     else true
   }
 
   private def isAlreadyOccupied(game: Game, p: Place): Boolean = {
+    require(game.isValid)
     game.state.isOccupied(Point(p.x, p.y))
   }
 
   private def isOutsideBoard(game: Game, p: Place): Boolean = {
+    require(game.isValid)
     !game.state.insideBoard(Point(p.x, p.y))
+  }
+
+  private def isSuicide(game: Game, p: Place): Boolean = {
+    require(game.isValid && game.state.insideBoard(Point(p.x, p.y)))
+
+    val newPoint = Point(p.x, p.y)
+    val newBoard = CaptureLogic.capture(game.state, newPoint, game.activePlayer.cell)
+
+    if (newBoard.at(newPoint) == EmptyCell) true else false
+  }
+
+  private def isKo(game: Game, p: Place): Boolean = {
+    require(game.isValid && game.state.insideBoard(Point(p.x, p.y)))
+
+    val newPoint = Point(p.x, p.y)
+    val newBoard = CaptureLogic.capture(game.state, newPoint, game.activePlayer.cell)
+
+    if (game.round > 0 && newBoard.isEqual(game.states.tail.head)) true
+    else false
   }
 
   @ignore
