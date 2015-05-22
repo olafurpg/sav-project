@@ -12,7 +12,8 @@ echo Executing Leon...
 
 # Board
 # --functions="Board\$neighboors" \
-leon --debug=timers --timeout=3 \
+leon --debug=timers --timeout=15 \
+                                --solvers=smt-cvc4 \
                                 src/main/scala/go/collection/*.scala \
                                 src/main/scala/go/core/*.scala \
-                                src/main/scala/go/util/{conversions,Range}.scala
+                                src/main/scala/go/util/{conversions,Range,Logic}.scala

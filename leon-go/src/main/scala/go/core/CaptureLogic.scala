@@ -1,8 +1,10 @@
 package go.core
 
 import go.util.conversions._
+import go.util.Logic._
 import go.collection.GoSet
 import go.core.definitions._
+import leon.collection._
 
 object CaptureLogic {
   def capture(board: Board, p: Point, c: Cell): Board = {
@@ -25,22 +27,42 @@ object CaptureLogic {
 
   def capturedCells(board: Board): GoSet[PlacedCell] = {
     require(board.isValid)
+    capturedCellsRecursive(board, board.cells.map(tpl2PlacedCell))
+  } ensuring { res =>
+    res.isValid && board.cells.pairs.map(tpl2PlacedCell).forall { x =>
+      implies(hasLiberty(board)(x), !res.contains(x))
+//        implies(!hasLiberty(board)(x), res.contains(x))
+      // Missing condition when x has no liberty but neighbor has liberty
+    }
+  }
 
-    val e = GoSet.empty[PlacedCell]
-    board.cells.foldRight(e -> e) { case (p, (explored, captured)) =>
-      if (explored.contains(PlacedCell(p._1, p._2))) explored -> captured
-      else {
-        val component = connectedComponent(board, PlacedCell(p._1, p._2))
-
-        if (component.exists(hasLiberty(board))) (explored ++ component, captured)
-        else (explored ++ component, captured ++ component)
-      }
-    }._2
-  } ensuring(_.isValid)
-
+  def capturedCellsRecursive(board: Board, toVisit: List[PlacedCell], captured: GoSet[PlacedCell] = GoSet.empty): GoSet[PlacedCell] = {
+    require(board.isValid &&
+      captured.isValid &&
+      toVisit.forall(board.isOnBoard) &&
+      captured.forall(board.isOnBoard)
+    )
+    if (toVisit.isEmpty) captured
+    else if (captured.contains(toVisit.head)) capturedCellsRecursive(board, toVisit.tail, captured)
+    else {
+      val component = connectedComponent(board, toVisit.head)
+      if (!component.exists(hasLiberty(board))) capturedCellsRecursive(board, toVisit.tail, component)
+      else capturedCellsRecursive(board, toVisit.tail, captured)
+    }
+  } ensuring { res =>
+    res.forall(board.isOnBoard) &&
+      board.cells.pairs.map(tpl2PlacedCell).forall { x =>
+      implies(hasLiberty(board)(x), !res.contains(x)) &&
+        implies(!hasLiberty(board)(x), res.contains(x))
+    }
+  }
 
   def connectedComponent(board: Board, p: PlacedCell, visited: GoSet[PlacedCell] = GoSet.empty): GoSet[PlacedCell] = {
-    require(board.isValid && visited.isValid)
+    require(board.isValid &&
+      board.isOnBoard(p) &&
+      visited.isValid &&
+      visited.forall(board.isOnBoard)
+    )
 
     if (visited.contains(p)) visited
     else {
@@ -50,6 +72,6 @@ object CaptureLogic {
         connectedComponent(board, a, b)
       }
     }
-  } ensuring(_.isValid)
+  } ensuring (_.isValid)
 
 }

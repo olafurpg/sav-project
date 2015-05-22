@@ -8,7 +8,7 @@ import go.util.Range._
 import go.core.definitions._
 
 case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
-  def isValid: Boolean = n > 1 && n <= 10 && cells.keys.forall(insideBoard) && cells.isValid
+  def isValid: Boolean = n > 1 && n <= 5 && cells.keys.forall(insideBoard) && cells.isValid
 
   def this(n: BigInt) = this(n, GoMap.empty)
 

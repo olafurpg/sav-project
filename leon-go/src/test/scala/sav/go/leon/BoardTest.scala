@@ -225,6 +225,14 @@ class BoardTest extends FunSuite with Util {
     assert(RuleEngine.check(g2, ko2) === Some(KoError))
   }
 
+  test("CaptureLogic.capturedCells postcondition") {
+    val g = Game(B3)
+    val captured = CaptureLogic.capturedCells(g.state)
+    val p = PlacedCell(Point(1, 5), WhiteCell)
+    assert(!CaptureLogic.hasLiberty(g.state)(p))
+    assert(!captured.contains(p))
+  }
+
 }
 
 class BoardTestPlayground extends FunSuite with Util {
