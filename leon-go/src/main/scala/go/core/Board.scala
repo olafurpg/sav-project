@@ -40,7 +40,7 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
     cells.getOrElse(Point(x, y), EmptyCell)
   } ensuring { res =>
     (cells.contains(Point(x, y)) && res == cells.get(Point(x, y))) ||
-    (!cells.contains(Point(x, y)) && res == EmptyCell)
+      (!cells.contains(Point(x, y)) && res == EmptyCell)
   }
 
   def at(p: Point): Cell = {
@@ -65,7 +65,7 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
   def allPoints: GoSet[Point] = {
     val range = GoSet(to(1, n))
     range.product(range).map(p => Point(p._1, p._2))
-  } ensuring(_.isValid)
+  } ensuring (_.isValid)
 
   @library
   def freeCells: GoSet[Point] = {
@@ -73,7 +73,7 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
     allPoints.filterNot(isOccupied)
   } ensuring { res =>
     allPoints.forall(p => res.contains(p) || isOccupied(p)) &&
-    res.forall(!isOccupied(_))
+      res.forall(!isOccupied(_))
   }
 
   def neighbors(x: BigInt, y: BigInt): List[PlacedCell] = {
@@ -81,10 +81,10 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
     List((x + 1, y), (x, y + 1), (x - 1, y), (x, y - 1)).map(bigIntTuple2Point).filter(insideBoard).map(x => PlacedCell(x, at(x)))
   } ensuring { res =>
     res.forall(insideBoard) &&
-    res.forall { pc =>
-      ((pc.p.x - x == 1 || pc.p.x - x == -1) && (pc.p.y - y == 0) ) ||
-      ((pc.p.y - y == 1 || pc.p.y - y == -1) && (pc.p.x - x == 0) )
-    }
+      res.forall { pc =>
+        ((pc.p.x - x == 1 || pc.p.x - x == -1) && (pc.p.y - y == 0)) ||
+          ((pc.p.y - y == 1 || pc.p.y - y == -1) && (pc.p.x - x == 0))
+      }
   }
 
   def neighbors(p: Point): List[PlacedCell] = {
@@ -101,7 +101,9 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
     require(isValid)
     neighbors(p.p, p.c)
   } ensuring { res =>
-    validList(res) && res.forall(x => x.c == p.c) && neighbors(p.p).forall { x =>
+    //    validList(res) &&
+    res.forall(isOnBoard) &&
+    res.forall(x => x.c == p.c) && neighbors(p.p).forall { x =>
       iff(x.c == p.c, res.contains(x))
     }
   }

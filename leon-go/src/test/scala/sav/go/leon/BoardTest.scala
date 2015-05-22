@@ -31,9 +31,10 @@ trait Util extends FunSuite with StringUtil {
   }
 
   def dfsTest(lst: List[PlacedCell], ignore: GoSet[PlacedCell] = GoSet.empty): Unit = {
-    val expected = GoSet(lst.filterNot(ignore.contains))
+    val expected = Set(lst.filterNot(ignore.contains))
     val b1 = Board(10, GoMap.board(lst))
-    assert(CaptureLogic.connectedComponent(b1, PlacedCell(Point(1, 1), b)).isEqualTo(expected))
+    val p = PlacedCell(Point(1, 1), b)
+    assert(CaptureLogic.connectedComponentRecursive(b1, p.c, List(p)).toSet == expected)
   }
 
   def moveTest(n: Int, str1: String, str2: String, c: Cell, p: Point): Unit = {
@@ -77,7 +78,7 @@ class BoardTest extends FunSuite with Util {
   test("CaptureLogic.connectedComponent works") {
     val board = Board(3, GoMap.board(points))
 
-    assert(CaptureLogic.connectedComponent(board, points.head).isEqualTo(GoSet(points)))
+    assert(CaptureLogic.connectedComponentRecursive(board, points.head.c, List(points.head)).toSet  == points.toSet)
   }
 
   test("Board constructor works") {

@@ -2,6 +2,7 @@ package go.util
 import leon.collection.List
 import leon.annotation._
 import go.collection.GoSet
+import leon.lang.string
 
 object Range {
   def to(from: BigInt, to: BigInt): List[BigInt] = {
@@ -11,6 +12,10 @@ object Range {
     res.size == to - from + 1 &&
     inOrder(res, from)
   }
+
+//  def gimmeString: String = {
+//    "toString"
+//  }
 
   def inOrder(list: List[BigInt], from: BigInt): Boolean = {
     if (list.isEmpty) true
