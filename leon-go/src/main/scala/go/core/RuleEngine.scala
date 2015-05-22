@@ -40,11 +40,39 @@ object RuleEngine {
     res match {
       case GoLeft(newGame) =>
         step match {
-          case Pass => newGame.activePlayer == nextPlayer(game)
-          case Place(x, y) => newGame.state.isOnBoard(PlacedCell(Point(x, y), game.activePlayer.cell))
+          case Pass => checkPass(newGame, game)
+          case p@Place(x, y) => checkValidPlace(game, newGame, p)
         }
-      case GoRight(err) => true
+      case GoRight(err) =>
+        step match {
+          case Pass => false
+          case p@Place(x, y) => checkErrorPlace(game, err, p)
+        }
     }
+  }
+
+  private def checkPass(oldGame: Game, newGame: Game): Boolean = {
+    newGame.activePlayer == nextPlayer(oldGame) &&
+    newGame.states == oldGame.states &&
+    newGame.steps == Pass::oldGame.steps
+  }
+
+  private def checkValidPlace(oldGame: Game, newGame: Game, p: Place): Boolean = {
+    !oldGame.state.isOccupied(Point(p.x, p.y))
+  }
+
+  private def checkErrorPlace(game: Game, err: MoveError, p: Place): Boolean = {
+    if (isOutsideBoard(game, p)) err == OutsideOfBoardError
+    else if (isAlreadyOccupied(game, p)) err == AlreadyOccupiedError
+    else true
+  }
+
+  private def isAlreadyOccupied(game: Game, p: Place): Boolean = {
+    game.state.isOccupied(Point(p.x, p.y))
+  }
+
+  private def isOutsideBoard(game: Game, p: Place): Boolean = {
+    !game.state.insideBoard(Point(p.x, p.y))
   }
 
   @ignore
