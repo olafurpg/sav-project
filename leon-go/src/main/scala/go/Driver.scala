@@ -32,5 +32,11 @@ object Driver extends StringUtil {
         case GoRight(err) => println(err); run(game, players)
       }
     }
+    else {
+      val score = RuleEngine.score(game)
+      println("\n======== RESULT ==========\n")
+      println(players(WhitePlayer).name + ":" + score(WhitePlayer))
+      println(players(BlackPlayer).name + ":" + score(BlackPlayer))
+    }
   }
 }

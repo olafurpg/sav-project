@@ -62,13 +62,18 @@ object RuleEngine {
   }
 
   @ignore
-  /** Implements area scoring (VS territory scoring)
+  /** Implements stone scoring
     *
-    * A player's score is the number of stones that the player has
-    * on the board, plus the number of empty intersections surrounded
-    * by that player's stones
+    *  Stone scoring just counts the stones on board. It's much
+    *  simpler than *territory scoring* and *area scoring*.
     */
   def score(game: Game): Map[PlayerType, Int] = {
-    ???
+    val zero = Map[PlayerType, Int](WhitePlayer -> 0, BlackPlayer -> 0)
+    game.state.cells.foldLeft(zero) { (map, pair) =>
+      pair._2 match {
+        case WhiteCell => map + (WhitePlayer -> (map(WhitePlayer) + 1))
+        case BlackCell => map + (BlackPlayer -> (map(BlackPlayer) + 1))
+      }
+    }
   }
 }
