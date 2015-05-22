@@ -126,6 +126,8 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
   }
 
   def connected(p1: PlacedCell, p2: PlacedCell) = {
+    require(isValid)
+
     def reachable(currentCell: PlacedCell, visited: List[PlacedCell]): Boolean = {
       if (currentCell == p2) true
       else if (visited.contains(currentCell)) false
