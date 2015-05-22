@@ -13,7 +13,7 @@ echo Executing Leon...
 # Board
 leon --debug=timers --timeout=3 \
                                 --solvers=smt-z3 \
-                                --functions="connectedComponentRecursive" \
+                                --functions="connectedComponent" \
                                 src/main/scala/go/collection/*.scala \
                                 src/main/scala/go/core/*.scala \
                                 src/main/scala/go/util/{conversions,Range,Logic}.scala

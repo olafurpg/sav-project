@@ -59,6 +59,13 @@ object CaptureLogic {
       }
   }
 
+  def connectedComponent(board: Board, pc: PlacedCell): List[PlacedCell] = {
+    require(board.isValid && board.isOnBoard(pc))
+    connectedComponentRecursive(board, pc.c, List(pc))
+  } ensuring { res =>
+    res.contains(pc)
+  }
+
   def connectedComponentRecursive(board: Board, color: Cell, toVisit: List[PlacedCell], component: List[PlacedCell] = List[PlacedCell]()): List[PlacedCell] = {
     require(board.isValid &&
       board.validList(toVisit) &&
@@ -73,7 +80,7 @@ object CaptureLogic {
       connectedComponentRecursive(board, color, newToVisit, newComponent)
     }
   } ensuring { res =>
-    board.validList(res) // && (toVisit.isEmpty || component.contains(toVisit.head) || res.size > component.size)
+    board.validList(res)
   }
 
   def addElements(board: Board, a: List[PlacedCell], b: List[PlacedCell]): List[PlacedCell] = {
