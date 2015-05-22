@@ -68,7 +68,7 @@ case class GoMap[K, V](pairs: List[(K, V)]) {
   def get(k: K) = {
     require(isValid && contains(k))
     pairs.filter(_._1 == k).head._2
-  } ensuring(res => pairs.exists(_ == (k, res)))
+  } ensuring(res => pairs.contains(k -> res))
 
   @library
   def getOrElse(k: K, els: V): V = {

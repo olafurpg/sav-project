@@ -4,14 +4,17 @@ import leon.annotation._
 import go.collection.GoSet
 
 object Range {
-  @library
   def to(from: BigInt, to: BigInt): List[BigInt] = {
-    require(from <= to && from >= 0)
+    require(from <= to && from >= 0 && to < BigInt(10))
     if (from == to) List(from) else from :: this.to(from + 1, to)
   } ensuring { res =>
     res.size == to - from + 1 &&
-    contains(res, from, to) &&
-    GoSet.noDuplicates(res)
+    inOrder(res, from)
+  }
+
+  def inOrder(list: List[BigInt], from: BigInt): Boolean = {
+    if (list.isEmpty) true
+    else list.head == from && inOrder(list.tail, from + 1)
   }
 
   def contains(list: List[BigInt], from: BigInt, to: BigInt): Boolean = {

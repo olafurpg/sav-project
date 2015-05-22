@@ -1,5 +1,6 @@
 package go.core
 
+import go.util.Logic
 import leon.collection._
 import leon.annotation._
 import go.collection._
@@ -93,7 +94,11 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
   def sameColorNeighbors(p: PlacedCell): List[PlacedCell] = {
     require(isValid)
     neighbors(p.p, p.c)
-  } ensuring(_.forall(x => x.c == p.c))
+  } ensuring { res =>
+    res.forall(x => x.c == p.c && isOnBoard(x)) && neighbors(p.p).forall { x =>
+      Logic.implies(x.c == p.c, res.contains(x))
+    }
+  }
 
   def oppositeColorNeighbors(p: Point): List[PlacedCell] = {
     require(isValid)
@@ -127,4 +132,8 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
   }
 
   def isEqual(that: Board) = this.n == that.n && this.cells.isEqual(that.cells)
+}
+
+object Board {
+  def empty(n: BigInt): Board = Board(n, GoMap.empty)
 }

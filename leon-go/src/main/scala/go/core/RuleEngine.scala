@@ -41,7 +41,7 @@ object RuleEngine {
       case GoLeft(newGame) =>
         step match {
           case Pass => newGame.activePlayer == nextPlayer(game)
-          case Place(x, y) => !game.state.isOccupied(Point(x, y))
+          case Place(x, y) => newGame.state.isOnBoard(PlacedCell(Point(x, y), game.activePlayer.cell))
         }
       case GoRight(err) => true
     }

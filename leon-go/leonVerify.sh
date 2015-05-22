@@ -11,9 +11,9 @@ echo Executing Leon...
 # leon src/main/scala/go/core/{Point,PlacedCell,Cell}.scala
 
 # Board
-# --functions="Board\$neighboors" \
-leon --debug=timers --timeout=15 \
-                                --solvers=smt-cvc4 \
+leon --debug=timers --timeout=36 \
+                                --functions="to" \
+                                --solvers=smt-z3 \
                                 src/main/scala/go/collection/*.scala \
                                 src/main/scala/go/core/*.scala \
                                 src/main/scala/go/util/{conversions,Range,Logic}.scala

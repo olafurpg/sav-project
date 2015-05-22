@@ -17,7 +17,7 @@ watchSources += new File("leonVerify.sh")
 
 leonVerification in Compile := {
   // We execute the scala tests before running leon verification
-//  (test in Test).value
+  (test in Test).value
   "./leonVerify.sh" !
 }
 
