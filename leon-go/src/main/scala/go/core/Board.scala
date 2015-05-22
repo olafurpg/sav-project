@@ -123,6 +123,16 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
     cells.size == n * n
   }
 
+  def connected(p1: PlacedCell, p2: PlacedCell) = {
+    def reachable(currentCell: PlacedCell, visited: List[PlacedCell]): Boolean = {
+      if (currentCell == p2) true
+      else if (visited.contains(currentCell)) false
+      else sameColorNeighbors(currentCell).exists(p => reachable(p, currentCell::visited))
+    }
+
+    isOnBoard(p1) && isOnBoard(p2) && reachable(p1, List[PlacedCell]())
+  }
+
   @library
   def remove(p: Point): Board = {
     require(isValid && insideBoard(p) && isOccupied(p))
