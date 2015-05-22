@@ -5,7 +5,7 @@ import go.collection.GoSet
 
 object Range {
   def to(from: BigInt, to: BigInt): List[BigInt] = {
-    require(from <= to && from >= 0 && to < BigInt(10))
+    require(from <= to && from >= 0)
     if (from == to) List(from) else from :: this.to(from + 1, to)
   } ensuring { res =>
     res.size == to - from + 1 &&

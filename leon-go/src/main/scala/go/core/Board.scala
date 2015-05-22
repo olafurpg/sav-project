@@ -6,10 +6,16 @@ import leon.annotation._
 import go.collection._
 import go.util.conversions._
 import go.util.Range._
+import go.util.Logic._
 import go.core.definitions._
 
 case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
   def isValid: Boolean = n > 1 && n <= 5 && cells.keys.forall(insideBoard) && cells.isValid
+
+  def validList(lst: List[PlacedCell]): Boolean = {
+    require(isValid)
+    lst.forall(isOnBoard)
+  }
 
   def this(n: BigInt) = this(n, GoMap.empty)
 
@@ -95,8 +101,8 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
     require(isValid)
     neighbors(p.p, p.c)
   } ensuring { res =>
-    res.forall(x => x.c == p.c && isOnBoard(x)) && neighbors(p.p).forall { x =>
-      Logic.implies(x.c == p.c, res.contains(x))
+    validList(res) && res.forall(x => x.c == p.c) && neighbors(p.p).forall { x =>
+      iff(x.c == p.c, res.contains(x))
     }
   }
 
