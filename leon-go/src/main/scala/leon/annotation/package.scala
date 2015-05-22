@@ -8,4 +8,7 @@ package object annotation {
   case class ignore() extends scala.annotation.StaticAnnotation
   case class library() extends scala.annotation.StaticAnnotation
   case class induct() extends scala.annotation.StaticAnnotation
+  implicit class Induction(e: Boolean) {
+    def holds: Boolean = e
+  }
 }

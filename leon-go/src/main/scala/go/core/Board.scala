@@ -1,5 +1,6 @@
 package go.core
 
+import leon.lang._
 import go.util.Logic
 import leon.collection._
 import leon.annotation._
@@ -102,10 +103,11 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
     neighbors(p.p, p.c)
   } ensuring { res =>
     //    validList(res) &&
-    res.forall(isOnBoard) &&
-    res.forall(x => x.c == p.c) && neighbors(p.p).forall { x =>
-      iff(x.c == p.c, res.contains(x))
-    }
+    res.size <= 4 &&
+      res.forall(isOnBoard) &&
+      res.forall(x => x.c == p.c) && neighbors(p.p).forall { x =>
+        iff(x.c == p.c, res.contains(x))
+      }
   }
 
   def oppositeColorNeighbors(p: Point): List[PlacedCell] = {
@@ -127,11 +129,45 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
     def reachable(currentCell: PlacedCell, visited: List[PlacedCell]): Boolean = {
       if (currentCell == p2) true
       else if (visited.contains(currentCell)) false
-      else sameColorNeighbors(currentCell).exists(p => reachable(p, currentCell::visited))
+      else sameColorNeighbors(currentCell).exists(p => reachable(p, currentCell :: visited))
     }
 
     isOnBoard(p1) && isOnBoard(p2) && reachable(p1, List[PlacedCell]())
   }
+
+  @library
+  def dfs(toVisit: List[PlacedCell] = List[PlacedCell](), visited: List[PlacedCell] = List[PlacedCell]()): List[PlacedCell] = {
+    require(isValid && visited.forall(isOnBoard) && toVisit.forall(isOnBoard))
+    if (toVisit.isEmpty) visited
+    else if (visited.contains(toVisit.head)) visited
+    else {
+      val lst = sameColorNeighbors(toVisit.head)
+      dfs(toVisit.tail ++ lst, toVisit.head :: visited)
+    }
+  } ensuring { res =>
+    visited.forall(res.contains) && toVisit.forall(res.contains)
+  }
+
+  def dfsFrom(p1: PlacedCell) = {
+    require(isOnBoard(p1))
+    dfs(List[PlacedCell](p1), List[PlacedCell]())
+  } ensuring { res =>
+    res.contains(p1) && res.forall(x => connected(p1, x))
+  }
+
+  @induct
+  def dfsTest2(toVisit: List[PlacedCell]): Boolean = {
+    require(isValid && toVisit.forall(isOnBoard))
+    val result = dfs(toVisit)
+    toVisit.forall(result.contains)
+  }.holds
+
+  @induct
+  def dfsTest1(toVisit: List[PlacedCell], visited: List[PlacedCell]): Boolean = {
+    require(isValid && toVisit.forall(isOnBoard) && visited.forall(isOnBoard))
+    val result = dfs(toVisit)
+    visited.forall(result.contains)
+  }.holds
 
   @library
   def remove(p: Point): Board = {

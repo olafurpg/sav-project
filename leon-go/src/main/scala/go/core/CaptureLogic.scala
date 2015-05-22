@@ -80,7 +80,8 @@ object CaptureLogic {
       connectedComponentRecursive(board, color, newToVisit, newComponent)
     }
   } ensuring { res =>
-    board.validList(res)
+    board.validList(res) // && res.forall(a => res.forall(b => board.connected(a, b)))
+
   }
 
   def addElements(board: Board, a: List[PlacedCell], b: List[PlacedCell]): List[PlacedCell] = {
