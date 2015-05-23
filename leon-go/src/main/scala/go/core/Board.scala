@@ -105,7 +105,7 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
     require(isValid)
     neighbors(p.x, p.y).filter(_.c == c)
   } ensuring { res =>
-    res.forall(x => x.c == c)
+    res.forall(x => x.c == c) && res.forall(isConnected(_, PlacedCell(p, c), List[PlacedCell]()))
   }
 
   def sameColorNeighbors(p: PlacedCell): List[PlacedCell] = {
@@ -128,29 +128,63 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
     cells.size == n * n
   }
 
-
-  def noCycles(path: List[PlacedCell]) = GoSet.noDuplicates(path)
+  def noCycles(path: List[PlacedCell]): Boolean = {
+    if (path.isEmpty) true
+    else !path.tail.contains(path.head) && noCycles(path.tail)
+  }
 
   def isPath(lst: List[PlacedCell]): Boolean = {
-    require(isValidList(lst) && noCycles(lst) && !lst.isEmpty)
-    if (lst.size == 1) true
+    require(isValid && isValidList(lst) && noCycles(lst))
+    if (lst.size <= 1) true
     else {
       areColorNeighbors(lst.head, lst.tail.head) && isPath(lst.tail)
     }
   }
 
+  def pathExtend(lst: List[PlacedCell], p: PlacedCell): List[PlacedCell] = {
+    require(
+      isValid &&
+      isValidList(lst) &&
+      noCycles(lst) &&
+      isPath(lst) &&
+      (lst.isEmpty ||
+        (areColorNeighbors(p, lst.head) && !lst.contains(p))) &&
+      isOnBoard(p)
+    )
+    p::lst
+  } ensuring { res =>
+    isPath(res) && noCycles(res) && isValidList(res)
+  }
+
   def emptyPath = List[PlacedCell]()
 
+  @induct
   def isConnected(p1: PlacedCell, p2: PlacedCell, visited: List[PlacedCell] = List[PlacedCell]()): Boolean = {
     require(isValid &&
-      isValidList(List(p1, p2)) &&
+      isOnBoard(p1) &&
+      isOnBoard(p2) &&
       isValidList(visited) &&
-      visited.forall(x => isConnected(x, p1))
+      noCycles(visited) &&
+      isPath(visited) &&
+      (visited.isEmpty ||
+        (areColorNeighbors(p1, visited.head) && !visited.contains(p1))) &&
+     visited.forall(x => isConnected(x, p1))
     )
     if (p1 == p2) true
-    else if (visited.contains(p1)) false // ???
-    else sameColorNeighbors(p1).exists(p => isConnected(p, p2, p1 :: visited))
+    else if (visited.contains(p1)) false
+    else sameColorNeighbors(p1).exists(p => isConnected(p, p2, pathExtend(visited, p1)))
+  } ensuring { res =>
+    res == ((p1 == p2) ||
+      (!visited.contains(p1) && sameColorNeighbors(p1).exists(x => isConnected(x, p2))))
   }
+
+  @library
+  def transitive(p1: PlacedCell, p2: PlacedCell, p3: PlacedCell): Boolean = {
+    require(isValid && isOnBoard(p1) && isOnBoard(p2) && isOnBoard(p3))
+    !(isConnected(p1, p2, List[PlacedCell]()) &&
+      isConnected(p2, p3, List[PlacedCell]())) ||
+    isConnected(p1, p3, List[PlacedCell]())
+  }.holds
 
   def addToComponent(component: List[PlacedCell], e: PlacedCell): List[PlacedCell] = {
     require(isValid &&
