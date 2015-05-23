@@ -15,7 +15,7 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
 
   def isValidList(lst: List[PlacedCell]): Boolean = {
     require(isValid)
-    lst.forall(isOnBoard)
+    lst.forall(isOnBoard) // && GoSet.noDuplicates(lst)
   }
 
   def this(n: BigInt) = this(n, GoMap.empty)
@@ -104,18 +104,13 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
   def neighbors(p: Point, c: Cell): List[PlacedCell] = {
     require(isValid)
     neighbors(p.x, p.y).filter(_.c == c)
+  } ensuring { res =>
+    res.forall(x => x.c == c)
   }
 
   def sameColorNeighbors(p: PlacedCell): List[PlacedCell] = {
     require(isValid)
     neighbors(p.p, p.c)
-  } ensuring { res =>
-    //    validList(res) &&
-    res.size <= 4 &&
-      res.forall(isOnBoard) &&
-      res.forall(x => x.c == p.c) && neighbors(p.p).forall { x =>
-        iff(x.c == p.c, res.contains(x))
-      }
   }
 
   def oppositeColorNeighbors(p: Point): List[PlacedCell] = {
@@ -145,42 +140,6 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
 
   def emptyPath = List[PlacedCell]()
 
-  def findPathIter(toVisit: List[PlacedCell], p2: PlacedCell, accumulatedVisits: List[PlacedCell]): (List[PlacedCell], List[PlacedCell]) = {
-    require(isValid &&
-      isValidList(p2 :: (toVisit ++ accumulatedVisits))
-    )
-    if (toVisit.isEmpty || accumulatedVisits.contains(toVisit.head)) (emptyPath, accumulatedVisits) // We visited all neighbors
-    else {
-      val p3 = toVisit.head
-      val (curr, accumulatedVisits2) = findPath(p3, p2, p3 :: accumulatedVisits)
-      if (curr.isEmpty) (p3 :: curr, accumulatedVisits2)
-      else findPathIter(toVisit.tail, p2, accumulatedVisits2)
-    }
-  } ensuring { res =>
-    val (p, v) = res
-    v.size >= accumulatedVisits.size
-  }
-
-  def findPath(p1: PlacedCell, p2: PlacedCell, visited: List[PlacedCell] = List[PlacedCell]()): (List[PlacedCell], List[PlacedCell]) = {
-    require(isValid &&
-      isValidList(p1 :: p2 :: visited) &&
-      !visited.contains(p1) &&
-      !visited.contains(p2)
-    )
-    if (p1 == p2) (List[PlacedCell](p1), p1 :: visited)
-    else if (visited.contains(p1)) (emptyPath, visited)
-    else {
-      val toVisit = sameColorNeighbors(p1).filterNot(visited.contains)
-      // Optimization to accumulate visits after each round
-      // Could be done with fold
-      findPathIter(toVisit, p2, p1 :: visited)
-    }
-  } ensuring { res =>
-    val (p, v) = res
-    //    (p.isEmpty || isPath(p)) &&
-    v.size >= visited.size
-  }
-
   def isConnected(p1: PlacedCell, p2: PlacedCell, visited: List[PlacedCell] = List[PlacedCell]()): Boolean = {
     require(isValid &&
       isValidList(List(p1, p2)) &&
@@ -192,35 +151,10 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
     else sameColorNeighbors(p1).exists(p => isConnected(p, p2, p1 :: visited))
   }
 
-  def dfs(toVisit: List[PlacedCell], visited: List[PlacedCell] = List[PlacedCell]()): List[PlacedCell] = {
-    require(isValid &&
-      isComponent(CaptureLogic.addElements(this, toVisit, visited)) &&
-      visited.forall(isOnBoard) &&
-      toVisit.forall(isOnBoard)
-    )
-    if (toVisit.isEmpty) visited
-    else if (visited.contains(toVisit.head)) dfs(toVisit.tail, visited)
-    else {
-      val lst = sameColorNeighbors(toVisit.head)
-      dfs(CaptureLogic.addElements(this, toVisit.tail, lst), toVisit.head :: visited)
-    }
-  } ensuring { res =>
-    (toVisit.content ++ visited.content).subsetOf(res.content) &&
-      isComponent(res)
-  }
-
-  def addComponents(a: List[PlacedCell], b: List[PlacedCell]): List[PlacedCell] = {
-    require(isValid && isComponent(a) && isComponent(b))
-    CaptureLogic.addElements(this, a, b)
-  } ensuring { res =>
-    isComponent(res)
-  }
-
   def addToComponent(component: List[PlacedCell], e: PlacedCell): List[PlacedCell] = {
     require(isValid &&
       isOnBoard(e) &&
       isComponent(component)
-    //      component.exists(x => connected(x, e))
     )
     e :: component
   } ensuring { res =>
@@ -235,25 +169,6 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
       lst.tail.forall(x => isConnected(lst.head, x))
     }
   }
-
-  def dfsFrom(p1: PlacedCell) = {
-    require(isOnBoard(p1))
-    dfs(List[PlacedCell](p1), List[PlacedCell]())
-  } ensuring { res =>
-    res.contains(p1) && res.forall(x => isConnected(p1, x))
-  }
-
-  def connectedIsTransitive(p1: PlacedCell, p2: PlacedCell, p3: PlacedCell): Boolean = {
-    require(isValid && isValidList(List(p1, p2, p3)) && isConnected(p1, p2) && isConnected(p2, p3))
-    isConnected(p1, p3)
-  }.holds
-
-  @induct
-  def dfsTest1(toVisit: List[PlacedCell], visited: List[PlacedCell]): Boolean = {
-    require(isValid && toVisit.forall(isOnBoard) && visited.forall(isOnBoard))
-    val result = dfs(toVisit)
-    visited.forall(result.contains)
-  }.holds
 
   @library
   def remove(p: Point): Board = {
