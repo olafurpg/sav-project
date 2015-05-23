@@ -68,27 +68,30 @@ object CaptureLogic {
 
   def connectedComponentRecursive(board: Board, color: Cell, toVisit: List[PlacedCell], component: List[PlacedCell] = List[PlacedCell]()): List[PlacedCell] = {
     require(board.isValid &&
-      board.validList(toVisit) &&
-      board.validList(component)
+      board.isValidList(toVisit) &&
+      board.isValidList(component) &&
+    toVisit.forall(_.c == color)
     )
     if (toVisit.isEmpty) component
     else if (component.contains(toVisit.head)) connectedComponentRecursive(board, color, toVisit.tail, component)
     else {
       val p = toVisit.head
       val newComponent = p :: component
-      val newToVisit = addElements(board, toVisit, board.sameColorNeighbors(p))
+      val newToVisit = addElements(board, toVisit, board.sameColorNeighbors(p), color)
       connectedComponentRecursive(board, color, newToVisit, newComponent)
     }
   } ensuring { res =>
-    board.validList(res) // && res.forall(a => res.forall(b => board.connected(a, b)))
-
+    board.isValidList(res) && res.forall(_.c == color)
   }
 
-  def addElements(board: Board, a: List[PlacedCell], b: List[PlacedCell]): List[PlacedCell] = {
-    require(board.isValid && board.validList(a) && board.validList(b))
+  def addElements(board: Board, a: List[PlacedCell], b: List[PlacedCell], color: Cell): List[PlacedCell] = {
+    require(board.isValid &&
+      board.isValidList(a ++ b) &&
+      (a ++ b).forall(_.c == color)
+    )
     a ++ b
   } ensuring { res =>
-    board.validList(res)
+    board.isValidList(res) && res.forall(_.c == color)
   }
 
   def connectedComponentOfEmptyBoardIsEmpty(): Boolean = {
