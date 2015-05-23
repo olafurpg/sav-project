@@ -17,7 +17,7 @@ object RuleEngine {
 
     step match {
       case Pass =>
-        GoLeft[Game, MoveError](Game(game.states, Pass::game.steps, nextPlayer(game)))
+        GoLeft[Game, MoveError](Game(game.states, Pass::game.steps, nextPlayer(game), game.size))
 
       case Place(x, y) if !game.state.insideBoard(Point(x, y)) =>
         GoRight[Game, MoveError](OutsideOfBoardError)
@@ -34,7 +34,7 @@ object RuleEngine {
         else if (game.round > 0 && newBoard.isEqual(game.states.tail.head))
           GoRight[Game, MoveError](KoError)
         else
-          GoLeft[Game, MoveError](Game(newBoard :: game.states, step :: game.steps, nextPlayer(game)))
+          GoLeft[Game, MoveError](Game(newBoard :: game.states, step :: game.steps, nextPlayer(game), game.size))
     }
   } ensuring { res =>
     res match {
@@ -91,7 +91,7 @@ object RuleEngine {
   }
 
   private def isSuicide(game: Game, p: Place): Boolean = {
-    require(game.isValid && game.state.insideBoard(Point(p.x, p.y)))
+    require(game.isValid && !isOutsideBoard(game, p) && !isAlreadyOccupied(game, p))
 
     val newPoint = Point(p.x, p.y)
     val newBoard = CaptureLogic.capture(game.state, newPoint, game.activePlayer.cell)
@@ -100,7 +100,7 @@ object RuleEngine {
   }
 
   private def isKo(game: Game, p: Place): Boolean = {
-    require(game.isValid && game.state.insideBoard(Point(p.x, p.y)))
+    require(game.isValid && !isOutsideBoard(game, p) && !isAlreadyOccupied(game, p))
 
     val newPoint = Point(p.x, p.y)
     val newBoard = CaptureLogic.capture(game.state, newPoint, game.activePlayer.cell)

@@ -158,7 +158,6 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
 
   def emptyPath = List[PlacedCell]()
 
-  @induct
   def isConnected(p1: PlacedCell, p2: PlacedCell, visited: List[PlacedCell] = List[PlacedCell]()): Boolean = {
     require(isValid &&
       isOnBoard(p1) &&

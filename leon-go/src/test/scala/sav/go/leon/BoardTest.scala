@@ -222,7 +222,7 @@ class BoardTest extends FunSuite with Util {
     val suicide = Place(1, 4)
     val ko1 = Place(2, 3)
     val ko2 = Place(2, 2)
-    val g2 = Game(List(B2, B1), List(ko1), WhitePlayer)
+    val g2 = Game(List(B2, B1), List(ko1), WhitePlayer, B2.n)
     assert(RuleEngine.check(g2, ko2) === Some(KoError))
   }
 
