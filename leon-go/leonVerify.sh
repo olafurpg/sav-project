@@ -11,9 +11,9 @@ echo Executing Leon...
 # leon src/main/scala/go/core/{Point,PlacedCell,Cell}.scala
 
 # Board
-leon --debug=timers --timeout=10 \
+leon --debug=timers --timeout=3 \
                                 --solvers=smt-z3 \
-                                --functions="Board\$dfsTest1" \
+                                --functions="connectedComponent,connectedComponentRecursive" \
                                 src/main/scala/go/collection/*.scala \
                                 src/main/scala/go/core/*.scala \
                                 src/main/scala/go/util/{conversions,Range,Logic}.scala

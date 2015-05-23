@@ -1,4 +1,3 @@
-* require throws IllegalArgumentException while we use the type system instead to verify
 * Missing useful collections (Map, Set)
 * Missing methods on collections (filterNot)
 * Sometimes cryptic error messages when porting Scala to Leon, esp. since
@@ -139,6 +138,7 @@ java.lang.IndexOutOfBoundsException: 2
 
 Use headOption
 8af3310b src/main/scala/leon/frontends/scalac/CodeExtraction.scala (Emmanouil (Manos) Koukoutos 2014-04-11 17:44:14 +0200  483)       val theParam = paramOwner.paramss.head(index)
+
 Apparently, Leon doesn't support method overloading
 
 These seem identical, but using the stdlib alone doesn't work
@@ -147,3 +147,5 @@ These seem identical, but using the stdlib alone doesn't work
 //      val newToVisit = addElements(board, toVisit, board.sameColorNeighbors(p))
       val newComponent = p :: component
       val newToVisit = board.sameColorNeighbors(p) ++ toVisit
+
+It would be nice to know what conditions inside a require or ensuring block are the hard ones to prove.

@@ -5,7 +5,9 @@ import go.util.Logic._
 import go.collection.GoSet
 import go.core.definitions._
 import leon.annotation.library
+import leon.lang._
 import leon.collection._
+import leon.annotation._
 
 object CaptureLogic {
   def capture(board: Board, p: Point, c: Cell): Board = {
@@ -68,27 +70,72 @@ object CaptureLogic {
 
   def connectedComponentRecursive(board: Board, color: Cell, toVisit: List[PlacedCell], component: List[PlacedCell] = List[PlacedCell]()): List[PlacedCell] = {
     require(board.isValid &&
-      board.validList(toVisit) &&
-      board.validList(component)
+      board.isValidList(toVisit) &&
+      board.isValidList(component)
     )
     if (toVisit.isEmpty) component
     else if (component.contains(toVisit.head)) connectedComponentRecursive(board, color, toVisit.tail, component)
     else {
       val p = toVisit.head
-      val newComponent = p :: component
-      val newToVisit = addElements(board, toVisit, board.sameColorNeighbors(p))
+      val newComponent = addElement(board, component, p)
+      val newNeighbors = board.neighbors(p.p).filter(_.c == color)
+      val newToVisit = addElements(board, toVisit, newNeighbors)
       connectedComponentRecursive(board, color, newToVisit, newComponent)
     }
   } ensuring { res =>
-    board.validList(res) // && res.forall(a => res.forall(b => board.connected(a, b)))
+    board.isValidList(res)
+  }
 
+  def ccColor1(board: Board, toVisit: PlacedCell): Boolean = {
+    require(
+      board.isValid &&
+        board.isOnBoard(toVisit)
+    )
+    connectedComponentRecursive(board, toVisit.c, List(toVisit)).forall(_.c == toVisit.c)
+  }.holds
+
+  def ccContainsRoot(board: Board, root: PlacedCell): Boolean = {
+    require(
+      board.isValid &&
+        board.isOnBoard(root)
+    )
+    connectedComponentRecursive(board, root.c, List(root)).contains(root)
+  }.holds
+
+  def addElement(board: Board, lst: List[PlacedCell], e: PlacedCell): List[PlacedCell] = {
+    require(
+      board.isValid &&
+        board.isValidList(lst) &&
+        board.isOnBoard(e)
+    )
+    e :: lst
+  } ensuring (board.isValidList(_))
+
+  def addColoredElements(color: Cell, board: Board, a: List[PlacedCell], b: List[PlacedCell]): List[PlacedCell] = {
+    require(
+      a.forall(_.c == color) &&
+        b.forall(_.c == color) &&
+        board.isValid &&
+        board.isValidList(a) &&
+        board.isValidList(b)
+    )
+    if (a.isEmpty) b
+    else addColoredElements(color, board, a.tail, a.head :: b)
+  } ensuring { res =>
+    board.isValidList(res) &&
+      res.forall(_.c == color)
   }
 
   def addElements(board: Board, a: List[PlacedCell], b: List[PlacedCell]): List[PlacedCell] = {
-    require(board.isValid && board.validList(a) && board.validList(b))
-    a ++ b
+    require(
+      board.isValid &&
+        board.isValidList(a) &&
+        board.isValidList(b)
+    )
+    if (a.isEmpty) b
+    else addElements(board, a.tail, a.head :: b)
   } ensuring { res =>
-    board.validList(res)
+    board.isValidList(res)
   }
 
   def connectedComponentOfEmptyBoardIsEmpty(): Boolean = {
