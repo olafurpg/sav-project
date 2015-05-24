@@ -67,7 +67,7 @@ object RuleEngine {
     !isSuicide(oldGame, p) &&
     !isKo(oldGame, p) &&
     newGame.size == oldGame.size &&
-    newGame.steps == p::oldGame.steps // &&
+    newGame.steps == p::oldGame.steps  &&
     newGame.states == CaptureLogic.capture(oldGame.state, Point(p.x, p.y), oldGame.activePlayer.cell)::oldGame.states
   }
 
