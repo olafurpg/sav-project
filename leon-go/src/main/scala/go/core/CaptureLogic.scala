@@ -65,14 +65,15 @@ object CaptureLogic {
     require(board.isValid && board.isOnBoard(pc))
     connectedComponentRecursive(board, pc.c, List(pc.p))
   } ensuring { res =>
-    res.contains(pc.p)
+    res.contains(pc.p) && isComponent(board, res, pc.c)
   }
 
   def connectedComponentRecursive(board: Board, color: Cell, toVisit: List[Point], component: List[Point] = List[Point]()): List[Point] = {
     require(board.isValid &&
+      isComponent(board, component, color) &&
       board.isValidPoints(toVisit) &&
       board.isValidPoints(component) &&
-      isComponent(board, component)
+      isComponent(board, addValidElements(board, component, toVisit), color)
     )
     if (toVisit.isEmpty)
       component
@@ -80,45 +81,45 @@ object CaptureLogic {
       connectedComponentRecursive(board, color, toVisit.tail, component)
     else {
       val p = toVisit.head
-      val newComponent = addElement(board, component, p)
+      val newComponent = addToComponent(board, component, p, color)
       val newNeighbors = board.sameColorNeighborPoints(p, color)
-      val newToVisit = addElements(board, toVisit.tail, newNeighbors)
+      val newToVisit = addValidElements(board, toVisit.tail, newNeighbors)
       connectedComponentRecursive(board, color, newToVisit, newComponent)
     }
   } ensuring { res =>
-    isComponent(board, res)
+    isComponent(board, res, color)
   }
 
-  def isComponent(board: Board, lst: List[Point]): Boolean = {
+  def isComponent(board: Board, lst: List[Point], color: Cell): Boolean = {
     require(board.isValid)
     if (lst.isEmpty) true
     else
       board.isValidPoints(lst)
-    // lst.tail.forall(x => isConnected(lst.head, x))
+      // lst.forall(a => lst.forall(b => board.isConnected(PlacedCell(a, color), PlacedCell(b, color))))
   }
 
-  def addElement(board: Board, lst: List[Point], e: Point): List[Point] = {
+  def addToComponent(board: Board, lst: List[Point], e: Point, color: Cell): List[Point] = {
     require(
       board.isValid &&
-        isComponent(board, lst) &&
+        isComponent(board, lst, color) &&
         board.isValidPoints(lst) &&
         board.insideBoard(e)
     )
 
     e :: lst
   } ensuring { res =>
-    isComponent(board, res)
+    isComponent(board, res, color) && res.content == (e::lst).content
   }
 
-  def addElements(board: Board, a: List[Point], b: List[Point]): List[Point] = {
+  def addValidElements(board: Board, a: List[Point], b: List[Point]): List[Point] = {
     require(
         board.isValid &&
         board.isValidPoints(a) &&
         board.isValidPoints(b)
     )
     if (a.isEmpty) b
-    else addElements(board, a.tail, a.head :: b)
+    else addValidElements(board, a.tail, a.head :: b)
   } ensuring { res =>
-    isComponent(board, res)
+    board.isValidPoints(res) && res.content == (a ++ b).content
   }
 }

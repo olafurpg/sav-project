@@ -126,7 +126,7 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
   def sameColorNeighborPoints(p: Point, c: Cell): List[Point] = {
     require(isValid)
     neighbors(p, c).map(_.p)
-  }
+  } ensuring(isValidPoints(_))
 
   def oppositeColorNeighbors(p: Point): List[PlacedCell] = {
     require(isValid)
@@ -171,8 +171,6 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
     isPath(res) && noCycles(res) && isValidList(res)
   }
 
-  def emptyPath = List[PlacedCell]()
-
   def isConnected(p1: PlacedCell, p2: PlacedCell, visited: List[PlacedCell] = List[PlacedCell]()): Boolean = {
     require(isValid &&
       isOnBoard(p1) &&
@@ -187,9 +185,6 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
     if (p1 == p2) true
     else if (visited.contains(p1)) false
     else sameColorNeighbors(p1).exists(p => isConnected(p, p2, pathExtend(visited, p1)))
-  } ensuring { res =>
-    res == ((p1 == p2) ||
-      (!visited.contains(p1) && sameColorNeighbors(p1).exists(x => isConnected(x, p2))))
   }
 
   @library
