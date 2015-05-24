@@ -34,7 +34,7 @@ trait Util extends FunSuite with StringUtil {
     val expected = Set(lst.filterNot(ignore.contains))
     val b1 = Board(10, GoMap.board(lst))
     val p = PlacedCell(Point(1, 1), b)
-    assert(CaptureLogic.connectedComponentRecursive(b1, p.c, List(p)).toSet == expected)
+    assert(CaptureLogic.connectedComponent(b1, p).toSet == expected)
   }
 
   def moveTest(n: Int, str1: String, str2: String, c: Cell, p: Point): Unit = {
@@ -78,7 +78,7 @@ class BoardTest extends FunSuite with Util {
   test("CaptureLogic.connectedComponent works") {
     val board = Board(3, GoMap.board(points))
 
-    assert(CaptureLogic.connectedComponentRecursive(board, points.head.c, List(points.head)).toSet  == points.toSet)
+    assert(CaptureLogic.connectedComponent(board, points.head).toSet  == points.map(_.p).toSet)
   }
 
   test("Board constructor works") {
@@ -259,12 +259,12 @@ class BoardTest extends FunSuite with Util {
     assert(RuleEngine.check(g2, ko2) === Some(KoError))
   }
 
-  test("CaptureLogic.capturedCells postcondition") {
+  test("CaptureLogic.capturedComponents postcondition") {
     val g = Game(B3)
-    val captured = CaptureLogic.capturedCells(g.state)
-    val p = PlacedCell(Point(1, 5), WhiteCell)
+    val captured = CaptureLogic.capturedComponents(g.state)
+    val p = List(Point(1, 5))
     assert(!CaptureLogic.hasLiberty(g.state)(p))
-    assert(!captured.contains(p))
+    assert(!captured.contains(WhiteCell -> p))
   }
 
 }

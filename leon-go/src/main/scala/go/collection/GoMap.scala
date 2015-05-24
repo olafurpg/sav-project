@@ -47,7 +47,7 @@ case class GoMap[K, V](pairs: List[(K, V)]) {
     GoMap(pairs.filter(_._1 != k))
   } ensuring(res => isEqual(GoMap((k, get(k))::pairs)) && res.isValid)
 
-  def --(ks: GoSet[K]) = GoMap(pairs.filter(x => !ks.contains(x._1)))
+  def --(ks: List[K]) = GoMap(pairs.filter(x => !ks.contains(x._1)))
 
   def filterNot(f: ((K, V)) => Boolean): GoMap[K, V] = GoMap(pairs.filter(x => !f(x)))
 

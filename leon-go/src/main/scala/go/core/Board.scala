@@ -18,6 +18,11 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
     lst.forall(isOnBoard)
   }
 
+  def isValidPoints(lst: List[Point]): Boolean = {
+    require(isValid)
+    lst.forall(insideBoard)
+  }
+
   def this(n: BigInt) = this(n, GoMap.empty)
 
   def inRange(x: BigInt) = 0 < x && x <= n
@@ -68,6 +73,11 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
     range.product(range).map(p => Point(p._1, p._2))
   } ensuring (_.isValid)
 
+  def allCells: List[PlacedCell] = {
+    require(isValid)
+    cells.map(tpl2PlacedCell)
+  }
+
   @library
   def freeCells: GoSet[Point] = {
     require(isValid)
@@ -111,6 +121,11 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
   def sameColorNeighbors(p: PlacedCell): List[PlacedCell] = {
     require(isValid)
     neighbors(p.p, p.c)
+  }
+
+  def sameColorNeighborPoints(p: Point, c: Cell): List[Point] = {
+    require(isValid)
+    neighbors(p, c).map(_.p)
   }
 
   def oppositeColorNeighbors(p: Point): List[PlacedCell] = {
@@ -185,24 +200,6 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
     isConnected(p1, p3, List[PlacedCell]())
   }.holds
 
-  def addToComponent(component: List[PlacedCell], e: PlacedCell): List[PlacedCell] = {
-    require(isValid &&
-      isOnBoard(e) &&
-      isComponent(component)
-    )
-    e :: component
-  } ensuring { res =>
-    isComponent(res)
-  }
-
-  def isComponent(lst: List[PlacedCell]): Boolean = {
-    require(isValid && isValidList(lst))
-    if (lst.isEmpty) true
-    else {
-      //      lst.tail.forall(_.c == lst.head.c) &&
-      lst.tail.forall(x => isConnected(lst.head, x))
-    }
-  }
 
   @library
   def remove(p: Point): Board = {
@@ -213,11 +210,9 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
   }
 
   @library
-  def remove(ps: GoSet[PlacedCell]): Board = {
-    require(isValid && ps.isValid && ps.forall(isOnBoard))
-    Board(n, cells -- ps.map(_.p))
-  } ensuring { res =>
-    n == res.n && ps.foldLeft(res.cells) { (acc, p) => acc + (p.p -> p.c) }.isEqual(cells)
+  def remove(ps: List[Point]): Board = {
+    require(isValid && ps.forall(insideBoard))
+    Board(n, cells -- ps)
   }
 
   def isEqual(that: Board) = this.n == that.n && this.cells.isEqual(that.cells)

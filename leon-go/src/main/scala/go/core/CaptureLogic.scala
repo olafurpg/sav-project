@@ -15,137 +15,110 @@ object CaptureLogic {
     val board1 = board.put(c, p)
 
     // first capture enemy, which may make self dead stones alive
-    val captured1 = capturedCells(board1).filterNot(_.c == c)
-    val board2 = board1.remove(captured1)
+    val captures = capturedComponents(board1).filterNot(_._1 == c).map(_._2)
+    val board2 = captures.foldLeft(board1) { (b, c) => b.remove(c) }
 
     // capture self dead stones --> for suicide detection
-    val captured2 = capturedCells(board2).filter(_.c == c)
-    board2.remove(captured2)
+    val selfCaptures = capturedComponents(board2).filter(_._1 == c).map(_._2)
+    selfCaptures.foldLeft(board2) { (b, c) => b.remove(c) }
   }
 
-  def hasLiberty(board: Board)(p: PlacedCell): Boolean = {
+  def hasLiberty(board: Board)(component: List[Point]): Boolean = {
     require(board.isValid)
-    board.neighbors(p.p).exists(_.c == EmptyCell)
+    component.exists(p => board.neighbors(p).exists(_.c == EmptyCell))
   }
 
-  def capturedCells(board: Board): GoSet[PlacedCell] = {
+  def capturedComponents(board: Board): List[(Cell, List[Point])] = {
     require(board.isValid)
-    capturedCellsRecursive(board, board.cells.map(tpl2PlacedCell))
-  } ensuring { res =>
-    res.isValid && board.cells.pairs.map(tpl2PlacedCell).forall { x =>
-      implies(hasLiberty(board)(x), !res.contains(x))
-      //        implies(!hasLiberty(board)(x), res.contains(x))
+    capturedComponentsRecursive(board, board.cells.map(tpl2PlacedCell))
+  } ensuring { res => true
+      // implies(!hasLiberty(board)(x), res.contains(x))
       // Missing condition when x has no liberty but neighbor has liberty
-    }
   }
 
-  def capturedCellsRecursive(board: Board, toVisit: List[PlacedCell], captured: GoSet[PlacedCell] = GoSet.empty): GoSet[PlacedCell] = {
-    require(board.isValid &&
-      captured.isValid &&
-      toVisit.forall(board.isOnBoard) &&
-      captured.forall(board.isOnBoard)
+  def capturedComponentsRecursive(board: Board, toVisit: List[PlacedCell], visited: List[Point] = List(), captured: List[(Cell, List[Point])] = List()): List[(Cell, List[Point])] = {
+    require(
+      board.isValid &&
+        board.isValidList(toVisit) &&
+        board.isValidPoints(visited)
     )
-    if (toVisit.isEmpty) captured
-    else if (captured.contains(toVisit.head)) capturedCellsRecursive(board, toVisit.tail, captured)
+
+    if (toVisit.isEmpty)
+      captured
+    else if (visited.contains(toVisit.head.p))
+      capturedComponentsRecursive(board, toVisit.tail, visited, captured)
     else {
-      val component = connectedComponentRecursive(board, toVisit.head.c, List(toVisit.head))
+      val component = connectedComponentRecursive(board, toVisit.head.c, List(toVisit.head.p))
+      val newVisited = visited ++ component
 
-      if (!component.exists(hasLiberty(board)))
-        capturedCellsRecursive(board, toVisit.tail, GoSet(captured.elements ++ component))
+      if (!hasLiberty(board)(component))
+        capturedComponentsRecursive(board, toVisit.tail, newVisited, (toVisit.head.c, component)::captured)
       else
-        capturedCellsRecursive(board, toVisit.tail, captured)
+        capturedComponentsRecursive(board, toVisit.tail, newVisited, captured)
     }
-  } ensuring { res =>
-    res.forall(board.isOnBoard) &&
-      board.cells.pairs.map(tpl2PlacedCell).forall { x =>
-        implies(hasLiberty(board)(x), !res.contains(x))
-        // Leon can't detect this bug
-        //         implies(!hasLiberty(board)(x), res.contains(x))
-      }
+  } ensuring { res => true
+    // Leon can't detect this bug
+    // implies(!hasLiberty(board)(x), res.contains(x))
   }
 
-  def connectedComponent(board: Board, pc: PlacedCell): List[PlacedCell] = {
+  def connectedComponent(board: Board, pc: PlacedCell): List[Point] = {
     require(board.isValid && board.isOnBoard(pc))
-    connectedComponentRecursive(board, pc.c, List(pc))
+    connectedComponentRecursive(board, pc.c, List(pc.p))
   } ensuring { res =>
-    res.contains(pc)
+    res.contains(pc.p)
   }
 
-  def connectedComponentRecursive(board: Board, color: Cell, toVisit: List[PlacedCell], component: List[PlacedCell] = List[PlacedCell]()): List[PlacedCell] = {
+  def connectedComponentRecursive(board: Board, color: Cell, toVisit: List[Point], component: List[Point] = List[Point]()): List[Point] = {
     require(board.isValid &&
-      board.isValidList(toVisit) &&
-      board.isValidList(component)
+      board.isValidPoints(toVisit) &&
+      board.isValidPoints(component) &&
+      isComponent(board, component)
     )
-    if (toVisit.isEmpty) component
-    else if (component.contains(toVisit.head)) connectedComponentRecursive(board, color, toVisit.tail, component)
+    if (toVisit.isEmpty)
+      component
+    else if (component.contains(toVisit.head))
+      connectedComponentRecursive(board, color, toVisit.tail, component)
     else {
       val p = toVisit.head
       val newComponent = addElement(board, component, p)
-      val newNeighbors = board.neighbors(p.p).filter(_.c == color)
+      val newNeighbors = board.sameColorNeighborPoints(p, color)
       val newToVisit = addElements(board, toVisit, newNeighbors)
       connectedComponentRecursive(board, color, newToVisit, newComponent)
     }
   } ensuring { res =>
-    board.isValidList(res)
+    isComponent(board, res)
   }
 
-  def ccColor1(board: Board, toVisit: PlacedCell): Boolean = {
-    require(
-      board.isValid &&
-        board.isOnBoard(toVisit)
-    )
-    connectedComponentRecursive(board, toVisit.c, List(toVisit)).forall(_.c == toVisit.c)
-  }.holds
+  def isComponent(board: Board, lst: List[Point]): Boolean = {
+    require(board.isValid && board.isValidPoints(lst))
+    if (lst.isEmpty) true
+    else
+      true
+    // lst.tail.forall(x => isConnected(lst.head, x))
+  }
 
-  def ccContainsRoot(board: Board, root: PlacedCell): Boolean = {
+  def addElement(board: Board, lst: List[Point], e: Point): List[Point] = {
     require(
       board.isValid &&
-        board.isOnBoard(root)
+        isComponent(board, lst) &&
+        board.isValidPoints(lst) &&
+        board.insideBoard(e)
     )
-    connectedComponentRecursive(board, root.c, List(root)).contains(root)
-  }.holds
 
-  def addElement(board: Board, lst: List[PlacedCell], e: PlacedCell): List[PlacedCell] = {
-    require(
-      board.isValid &&
-        board.isValidList(lst) &&
-        board.isOnBoard(e)
-    )
     e :: lst
-  } ensuring (board.isValidList(_))
-
-  def addColoredElements(color: Cell, board: Board, a: List[PlacedCell], b: List[PlacedCell]): List[PlacedCell] = {
-    require(
-      a.forall(_.c == color) &&
-        b.forall(_.c == color) &&
-        board.isValid &&
-        board.isValidList(a) &&
-        board.isValidList(b)
-    )
-    if (a.isEmpty) b
-    else addColoredElements(color, board, a.tail, a.head :: b)
   } ensuring { res =>
-    board.isValidList(res) &&
-      res.forall(_.c == color)
+    isComponent(board, res)
   }
 
-  def addElements(board: Board, a: List[PlacedCell], b: List[PlacedCell]): List[PlacedCell] = {
+  def addElements(board: Board, a: List[Point], b: List[Point]): List[Point] = {
     require(
-      board.isValid &&
-        board.isValidList(a) &&
-        board.isValidList(b)
+        board.isValid &&
+        board.isValidPoints(a) &&
+        board.isValidPoints(b)
     )
     if (a.isEmpty) b
     else addElements(board, a.tail, a.head :: b)
   } ensuring { res =>
-    board.isValidList(res)
+    isComponent(board, res)
   }
-
-  def connectedComponentOfEmptyBoardIsEmpty(): Boolean = {
-    val b = Board.empty(BigInt(3))
-    val cells = b.cells.map(tpl2PlacedCell)
-    //    connectedComponent(Board.empty(3), )
-    true
-  }
-
 }
