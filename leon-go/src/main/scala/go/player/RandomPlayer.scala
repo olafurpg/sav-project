@@ -15,7 +15,8 @@ case object RandomPlayer extends Player {
     else {
       val list = g.state.freeCells.elements
       val Point(x, y) = list(random.nextInt(list.length))
-      Place(x, y)
+      val step = Place(x, y)
+      if (RuleEngine.isValid(g, step)) step else Pass
     }
   }
 }
