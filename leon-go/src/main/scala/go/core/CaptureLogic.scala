@@ -49,8 +49,11 @@ object CaptureLogic {
     else if (captured.contains(toVisit.head)) capturedCellsRecursive(board, toVisit.tail, captured)
     else {
       val component = connectedComponentRecursive(board, toVisit.head.c, List(toVisit.head))
-      if (!component.exists(hasLiberty(board))) capturedCellsRecursive(board, toVisit.tail, GoSet(component))
-      else capturedCellsRecursive(board, toVisit.tail, captured)
+
+      if (!component.exists(hasLiberty(board)))
+        capturedCellsRecursive(board, toVisit.tail, GoSet(captured.elements ++ component))
+      else
+        capturedCellsRecursive(board, toVisit.tail, captured)
     }
   } ensuring { res =>
     res.forall(board.isOnBoard) &&

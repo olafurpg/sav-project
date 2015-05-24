@@ -15,7 +15,7 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
 
   def isValidList(lst: List[PlacedCell]): Boolean = {
     require(isValid)
-    lst.forall(isOnBoard) // && GoSet.noDuplicates(lst)
+    lst.forall(isOnBoard)
   }
 
   def this(n: BigInt) = this(n, GoMap.empty)
@@ -105,7 +105,7 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
     require(isValid)
     neighbors(p.x, p.y).filter(_.c == c)
   } ensuring { res =>
-    res.forall(x => x.c == c) && res.forall(isConnected(_, PlacedCell(p, c), List[PlacedCell]()))
+    res.forall(x => x.c == c)
   }
 
   def sameColorNeighbors(p: PlacedCell): List[PlacedCell] = {

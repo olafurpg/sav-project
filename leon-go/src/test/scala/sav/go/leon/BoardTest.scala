@@ -160,6 +160,7 @@ class BoardTest extends FunSuite with Util {
     """, w, (2, 2)
     )
   }
+
   test("Board.put suicide is captured") {
     moveTest(5,
       """
@@ -176,6 +177,25 @@ class BoardTest extends FunSuite with Util {
         |__X__
         |_____
       """, w, (2, 3)
+    )
+  }
+
+  test("Board.put capture prioritize suicide") {
+    moveTest(5,
+      """
+      |X_XOO
+      |OXXX_
+      |OX_X_
+      |_OXXO
+      |XOXOO
+      """,
+      """
+      |X_XOO
+      |_XXX_
+      |_X_X_
+      |x_XXO
+      |X_XOO
+      """, b, (4, 1)
     )
   }
 
@@ -215,6 +235,19 @@ class BoardTest extends FunSuite with Util {
     val g = Game(B1)
     val suicide = Place(1, 4)
     assert(RuleEngine.check(g, suicide) === Some(SuicideError))
+  }
+
+  test("Capture has high priority over suicide") {
+    val b = fromString(5, """
+      |X_XOO
+      |OXXX_
+      |OX_X_
+      |_OXXO
+      |XOXOO
+      """)
+
+    val g = Game(b)
+    assert(RuleEngine.check(g, Place(4, 1)) === None)
   }
 
   test("Game.move KoError") {
