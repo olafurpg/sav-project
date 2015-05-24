@@ -82,7 +82,7 @@ object CaptureLogic {
       val p = toVisit.head
       val newComponent = addElement(board, component, p)
       val newNeighbors = board.sameColorNeighborPoints(p, color)
-      val newToVisit = addElements(board, toVisit, newNeighbors)
+      val newToVisit = addElements(board, toVisit.tail, newNeighbors)
       connectedComponentRecursive(board, color, newToVisit, newComponent)
     }
   } ensuring { res =>
@@ -90,10 +90,10 @@ object CaptureLogic {
   }
 
   def isComponent(board: Board, lst: List[Point]): Boolean = {
-    require(board.isValid && board.isValidPoints(lst))
+    require(board.isValid)
     if (lst.isEmpty) true
     else
-      true
+      board.isValidPoints(lst)
     // lst.tail.forall(x => isConnected(lst.head, x))
   }
 
