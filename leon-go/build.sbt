@@ -6,6 +6,8 @@ version := "0.0.1-SNAPSHOT"
 
 scalaVersion := "2.11.5"
 
+enablePlugins(ScalaJSPlugin)
+
 libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "2.2.1" % "test" withSources() withJavadoc()
   ,  "com.lihaoyi" %% "ammonite-ops" % "0.3.0"
@@ -22,5 +24,5 @@ leonVerification in Compile := {
 }
 
 
-initialCommands := "import ch.epfl.leongo._"
+initialCommands := "import go._"
 
