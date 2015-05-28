@@ -70,7 +70,6 @@ object CaptureLogic {
 
   def connectedComponent(board: Board, color: Cell, toVisit: List[Point], component: List[Point] = List[Point]()): List[Point] = {
     require(board.isValid &&
-      isComponent(board, component, color) &&
       board.isValidPoints(toVisit) &&
       board.isValidPoints(component) &&
       isComponent(board, addValidElements(board, component, toVisit), color)
