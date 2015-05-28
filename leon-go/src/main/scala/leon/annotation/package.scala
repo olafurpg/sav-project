@@ -11,4 +11,5 @@ package object annotation {
   implicit class Induction(e: Boolean) {
     def holds: Boolean = e
   }
+
 }

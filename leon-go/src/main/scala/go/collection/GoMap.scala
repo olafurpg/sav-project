@@ -47,7 +47,7 @@ case class GoMap[K, V](pairs: List[(K, V)]) {
     GoMap(pairs.filter(_._1 != k))
   } ensuring(res => isEqual(GoMap((k, get(k))::pairs)) && res.isValid)
 
-  def --(ks: GoSet[K]) = GoMap(pairs.filter(x => !ks.contains(x._1)))
+  def --(ks: List[K]) = GoMap(pairs.filter(x => !ks.contains(x._1)))
 
   def filterNot(f: ((K, V)) => Boolean): GoMap[K, V] = GoMap(pairs.filter(x => !f(x)))
 
@@ -97,7 +97,8 @@ object GoMap {
 
   // use list operation to express predicate, as list is verified
   def noDuplicates[K, V](lst: List[(K, V)]): Boolean = {
-    lst.forall(x => lst.filter(_._1 == x._1).size == 1)
+    if (lst.isEmpty) true
+    else !lst.tail.exists(lst.head._1 == _._1) && noDuplicates(lst.tail)
   }
 
   def empty[K, V]: GoMap[K, V] = GoMap(List[(K, V)]())

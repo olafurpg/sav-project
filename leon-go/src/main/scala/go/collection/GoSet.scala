@@ -90,7 +90,8 @@ case class GoSet[T](elements: List[T]) {
 object GoSet {
   // use list operation to express predicate, as list is verified
   def noDuplicates[T](lst: List[T]): Boolean = {
-    lst.forall(x => lst.filter(_ == x).size == 1)
+    if (lst.isEmpty) true
+    else !lst.tail.contains(lst.head) && noDuplicates(lst.tail)
   }
 
   def empty[T]: GoSet[T] = GoSet(List[T]())

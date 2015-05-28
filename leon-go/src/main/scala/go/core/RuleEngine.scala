@@ -17,7 +17,7 @@ object RuleEngine {
 
     step match {
       case Pass =>
-        GoLeft[Game, MoveError](Game(game.states, Pass::game.steps, nextPlayer(game)))
+        GoLeft[Game, MoveError](Game(game.states, Pass::game.steps, nextPlayer(game), game.size))
 
       case Place(x, y) if !game.state.insideBoard(Point(x, y)) =>
         GoRight[Game, MoveError](OutsideOfBoardError)
@@ -31,16 +31,16 @@ object RuleEngine {
 
         if (newBoard.at(newPoint) == EmptyCell)
           GoRight[Game, MoveError](SuicideError)
-        else if (game.round > 0 && newBoard.isEqual(game.states.tail.head))
+        else if (game.states.size > 1 && newBoard.isEqual(game.states.tail.head))
           GoRight[Game, MoveError](KoError)
         else
-          GoLeft[Game, MoveError](Game(newBoard :: game.states, step :: game.steps, nextPlayer(game)))
+          GoLeft[Game, MoveError](Game(newBoard :: game.states, step :: game.steps, nextPlayer(game), game.size))
     }
   } ensuring { res =>
     res match {
       case GoLeft(newGame) =>
         step match {
-          case Pass => checkPass(newGame, game)
+          case Pass => checkPass(game, newGame)
           case p@Place(x, y) => checkValidPlace(game, newGame, p)
         }
       case GoRight(err) =>
@@ -67,7 +67,7 @@ object RuleEngine {
     !isSuicide(oldGame, p) &&
     !isKo(oldGame, p) &&
     newGame.size == oldGame.size &&
-    newGame.steps == p::oldGame.steps &&
+    newGame.steps == p::oldGame.steps  &&
     newGame.states == CaptureLogic.capture(oldGame.state, Point(p.x, p.y), oldGame.activePlayer.cell)::oldGame.states
   }
 
@@ -91,7 +91,7 @@ object RuleEngine {
   }
 
   private def isSuicide(game: Game, p: Place): Boolean = {
-    require(game.isValid && game.state.insideBoard(Point(p.x, p.y)))
+    require(game.isValid && !isOutsideBoard(game, p) && !isAlreadyOccupied(game, p))
 
     val newPoint = Point(p.x, p.y)
     val newBoard = CaptureLogic.capture(game.state, newPoint, game.activePlayer.cell)
@@ -100,12 +100,12 @@ object RuleEngine {
   }
 
   private def isKo(game: Game, p: Place): Boolean = {
-    require(game.isValid && game.state.insideBoard(Point(p.x, p.y)))
+    require(game.isValid && !isOutsideBoard(game, p) && !isAlreadyOccupied(game, p))
 
     val newPoint = Point(p.x, p.y)
     val newBoard = CaptureLogic.capture(game.state, newPoint, game.activePlayer.cell)
 
-    if (game.round > 0 && newBoard.isEqual(game.states.tail.head)) true
+    if (game.states.size > 1 && newBoard.isEqual(game.states.tail.head)) true
     else false
   }
 

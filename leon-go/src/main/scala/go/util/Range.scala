@@ -13,19 +13,10 @@ object Range {
     inOrder(res, from)
   }
 
-//  def gimmeString: String = {
-//    "toString"
-//  }
-
   def inOrder(list: List[BigInt], from: BigInt): Boolean = {
     if (list.isEmpty) true
     else list.head == from && inOrder(list.tail, from + 1)
   }
-
-  def contains(list: List[BigInt], from: BigInt, to: BigInt): Boolean = {
-    if (from > to) true else list.contains(from) && contains(list, from + 1, to)
-  }
-
 
   def until(from: BigInt, to: BigInt): List[BigInt] = {
     if (from >= to) List() else from :: until(from + 1, to)

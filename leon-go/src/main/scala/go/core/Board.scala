@@ -13,9 +13,14 @@ import go.core.definitions._
 case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
   def isValid: Boolean = n > 1 && n <= 5 && cells.keys.forall(insideBoard) && cells.isValid
 
-  def validList(lst: List[PlacedCell]): Boolean = {
+  def isValidList(lst: List[PlacedCell]): Boolean = {
     require(isValid)
     lst.forall(isOnBoard)
+  }
+
+  def isValidPoints(lst: List[Point]): Boolean = {
+    require(isValid)
+    lst.forall(insideBoard)
   }
 
   def this(n: BigInt) = this(n, GoMap.empty)
@@ -68,6 +73,11 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
     range.product(range).map(p => Point(p._1, p._2))
   } ensuring (_.isValid)
 
+  def allCells: List[PlacedCell] = {
+    require(isValid)
+    cells.map(tpl2PlacedCell)
+  }
+
   @library
   def freeCells: GoSet[Point] = {
     require(isValid)
@@ -83,9 +93,17 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
   } ensuring { res =>
     res.forall(insideBoard) &&
       res.forall { pc =>
-        ((pc.p.x - x == 1 || pc.p.x - x == -1) && (pc.p.y - y == 0)) ||
-          ((pc.p.y - y == 1 || pc.p.y - y == -1) && (pc.p.x - x == 0))
+        areNeighbors(pc.p, Point(x, y))
       }
+  }
+
+  def areNeighbors(p1: Point, p2: Point): Boolean = {
+    ((p1.x - p2.x == 1 || p1.x - p2.x == -1) && (p1.y - p1.y == 0)) ||
+      ((p1.y - p2.y == 1 || p1.y - p2.y == -1) && (p1.x - p2.x == 0))
+  }
+
+  def areColorNeighbors(pc1: PlacedCell, pc2: PlacedCell): Boolean = {
+    pc1.c == pc2.c && areNeighbors(pc1.p, pc2.p)
   }
 
   def neighbors(p: Point): List[PlacedCell] = {
@@ -96,19 +114,19 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
   def neighbors(p: Point, c: Cell): List[PlacedCell] = {
     require(isValid)
     neighbors(p.x, p.y).filter(_.c == c)
+  } ensuring { res =>
+    res.forall(x => x.c == c)
   }
 
   def sameColorNeighbors(p: PlacedCell): List[PlacedCell] = {
     require(isValid)
     neighbors(p.p, p.c)
-  } ensuring { res =>
-    //    validList(res) &&
-    res.size <= 4 &&
-      res.forall(isOnBoard) &&
-      res.forall(x => x.c == p.c) && neighbors(p.p).forall { x =>
-        iff(x.c == p.c, res.contains(x))
-      }
   }
+
+  def sameColorNeighborPoints(p: Point, c: Cell): List[Point] = {
+    require(isValid)
+    neighbors(p, c).map(_.p)
+  } ensuring(isValidPoints(_))
 
   def oppositeColorNeighbors(p: Point): List[PlacedCell] = {
     require(isValid)
@@ -125,51 +143,58 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
     cells.size == n * n
   }
 
-  def connected(p1: PlacedCell, p2: PlacedCell) = {
-    require(isValid)
+  def noCycles(path: List[PlacedCell]): Boolean = {
+    if (path.isEmpty) true
+    else !path.tail.contains(path.head) && noCycles(path.tail)
+  }
 
-    def reachable(currentCell: PlacedCell, visited: List[PlacedCell]): Boolean = {
-      if (currentCell == p2) true
-      else if (visited.contains(currentCell)) false
-      else sameColorNeighbors(currentCell).exists(p => reachable(p, currentCell :: visited))
+  def isPath(lst: List[PlacedCell]): Boolean = {
+    require(isValid && isValidList(lst) && noCycles(lst))
+    if (lst.size <= 1) true
+    else {
+      areColorNeighbors(lst.head, lst.tail.head) && isPath(lst.tail)
     }
+  }
 
-    isOnBoard(p1) && isOnBoard(p2) && reachable(p1, List[PlacedCell]())
+  def pathExtend(lst: List[PlacedCell], p: PlacedCell): List[PlacedCell] = {
+    require(
+      isValid &&
+      isValidList(lst) &&
+      noCycles(lst) &&
+      isPath(lst) &&
+      (lst.isEmpty ||
+        (areColorNeighbors(p, lst.head) && !lst.contains(p))) &&
+      isOnBoard(p)
+    )
+    p::lst
+  } ensuring { res =>
+    isPath(res) && noCycles(res) && isValidList(res)
+  }
+
+  def isConnected(p1: PlacedCell, p2: PlacedCell, visited: List[PlacedCell] = List[PlacedCell]()): Boolean = {
+    require(isValid &&
+      isOnBoard(p1) &&
+      isOnBoard(p2) &&
+      isValidList(visited) &&
+      noCycles(visited) &&
+      isPath(visited) &&
+      (visited.isEmpty ||
+        (areColorNeighbors(p1, visited.head) && !visited.contains(p1))) &&
+     visited.forall(x => isConnected(x, p1))
+    )
+    if (p1 == p2) true
+    else if (visited.contains(p1)) false
+    else sameColorNeighbors(p1).exists(p => isConnected(p, p2, pathExtend(visited, p1)))
   }
 
   @library
-  def dfs(toVisit: List[PlacedCell] = List[PlacedCell](), visited: List[PlacedCell] = List[PlacedCell]()): List[PlacedCell] = {
-    require(isValid && visited.forall(isOnBoard) && toVisit.forall(isOnBoard))
-    if (toVisit.isEmpty) visited
-    else if (visited.contains(toVisit.head)) visited
-    else {
-      val lst = sameColorNeighbors(toVisit.head)
-      dfs(toVisit.tail ++ lst, toVisit.head :: visited)
-    }
-  } ensuring { res =>
-    visited.forall(res.contains) && toVisit.forall(res.contains)
-  }
-
-  def dfsFrom(p1: PlacedCell) = {
-    require(isOnBoard(p1))
-    dfs(List[PlacedCell](p1), List[PlacedCell]())
-  } ensuring { res =>
-    res.contains(p1) && res.forall(x => connected(p1, x))
-  }
-
-  @induct
-  def dfsTest2(toVisit: List[PlacedCell]): Boolean = {
-    require(isValid && toVisit.forall(isOnBoard))
-    val result = dfs(toVisit)
-    toVisit.forall(result.contains)
+  def transitive(p1: PlacedCell, p2: PlacedCell, p3: PlacedCell): Boolean = {
+    require(isValid && isOnBoard(p1) && isOnBoard(p2) && isOnBoard(p3))
+    !(isConnected(p1, p2, List[PlacedCell]()) &&
+      isConnected(p2, p3, List[PlacedCell]())) ||
+    isConnected(p1, p3, List[PlacedCell]())
   }.holds
 
-  @induct
-  def dfsTest1(toVisit: List[PlacedCell], visited: List[PlacedCell]): Boolean = {
-    require(isValid && toVisit.forall(isOnBoard) && visited.forall(isOnBoard))
-    val result = dfs(toVisit)
-    visited.forall(result.contains)
-  }.holds
 
   @library
   def remove(p: Point): Board = {
@@ -180,11 +205,9 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
   }
 
   @library
-  def remove(ps: GoSet[PlacedCell]): Board = {
-    require(isValid && ps.isValid && ps.forall(isOnBoard))
-    Board(n, cells -- ps.map(_.p))
-  } ensuring { res =>
-    n == res.n && ps.foldLeft(res.cells) { (acc, p) => acc + (p.p -> p.c) }.isEqual(cells)
+  def remove(ps: List[Point]): Board = {
+    require(isValid && ps.forall(insideBoard))
+    Board(n, cells -- ps)
   }
 
   def isEqual(that: Board) = this.n == that.n && this.cells.isEqual(that.cells)

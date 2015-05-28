@@ -34,7 +34,7 @@ trait Util extends FunSuite with StringUtil {
     val expected = Set(lst.filterNot(ignore.contains))
     val b1 = Board(10, GoMap.board(lst))
     val p = PlacedCell(Point(1, 1), b)
-    assert(CaptureLogic.connectedComponentRecursive(b1, p.c, List(p)).toSet == expected)
+    assert(CaptureLogic.connectedComponentFrom(b1, p).toSet == expected)
   }
 
   def moveTest(n: Int, str1: String, str2: String, c: Cell, p: Point): Unit = {
@@ -78,7 +78,7 @@ class BoardTest extends FunSuite with Util {
   test("CaptureLogic.connectedComponent works") {
     val board = Board(3, GoMap.board(points))
 
-    assert(CaptureLogic.connectedComponentRecursive(board, points.head.c, List(points.head)).toSet  == points.toSet)
+    assert(CaptureLogic.connectedComponentFrom(board, points.head).toSet  == points.map(_.p).toSet)
   }
 
   test("Board constructor works") {
@@ -160,6 +160,7 @@ class BoardTest extends FunSuite with Util {
     """, w, (2, 2)
     )
   }
+
   test("Board.put suicide is captured") {
     moveTest(5,
       """
@@ -176,6 +177,25 @@ class BoardTest extends FunSuite with Util {
         |__X__
         |_____
       """, w, (2, 3)
+    )
+  }
+
+  test("Board.put capture prioritize suicide") {
+    moveTest(5,
+      """
+      |X_XOO
+      |OXXX_
+      |OX_X_
+      |_OXXO
+      |XOXOO
+      """,
+      """
+      |X_XOO
+      |_XXX_
+      |_X_X_
+      |x_XXO
+      |X_XOO
+      """, b, (4, 1)
     )
   }
 
@@ -217,21 +237,34 @@ class BoardTest extends FunSuite with Util {
     assert(RuleEngine.check(g, suicide) === Some(SuicideError))
   }
 
+  test("Capture has high priority over suicide") {
+    val b = fromString(5, """
+      |X_XOO
+      |OXXX_
+      |OX_X_
+      |_OXXO
+      |XOXOO
+      """)
+
+    val g = Game(b)
+    assert(RuleEngine.check(g, Place(4, 1)) === None)
+  }
+
   test("Game.move KoError") {
     val g = Game(B1)
     val suicide = Place(1, 4)
     val ko1 = Place(2, 3)
     val ko2 = Place(2, 2)
-    val g2 = Game(List(B2, B1), List(ko1), WhitePlayer)
+    val g2 = Game(List(B2, B1), List(ko1), WhitePlayer, B2.n)
     assert(RuleEngine.check(g2, ko2) === Some(KoError))
   }
 
-  test("CaptureLogic.capturedCells postcondition") {
+  test("CaptureLogic.capturedComponents postcondition") {
     val g = Game(B3)
-    val captured = CaptureLogic.capturedCells(g.state)
-    val p = PlacedCell(Point(1, 5), WhiteCell)
+    val captured = CaptureLogic.capturedComponents(g.state)
+    val p = List(Point(1, 5))
     assert(!CaptureLogic.hasLiberty(g.state)(p))
-    assert(!captured.contains(p))
+    assert(!captured.contains(WhiteCell -> p))
   }
 
 }
