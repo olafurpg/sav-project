@@ -48,7 +48,7 @@ object CaptureLogic {
     else if (visited.contains(toVisit.head.p))
       capturedComponentsRecursive(board, toVisit.tail, visited, captured)
     else {
-      val component = connectedComponentRecursive(board, toVisit.head.c, List(toVisit.head.p))
+      val component = connectedComponent(board, toVisit.head.c, List(toVisit.head.p))
       val newVisited = visited ++ component
 
       if (!hasLiberty(board)(component))
@@ -61,14 +61,14 @@ object CaptureLogic {
     // implies(!hasLiberty(board)(x), res.contains(x))
   }
 
-  def connectedComponent(board: Board, pc: PlacedCell): List[Point] = {
+  def connectedComponentFrom(board: Board, pc: PlacedCell): List[Point] = {
     require(board.isValid && board.isOnBoard(pc))
-    connectedComponentRecursive(board, pc.c, List(pc.p))
+    connectedComponent(board, pc.c, List(pc.p))
   } ensuring { res =>
     res.contains(pc.p) && isComponent(board, res, pc.c)
   }
 
-  def connectedComponentRecursive(board: Board, color: Cell, toVisit: List[Point], component: List[Point] = List[Point]()): List[Point] = {
+  def connectedComponent(board: Board, color: Cell, toVisit: List[Point], component: List[Point] = List[Point]()): List[Point] = {
     require(board.isValid &&
       isComponent(board, component, color) &&
       board.isValidPoints(toVisit) &&
@@ -78,13 +78,13 @@ object CaptureLogic {
     if (toVisit.isEmpty)
       component
     else if (component.contains(toVisit.head))
-      connectedComponentRecursive(board, color, toVisit.tail, component)
+      connectedComponent(board, color, toVisit.tail, component)
     else {
       val p = toVisit.head
       val newComponent = addToComponent(board, component, p, color)
       val newNeighbors = board.sameColorNeighborPoints(p, color)
       val newToVisit = addValidElements(board, toVisit.tail, newNeighbors)
-      connectedComponentRecursive(board, color, newToVisit, newComponent)
+      connectedComponent(board, color, newToVisit, newComponent)
     }
   } ensuring { res =>
     isComponent(board, res, color)

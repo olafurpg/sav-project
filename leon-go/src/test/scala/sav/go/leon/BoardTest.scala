@@ -34,7 +34,7 @@ trait Util extends FunSuite with StringUtil {
     val expected = Set(lst.filterNot(ignore.contains))
     val b1 = Board(10, GoMap.board(lst))
     val p = PlacedCell(Point(1, 1), b)
-    assert(CaptureLogic.connectedComponent(b1, p).toSet == expected)
+    assert(CaptureLogic.connectedComponentFrom(b1, p).toSet == expected)
   }
 
   def moveTest(n: Int, str1: String, str2: String, c: Cell, p: Point): Unit = {
@@ -78,7 +78,7 @@ class BoardTest extends FunSuite with Util {
   test("CaptureLogic.connectedComponent works") {
     val board = Board(3, GoMap.board(points))
 
-    assert(CaptureLogic.connectedComponent(board, points.head).toSet  == points.map(_.p).toSet)
+    assert(CaptureLogic.connectedComponentFrom(board, points.head).toSet  == points.map(_.p).toSet)
   }
 
   test("Board constructor works") {
