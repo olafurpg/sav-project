@@ -1,0 +1,263 @@
+% \documentclass[12pt]{ociamthesis}  % default square logo
+\documentclass[12pt]{article}  % default square logo
+
+\usepackage[margin=2.8cm]{geometry}
+\usepackage{setspace}
+\usepackage{mathptmx} % Times font
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{framed}
+\usepackage{hyperref}
+
+% code listing
+\usepackage{listings}
+\usepackage{xcolor}
+
+% packages for drawing
+\usepackage{tikz}
+\usetikzlibrary{graphs}     % create graphs
+\usetikzlibrary{arrows}
+
+%% set code styles
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{
+  frame=tb,
+  language=scala,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3,
+}
+
+
+\onehalfspacing
+
+\title{Go In Scala and Leon}
+
+\author{Ólafur Páll Geirsson  \quad \quad  Fengyun Liu}
+
+%end the preamble and start the document
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+In this project, we implemented the ancient Chinese board game Go. The main achievements of the project are as follows:
+
+\begin{itemize}
+\item Compiled the project both in Leon and Scala
+\item Implemented simple AI for computer player
+\item Verified several properties of the code(details below)
+\end{itemize}
+
+\section{Design}
+
+\subsection{Game}
+
+Because Leon doesn't support side effects, the first task of the project is to make a purely functional design. To achieve this goal, we modeled the game as a finite list of board states as follows:
+
+\begin{lstlisting}[language=Scala]
+  case class Board(n: BigInt, cells: GoMap[Point, Cell])
+
+  case class Game(states: List[Board], steps: List[Step], activePlayer: PlayerType, size: BigInt)
+\end{lstlisting}
+
+The type \emph{Cell} represents the color of the stone, it's defined as follows:
+
+\begin{lstlisting}[language=Scala]
+  abstract class Cell
+  case object WhiteCell extends Cell
+  case object BlackCell extends Cell
+  case object EmptyCell extends Cell
+\end{lstlisting}
+
+The type \emph{Step} represents an action that can be taken by the player, it's defined as follows:
+
+\begin{lstlisting}[language=Scala]
+  sealed abstract class Step
+  case object Pass extends Step
+  case class Place(x: BigInt, y: BigInt) extends Step
+\end{lstlisting}
+
+The type \emph{PlayerType} represents the two sides of a game, it's defined as follows:
+
+\begin{lstlisting}[language=Scala]
+  sealed abstract class PlayerType
+  case object WhitePlayer extends PlayerType
+  case object BlackPlayer extends PlayerType
+\end{lstlisting}
+
+\subsection{Rules}
+
+Each game has rules that should be observed by the players. Inside the world of Go, there're several popular rules, such as Chinese rule, Japanese rule, etc. In order to decouple rules from the game, we implemented the rules in \emph{RuleEngine}, so that it's possible to implement different sets of rules. The object \emph{RuleEngine} is defined as follows:
+
+\begin{lstlisting}[language=Scala]
+  object RuleEngine {
+    def next(game: Game, step: Step): GoEither[Game, MoveError]
+    def check(game: Game, step: Step): Option[MoveError]
+    def isValid(game: Game, step: Step): Boolean
+    def isOver(game: Game): Boolean
+    def score(game: Game): Map[PlayerType, Int]
+  }
+\end{lstlisting}
+
+There could be several types of move errors, which are defined as follows:
+
+\begin{lstlisting}[language=Scala]
+  abstract class MoveError
+
+  case object KoError extends MoveError
+  case object OutsideOfBoardError extends MoveError
+  case object AlreadyOccupiedError extends MoveError
+  case object SuicideError extends MoveError
+\end{lstlisting}
+
+\subsection{Player}
+
+There are several types of players in the game, such as computer players, human players, etc. We impose that all kinds of player should implement following interface:
+
+\begin{lstlisting}[language=Scala]
+  trait Player {
+    def move(g: Game): Step
+    def name: String
+  }
+\end{lstlisting}
+
+When the method \emph{move} is called, the player should decide an action based on the given state of the game. Currently we implemented three types of players in the game:
+
+\begin{itemize}
+\item HumanPlayer: make a move from user input in the console
+\item ComputerPlayer: make a move based on MinMax algorithm
+\item RandomPlayer: make a random move
+\end{itemize}
+
+\subsection{Driver}
+
+The game is driven by the driver. An example driver is as follows:
+
+\begin{lstlisting}[language=Scala]
+  def run(game: Game, players: Map[PlayerType, Player],
+          stepCallback: (Game, PlayerType, Step) => Unit,
+          errorCallback: (Game, MoveError) => Unit,
+          resultCallback: (Game, Map[PlayerType, Int]) => Unit): Unit = {
+
+    if (!RuleEngine.isOver(game)) {
+      val player = players(game.activePlayer)
+      val step = player.move(game)
+      RuleEngine.next(game, step) match {
+        case GoLeft(newGame) =>
+          stepCallback(newGame, game.activePlayer, step)
+          run(newGame, players, stepCallback, errorCallback, resultCallback)
+        case GoRight(err) =>
+          errorCallback(game, err)
+          run(game, players, stepCallback, errorCallback, resultCallback)
+      }
+    }
+    else {
+      val score = RuleEngine.score(game)
+      resultCallback(game, score)
+    }
+  }
+
+\end{lstlisting}
+
+With the driver defined as above, it's easy to run a game like following:
+
+\begin{lstlisting}[language=Scala]
+  run(Game(5), Map(BlackPlayer -> HumanPlayer,  WhitePlayer -> RandomPlayer), stepCallback, errorCallback, resultCallback)
+\end{lstlisting}
+
+\section{Verification}
+
+The design of the game ensures that no player can violate the game rule. We only need to verify that the game rule implementation is correct. We are able to verify following properties of the game:
+
+\begin{itemize}
+\item Can’t place cell outside the board
+\item Can’t place on occupied cell
+\item The board size remains unchanged
+\end{itemize}
+
+In the verification of game rules, the most difficult part is the \emph{depth first search} of connected component. The verification result of the DFS algorithm is as follows:
+
+\begin{itemize}
+\item All points are connected  - FAIL
+\item The component is maximal  - FAIL
+\item The root is in the component - SUCCESS
+\item All points are of same color - FAIL
+\item All points are on the board - SUCCESS
+\end{itemize}
+
+The difficulty lies in that the relation \emph{connected} is transitive, but Leon knows nothing about that. The DFS algorithm looks like follows:
+
+\begin{lstlisting}[language=Scala]
+  def connectedComponent(board: Board, color: Cell, toVisit: List[Point], component: List[Point] = List[Point]()): List[Point] = {
+    if (toVisit.isEmpty)
+      component
+    else if (component.contains(toVisit.head))
+      connectedComponent(board, color, toVisit.tail, component)
+    else {
+      val p = toVisit.head
+      val newComponent = addToComponent(board, component, p, color)
+      val newNeighbors = board.sameColorNeighborPoints(p, color)
+      val newToVisit = addValidElements(board, toVisit.tail, newNeighbors)
+      connectedComponent(board, color, newToVisit, newComponent)
+    }
+  }
+\end{lstlisting}
+
+
+\section{Lessons Learned}
+
+During the project, we learned some lessons about Leon and verification in general.
+
+First, we find that \emph{class state invariants} are helpful, which is a nice feature to have in Leon.  For example, in the class Point, we’d like very instance of Point to satisfy the pre-condtion. Unfortunately, we have to duplicate the requirement in almost every usage of Point.
+
+\begin{lstlisting}[language=Scala]
+  case class Point(x: BigInt, y: BigInt) {
+    require(x > 0 && y > 0)
+    def +(that: Point): Point = Point(x + that.x, y + that.y)
+  }
+\end{lstlisting}
+
+Class state invariant not only avoids duplicate code, but also enables programmers to think about verification at a higher level of abstraction, and it’s more natural with the object-oriented mind-set.
+
+Second, we find that Leon can be improved to reduce surprises for developers. Following are two examples.
+
+\begin{lstlisting}[language=Scala]
+  def positive(i: Int): Int = {
+    require(i > 0)
+    i
+  }
+
+  List(1, 2, 3).foldLeft(0) { case (_, i) =>
+    positive(i) // precondition fails
+  }
+
+  def test(list: List[BigInt]): List[BigInt] = {
+    list.filter(x=> x > 1 && x < 100)
+  } ensuring { res =>
+    res.forall(x => x > 1) && res.forall(x => x < 100)
+    // => FAILS
+    res.forall(x=> x > 1 && x < 100)
+    // => HOLDS
+    res.forall(x=> x > 1)
+    // => FAILS
+  }
+\end{lstlisting}
+
+
+\end{document}
