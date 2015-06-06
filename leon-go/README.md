@@ -1,8 +1,10 @@
 # Board game Go in Leon and Scala
 
-This project is an implementation of Go in Leon and Scala with the objective to see how practical is it to use Leon to program a correct implementation of Go.
+This project is an implementation of Go in Leon and Scala with the objective to see how practical it is to use Leon to program a correct implementation of Go.
 
-## Run The Game
+## Run
+
+Execute following commmand and enjoy:-)
 
 ``` shell
 sbt run
@@ -139,5 +141,6 @@ def run(game: Game, players: Map[PlayerType, Player],
 With the driver defined as above, it's easy to run a game like following:
 
 ``` Scala
-run(Game(5), Map(BlackPlayer -> HumanPlayer,  WhitePlayer -> RandomPlayer), stepCallback, errorCallback, resultCallback)
+run(Game(5), Map(BlackPlayer -> HumanPlayer,  WhitePlayer -> RandomPlayer),
+    stepCallback, errorCallback, resultCallback)
 ```
