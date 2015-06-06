@@ -15,7 +15,7 @@ sbt run
 To run verification and unit tests, execute following command under project root directory:
 
 ``` shell
-sbt leonVerification
+sbt verify
 ```
 
 ## Design
@@ -144,3 +144,7 @@ With the driver defined as above, it's easy to run a game like following:
 run(Game(5), Map(BlackPlayer -> HumanPlayer,  WhitePlayer -> RandomPlayer),
     stepCallback, errorCallback, resultCallback)
 ```
+
+## ScalaJS
+
+We intended to compile the project in ScalaJS and build a web interface, but did not have the time to finish it.
