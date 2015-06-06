@@ -139,7 +139,7 @@ Leon could not infer that if the \texttt{board.isValidPoints} holds for two list
 We added the helper method \texttt{addValidElements}
 \lstinputlisting{code/addValidElements.scala}
 which we used in place of the \texttt{List.++} method.
-Leon was able to verify our condition immediately.
+Leon was now able to verify our condition immediately.
 
 Next, we were able to verify that
 
@@ -183,32 +183,5 @@ Please follow the links for more details.
 
 
 \section{Conclusion}
-
-During the project, we learned some lessons about Leon and verification in
-general.
-
-First, we find that \emph{class state invariants} are helpful, which is a nice
-feature to have in Leon.  For example, in the class Point, we’d like very
-instance of Point to satisfy the pre-condtion. Unfortunately, we have to
-duplicate the requirement in almost every usage of Point.
-
-\lstinputlisting{code/class-invariant.scala}
-
-Class state invariant not only avoids duplicate code, but also enables
-programmers to think about verification at a higher level of abstraction, and
-it’s more natural with the object-oriented mind-set.
-
-Second, we find that Leon can be improved to reduce surprises for developers.
-Following are two examples.
-
-\begin{itemize}
-    \item Unit tests help against termination
-\end{itemize}
-
-\lstinputlisting{code/surprise.scala}
-
-\begin{itemize}
-    \item Publish leon dummies to Maven.
-\end{itemize}
 
 \end{document}
