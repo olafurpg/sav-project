@@ -197,14 +197,6 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
 
 
   @library
-  def remove(p: Point): Board = {
-    require(isValid && insideBoard(p) && isOccupied(p))
-    Board(n, cells - p)
-  } ensuring { res =>
-    n == res.n && (res.cells + (p, cells.get(p))).isEqual(cells) && res.isValid
-  }
-
-  @library
   def remove(ps: List[Point]): Board = {
     require(isValid && ps.forall(insideBoard))
     Board(n, cells -- ps)
