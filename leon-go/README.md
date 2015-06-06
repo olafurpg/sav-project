@@ -15,7 +15,7 @@ sbt run
 To run verification and unit tests, execute following command under project root directory:
 
 ``` shell
-sbt leonVerification
+sbt verify
 ```
 
 ## Design
