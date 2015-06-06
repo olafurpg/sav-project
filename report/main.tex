@@ -11,7 +11,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
 \usepackage{framed}
-\usepackage{hyperref}
+\usepackage[colorlinks=true]{hyperref}
 
 % code listing
 \usepackage{listings}
@@ -48,7 +48,7 @@
 
 \onehalfspacing{}
 
-\title{Case study: the board game Go In Scala and Leon}
+\title{Case study: the board game Go}
 
 \author{Ólafur Páll Geirsson  \quad \quad  Fengyun Liu}
 
@@ -58,28 +58,29 @@
 \maketitle
 
 \begin{abstract}
-    The ancient Chinese board game go has fascinated computer scientists and mathematicians for its enormous state space.
-    In this case study, we implemented Go in Leon with the objective to answer the question: how practical is it to use Leon to program a correct implementation of Go?
+    The ancient Chinese board game Go has fascinated computer scientists and mathematicians for its enormous state space.
+    In this case study, we implemented Go in Leon and Scala with the objective to answer the question: how practical is it to use Leon to program a correct implementation of Go?
     Our experiments reveal that it is indeed useful to to annotate a Scala codebase with Leon verification conditions.
-    Still, we consider that Leon has plenty of room for improvement to make it easier to verify non-trivial properties about your programs.
+    Still, we consider that Leon has plenty of room for improvement to make it easier for a programmer to verify non-trivial properties about her programs.
 \end{abstract}
 
 \tableofcontents
 
-\section{Introduction}
-
-In this project, we implemented the ancient Chinese board game Go. The main
-achievements of the project are as follows:
-
+\section{Contributions}
+Our main contributions in this project are the following:
 \begin{itemize}
-    \item Do a case study of the connected component algorithm.
     \item Set up a productive developer workflow combining Leon verification
-        and Scala unit testing.
-    \item Verified several properties of our implementation of the board game Go.
-    \item Identified and reported a few bugs in Leon
+        and Scala unit testing (see Section~\ref{sec:Developer_workflow}).
+    \item A case study of the connected component algorithm (see Section~\ref{sec:Connected_Component}).
+    \item Verified several properties of our implementation of the board game Go (see Section~\ref{sec:Verification}).
+    \item Identified a few issues in Leon and reported on Github (see Section~\ref{sec:Bugs}).
 \end{itemize}
 
-\section{Design}
+\section{Design} % (fold)
+\label{sec:Design}
+
+% section Design (end)
+Various iterations.
 
 \subsection{Game}
 
@@ -116,14 +117,7 @@ The object \emph{RuleEngine} is defined as follows:
 
 There could be several types of move errors, which are defined as follows:
 
-\begin{lstlisting}[language=Scala]
-  abstract class MoveError
-
-  case object KoError extends MoveError
-  case object OutsideOfBoardError extends MoveError
-  case object AlreadyOccupiedError extends MoveError
-  case object SuicideError extends MoveError
-\end{lstlisting}
+\lstinputlisting{code/move-error.scala}
 
 \subsection{Player}
 
@@ -153,7 +147,22 @@ With the driver defined as above, it's easy to run a game like following:
 
 \lstinputlisting{code/run.scala}
 
-\section{Verification}
+\section{Developer workflow} % (fold)
+\label{sec:Developer_workflow}
+We set the requirement for our project that we wanted to be able to run our Go program with Scala in the command line.
+This requirement for
+
+% section Developer workflow (end)
+
+\section{Connected Component} % (fold)
+\label{sec:Connected_Component}
+
+% section Connected Component (end)
+
+\section{Verification} % (fold)
+\label{sec:Verification}
+
+% section Verification (end)
 
 The design of the game ensures that no player can violate the game rule. We
 only need to verify that the game rule implementation is correct. We are able
@@ -183,6 +192,16 @@ Leon knows nothing about that. The DFS algorithm looks like follows:
 \lstinputlisting{code/cc.scala}
 
 
+\section{Github issues} % (fold)
+\label{sec:Bugs}
+We reported the following issues on Github:
+\begin{itemize}
+        \foreach\issue\ in {94,98,99,103,105,106,107}
+    {\item \href{https://github.com/epfl-lara/leon/issues/\issue}{\#\issue}}
+\end{itemize}
+
+
+% section Bugs (end)
 \section{Lessons Learned}
 
 During the project, we learned some lessons about Leon and verification in
@@ -201,6 +220,10 @@ it’s more natural with the object-oriented mind-set.
 
 Second, we find that Leon can be improved to reduce surprises for developers.
 Following are two examples.
+
+\begin{itemize}
+    \item Unit tests help against termination
+\end{itemize}
 
 \lstinputlisting{code/surprise.scala}
 
