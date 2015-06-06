@@ -144,7 +144,3 @@ With the driver defined as above, it's easy to run a game like following:
 run(Game(5), Map(BlackPlayer -> HumanPlayer,  WhitePlayer -> RandomPlayer),
     stepCallback, errorCallback, resultCallback)
 ```
-
-## ScalaJS
-
-We intended to compile the project in ScalaJS and build a web interface, but did not have the time to finish it.
