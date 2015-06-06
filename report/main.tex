@@ -72,7 +72,7 @@ The main contributions of this project are the following:
     \item We found a productive developer workflow combining Leon verification and Scala
         unit testing (see Section~\ref{sec:Developer_workflow}).
     \item We did a minor case study of the connected component algorithm (see Section~\ref{sec:Connected_Component}).
-    \item We verified several properties of our implementation of the board game Go (see Section~\ref{sec:Verification}).
+    % \item We verified several properties of our implementation of the board game Go (see Section~\ref{sec:Verification}).
     \item We identified a few issues in Leon, which we reported on Github (see Section~\ref{sec:Bugs}).
 \end{itemize}
 
@@ -105,7 +105,7 @@ Some additional benefits to using this developer workflow include:
 \begin{itemize}
     \item Compilation errors are detected faster with scalac, due to sbt's incremental compilation.
     \item Obvious bugs are caught faster by the unit tests than verification.
-    \item Not so obvious corner cases were detected by our unit tests while Leon timed out, see TODO.
+    \item Not so obvious bugs in corner cases were detected by our unit tests while Leon timed out, see \href{https://github.com/olafurpg/sav-project/blob/621e03d97f510d516fee87e5cff0985c37b434cb/leon-go/src/main/scala/go/core/CaptureLogic.scala#L60}{here}.
     \item Obviously non-terminating programs failed the unit tests before verification was executed.
 \end{itemize}
 % section Developer workflow (end)
@@ -135,11 +135,13 @@ We were confident that Leon could verify that no points outside the board are in
 
 Contrary to our expectations, Leon timed out.
 After some experiments we figured out that the issue had to do with line 12, where we concatenate two lists.
-Leon could not infer that if the \texttt{board.isValidPoints} hold for two lists, then it also holds for the concatenation of those lists.
+Leon could not infer that if the \texttt{board.isValidPoints} holds for two lists, then it also holds for the concatenation of those lists.
 We added the helper method \texttt{addValidElements}
 \lstinputlisting{code/addValidElements.scala}
 which we used in place of the \texttt{List.++} method.
 Leon was able to verify our condition immediately.
+
+Next, we were able to verify that
 
 We tried made several failed attempts to verify the following properties of the algorithm:
 \begin{itemize}
@@ -164,36 +166,9 @@ We tried made several failed attempts to verify the following properties of the 
         not part of the result but had a connection to the component.
         Given our poor results from the other verification attempts, we had
         little time to explore this condition further.
-    \item The root is in the component --- SUCCESS
-    \item All points are on the board --- SUCCESS
 \end{itemize}
 
 % section Connected Component (end)
-
-\section{Verification} % (fold)
-\label{sec:Verification}
-
-% section Verification (end)
-
-The design of the game ensures that no player can violate the game rule. We
-only need to verify that the game rule implementation is correct. We are able
-to verify following properties of the game:
-
-\begin{itemize}
-\item Can’t place cell outside the board
-\item Can’t place on occupied cell
-\item The board size remains unchanged
-\end{itemize}
-
-In the verification of game rules, the most difficult part is the \emph{depth
-first search} of connected component. The verification result of the DFS
-algorithm is as follows:
-
-
- The DFS algorithm looks like follows:
-
-% \lstinputlisting{code/cc.scala}
-
 
 \section{Github issues} % (fold)
 \label{sec:Bugs}
@@ -203,7 +178,7 @@ We reported the following issues on Github:
     {\item \href{https://github.com/epfl-lara/leon/issues/\issue}{\#\issue}}
 \end{itemize}
 
-
+Please follow the links for more details.
 % section Bugs (end)
 
 
