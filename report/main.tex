@@ -1,6 +1,10 @@
 % \documentclass[12pt]{ociamthesis}  % default square logo
 \documentclass[12pt]{article}  % default square logo
 
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+
 \usepackage[margin=2.8cm]{geometry}
 \usepackage{setspace}
 \usepackage{mathptmx} % Times font
@@ -44,7 +48,7 @@
 
 \onehalfspacing{}
 
-\title{Go In Scala and Leon}
+\title{Case study: the board game Go In Scala and Leon}
 
 \author{Ólafur Páll Geirsson  \quad \quad  Fengyun Liu}
 
@@ -53,16 +57,26 @@
 
 \maketitle
 
+\begin{abstract}
+    The ancient Chinese board game go has fascinated computer scientists and mathematicians for its enormous state space.
+    In this case study, we implemented Go in Leon with the objective to answer the question: how practical is it to use Leon to program a correct implementation of Go?
+    Our experiments reveal that it is indeed useful to to annotate a Scala codebase with Leon verification conditions.
+    Still, we consider that Leon has plenty of room for improvement to make it easier to verify non-trivial properties about your programs.
+\end{abstract}
+
 \tableofcontents
 
 \section{Introduction}
 
-In this project, we implemented the ancient Chinese board game Go. The main achievements of the project are as follows:
+In this project, we implemented the ancient Chinese board game Go. The main
+achievements of the project are as follows:
 
 \begin{itemize}
     \item Do a case study of the connected component algorithm.
-    \item Set up a productive developer workflow combining Leon verification and Scala unit testing.
+    \item Set up a productive developer workflow combining Leon verification
+        and Scala unit testing.
     \item Verified several properties of our implementation of the board game Go.
+    \item Identified and reported a few bugs in Leon
 \end{itemize}
 
 \section{Design}
@@ -75,21 +89,28 @@ finite list of board states as follows:
 
 \lstinputlisting{code/board.scala}
 
-The type \emph{Cell} represents the color of the stone, it's defined as follows:
+The type \emph{Cell} represents the color of the stone, it's defined as
+follows:
 
 \lstinputlisting{code/cell.scala}
 
-The type \emph{Step} represents an action that can be taken by the player, it's defined as follows:
+The type \emph{Step} represents an action that can be taken by the player, it's
+defined as follows:
 
 \lstinputlisting{code/step.scala}
 
-The type \emph{PlayerType} represents the two sides of a game, it's defined as follows:
+The type \emph{PlayerType} represents the two sides of a game, it's defined as
+follows:
 
 \lstinputlisting{code/player-type.scala}
 
 \subsection{Rules}
 
-Each game has rules that should be observed by the players. Inside the world of Go, there're several popular rules, such as Chinese rule, Japanese rule, etc. In order to decouple rules from the game, we implemented the rules in \emph{RuleEngine}, so that it's possible to implement different sets of rules. The object \emph{RuleEngine} is defined as follows:
+Each game has rules that should be observed by the players. Inside the world of
+Go, there're several popular rules, such as Chinese rule, Japanese rule, etc.
+In order to decouple rules from the game, we implemented the rules in
+\emph{RuleEngine}, so that it's possible to implement different sets of rules.
+The object \emph{RuleEngine} is defined as follows:
 
 \lstinputlisting{code/rule-engine.scala}
 
@@ -106,11 +127,15 @@ There could be several types of move errors, which are defined as follows:
 
 \subsection{Player}
 
-There are several types of players in the game, such as computer players, human players, etc. We impose that all kinds of player should implement following interface:
+There are several types of players in the game, such as computer players, human
+players, etc. We impose that all kinds of player should implement following
+interface:
 
 \lstinputlisting{code/player.scala}
 
-When the method \emph{move} is called, the player should decide an action based on the given state of the game. Currently we implemented three types of players in the game:
+When the method \emph{move} is called, the player should decide an action based
+on the given state of the game. Currently we implemented three types of players
+in the game:
 
 \begin{itemize}
 \item HumanPlayer: make a move from user input in the console
@@ -130,7 +155,9 @@ With the driver defined as above, it's easy to run a game like following:
 
 \section{Verification}
 
-The design of the game ensures that no player can violate the game rule. We only need to verify that the game rule implementation is correct. We are able to verify following properties of the game:
+The design of the game ensures that no player can violate the game rule. We
+only need to verify that the game rule implementation is correct. We are able
+to verify following properties of the game:
 
 \begin{itemize}
 \item Can’t place cell outside the board
@@ -138,7 +165,9 @@ The design of the game ensures that no player can violate the game rule. We only
 \item The board size remains unchanged
 \end{itemize}
 
-In the verification of game rules, the most difficult part is the \emph{depth first search} of connected component. The verification result of the DFS algorithm is as follows:
+In the verification of game rules, the most difficult part is the \emph{depth
+first search} of connected component. The verification result of the DFS
+algorithm is as follows:
 
 \begin{itemize}
 \item All points are connected  --- FAIL
@@ -148,24 +177,41 @@ In the verification of game rules, the most difficult part is the \emph{depth fi
 \item All points are on the board --- SUCCESS
 \end{itemize}
 
-The difficulty lies in that the relation \emph{connected} is transitive, but Leon knows nothing about that. The DFS algorithm looks like follows:
+The difficulty lies in that the relation \emph{connected} is transitive, but
+Leon knows nothing about that. The DFS algorithm looks like follows:
 
 \lstinputlisting{code/cc.scala}
 
 
 \section{Lessons Learned}
 
-During the project, we learned some lessons about Leon and verification in general.
+During the project, we learned some lessons about Leon and verification in
+general.
 
-First, we find that \emph{class state invariants} are helpful, which is a nice feature to have in Leon.  For example, in the class Point, we’d like very instance of Point to satisfy the pre-condtion. Unfortunately, we have to duplicate the requirement in almost every usage of Point.
+First, we find that \emph{class state invariants} are helpful, which is a nice
+feature to have in Leon.  For example, in the class Point, we’d like very
+instance of Point to satisfy the pre-condtion. Unfortunately, we have to
+duplicate the requirement in almost every usage of Point.
 
 \lstinputlisting{code/class-invariant.scala}
 
-Class state invariant not only avoids duplicate code, but also enables programmers to think about verification at a higher level of abstraction, and it’s more natural with the object-oriented mind-set.
+Class state invariant not only avoids duplicate code, but also enables
+programmers to think about verification at a higher level of abstraction, and
+it’s more natural with the object-oriented mind-set.
 
-Second, we find that Leon can be improved to reduce surprises for developers. Following are two examples.
+Second, we find that Leon can be improved to reduce surprises for developers.
+Following are two examples.
 
 \lstinputlisting{code/surprise.scala}
+
+\subsection{Suggestions} % (fold)
+\label{sub:Suggestions}
+
+\begin{itemize}
+    \item Publish leon dummies to Maven.
+\end{itemize}
+
+% subsection Suggestions (end)
 
 
 
