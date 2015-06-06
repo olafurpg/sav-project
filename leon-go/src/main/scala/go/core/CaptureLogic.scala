@@ -32,8 +32,8 @@ object CaptureLogic {
     require(board.isValid)
     capturedComponentsRecursive(board, board.cells.map(tpl2PlacedCell))
   } ensuring { res => true
-      // implies(!hasLiberty(board)(x), res.contains(x))
-      // Missing condition when x has no liberty but neighbor has liberty
+    // implies(!hasLiberty(board)(x), res.contains(x))
+    // Missing condition when x has no liberty but neighbor has liberty
   }
 
   def capturedComponentsRecursive(board: Board, toVisit: List[PlacedCell], visited: List[Point] = List(), captured: List[(Cell, List[Point])] = List()): List[(Cell, List[Point])] = {
@@ -52,7 +52,7 @@ object CaptureLogic {
       val newVisited = visited ++ component
 
       if (!hasLiberty(board)(component))
-        capturedComponentsRecursive(board, toVisit.tail, newVisited, (toVisit.head.c, component)::captured)
+        capturedComponentsRecursive(board, toVisit.tail, newVisited, (toVisit.head.c, component) :: captured)
       else
         capturedComponentsRecursive(board, toVisit.tail, newVisited, captured)
     }
@@ -87,15 +87,24 @@ object CaptureLogic {
       connectedComponent(board, color, newToVisit, newComponent)
     }
   } ensuring { res =>
-    isComponent(board, res, color)
+    isComponent(board, res, color) && toVisit.content.subsetOf(res.content)
   }
+
+  def rootIsInComponent(board: Board, toVisit: List[Point], component: List[Point]): Boolean = {
+    require(
+      board.isValid &&
+        board.isValidPoints(toVisit) &&
+        board.isValidPoints(component)
+    )
+    toVisit.content.subsetOf(connectedComponent(board, BlackCell, toVisit, component).content)
+  }.holds
 
   def isComponent(board: Board, lst: List[Point], color: Cell): Boolean = {
     require(board.isValid)
     if (lst.isEmpty) true
     else
       board.isValidPoints(lst)
-      // lst.forall(a => lst.forall(b => board.isConnected(PlacedCell(a, color), PlacedCell(b, color))))
+    // lst.forall(a => lst.forall(b => board.isConnected(PlacedCell(a, color), PlacedCell(b, color))))
   }
 
   def addToComponent(board: Board, lst: List[Point], e: Point, color: Cell): List[Point] = {
@@ -108,12 +117,12 @@ object CaptureLogic {
 
     e :: lst
   } ensuring { res =>
-    isComponent(board, res, color) && res.content == (e::lst).content
+    isComponent(board, res, color) && res.content == (e :: lst).content
   }
 
   def addValidElements(board: Board, a: List[Point], b: List[Point]): List[Point] = {
     require(
-        board.isValid &&
+      board.isValid &&
         board.isValidPoints(a) &&
         board.isValidPoints(b)
     )

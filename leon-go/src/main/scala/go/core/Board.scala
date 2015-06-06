@@ -211,6 +211,7 @@ case class Board(n: BigInt, cells: GoMap[Point, Cell]) {
   }
 
   def isEqual(that: Board) = this.n == that.n && this.cells.isEqual(that.cells)
+
 }
 
 object Board {

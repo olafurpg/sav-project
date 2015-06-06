@@ -106,8 +106,8 @@ Some additional benefits to using this developer workflow include:
 \begin{itemize}
     \item Compilation errors are detected faster with scalac, due to sbt's incremental compilation.
     \item Obvious bugs are caught faster by the unit tests than verification.
-    \item Not so obvious bugs in corner cases were detected by our unit tests while Leon timed out, see \href{https://github.com/olafurpg/sav-project/blob/621e03d97f510d516fee87e5cff0985c37b434cb/leon-go/src/main/scala/go/core/CaptureLogic.scala#L60}{here}.
-    \item Obviously non-terminating programs failed the unit tests before verification was executed.
+    \item Not so obvious bugs were detected by our unit tests while Leon timed out, see \href{https://github.com/olafurpg/sav-project/blob/621e03d97f510d516fee87e5cff0985c37b434cb/leon-go/src/main/scala/go/core/CaptureLogic.scala#L60}{here}.
+    \item Obviously non-terminating programs failed the unit tests (with timeouts) before verification was even executed.
 \end{itemize}
 % section Developer workflow (end)
 
