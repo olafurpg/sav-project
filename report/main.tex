@@ -11,6 +11,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
 \usepackage{framed}
+\usepackage{multicol}
 \usepackage[colorlinks=true]{hyperref}
 
 % code listing
@@ -141,8 +142,6 @@ We added the helper method \texttt{addValidElements}
 which we used in place of the \texttt{List.++} method.
 Leon was now able to verify our condition immediately.
 
-Next, we were able to verify that
-
 We tried made several failed attempts to verify the following properties of the algorithm:
 \begin{itemize}
     \item \emph{All points were of same color.}
@@ -160,28 +159,48 @@ We tried made several failed attempts to verify the following properties of the 
         relation from \texttt{isConnected} is transitive, which we struggled
         forward to Leon.
 
-    \item \emph{The component is maximal}
+    \item \emph{The component is maximal.}
 
         We tried to verify that there was no stone left on the board that was
         not part of the result but had a connection to the component.
         Given our poor results from the other verification attempts, we had
         little time to explore this condition further.
+
+    \item \emph{The root is in the component.}
+
+        We claimed in our presentation that we managed to verify this property by using the induction strategy on \texttt{toVisit}.
+        The claim originated from our experiments \href{https://github.com/olafurpg/sav-project/commit/b2435ef54de1417ddf87f29100aca7aa87f2c16e#diff-420529c0db095a7fd6c361030f5eea80R159}{here}.
+        Unfortunately however, we realized after the presentation that we only accomplished this
+        proof by using an unverifiable postcondition in the \texttt{dfs} method.
+        We have tried several approaches to verify this property with no success.
 \end{itemize}
 
 % section Connected Component (end)
 
 \section{Github issues} % (fold)
 \label{sec:Bugs}
-We reported the following issues on Github:
-\begin{itemize}
+We reported the following issues on Github, please follow the links for more details.
+\begin{multicols}{4}
+\begin{enumerate}
         \foreach\issue\ in {94,98,99,103,105,106,107}
     {\item \href{https://github.com/epfl-lara/leon/issues/\issue}{\#\issue}}
-\end{itemize}
-
-Please follow the links for more details.
+\end{enumerate}
+\end{multicols}
 % section Bugs (end)
 
+\section{Conclusion} % (fold)
+\label{sec:Conclusion}
+We set out to see how practical it is to use Leon to program a correct implementation of Go.
+We did not manage to verify as many properties of our code as we had hoped.
+However, we still believe that our implementation is better designed and that the components of our game are more loosely coupled thanks to our rigorous verification attempts.
+This experience has taught that it is a good exercise to annotate your code with pre- and postconditions, if not only to document your assumptions.
 
-\section{Conclusion}
+We could not go into more details in this report due to space constraints.
+Here are some relevant links:
+\begin{itemize}
+    \item Code: \href{https://github.com/olafurpg/sav-project/}{https://github.com/olafurpg/sav-project/}
+    \item Slides: \href{https://docs.google.com/presentation/d/1fFDIor2msMK-lXPcUfKMOEOPRLrz0I_zaol2nekXWD8/edit?usp=sharing}{https://docs.google.com/presentation/d/1fFDIor2msMK-lXPcUfK...}
+\end{itemize}
 
+% section Conclusion (end)
 \end{document}
