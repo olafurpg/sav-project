@@ -35,7 +35,7 @@
   showstringspaces=false,
   columns=flexible,
   basicstyle={\small\ttfamily},
-  numbers=none,
+  numbers=left,
   numberstyle=\tiny\color{gray},
   keywordstyle=\color{blue},
   commentstyle=\color{dkgreen},
@@ -105,13 +105,68 @@ Some additional benefits to using this developer workflow include:
 \begin{itemize}
     \item Compilation errors are detected faster with scalac, due to sbt's incremental compilation.
     \item Obvious bugs are caught faster by the unit tests than verification.
-    \item Not so obvious corner cases were detected by our unit tests while Leon timed out.
+    \item Not so obvious corner cases were detected by our unit tests while Leon timed out, see TODO.
     \item Obviously non-terminating programs failed the unit tests before verification was executed.
 \end{itemize}
 % section Developer workflow (end)
 
-\section{Connected Component} % (fold)
+\section{Connected component} % (fold)
 \label{sec:Connected_Component}
+The connected component algorithm is useful to implement the capture rule of the game correctly.
+Stones on the board are ``captured'' whenever themselves and no stone in their connected group of the same color has a ``liberty''.
+If a cell is captured, it is removed from the board.
+A stone has liberty if a neighbor cell is not occupied by another stone.
+A simple and way to implement the capture rule is to identify the connected groups of stones in the board, and then filter out the stones that have no liberty.
+
+One way to implement a connected component algorithm is to use a depth-first search.
+The stones are the nodes and two stones have an edge between them if they are of the same color and lie next to each other on the board.
+We pick a random stone to start our search and then visit the rest of the stone's component.
+It turned out to be more complicated than we anticipated to verify the correctness of this algorithm.
+
+We first implemented the algorithm with the following code:
+\lstinputlisting{code/cc1.scala}
+Our initial goal was to verify with the precondition
+\begin{center}
+    \texttt{board.isValidPoints(toVisit) \&\& board.isValidPoints(component)}
+\end{center}
+where \texttt{isValidPoints} says that the points lie inside perimeter of the board, then the method would only return valid points.
+The method \texttt{sameColorNeighborPoints}, that we had verified, had a postcondition saying that it only returned points inside the board.
+We were confident that Leon could verify that no points outside the board are introduced in the method.
+
+Contrary to our expectations, Leon timed out.
+After some experiments we figured out that the issue had to do with line 12, where we concatenate two lists.
+Leon could not infer that if the \texttt{board.isValidPoints} hold for two lists, then it also holds for the concatenation of those lists.
+We added the helper method \texttt{addValidElements}
+\lstinputlisting{code/addValidElements.scala}
+which we used in place of the \texttt{List.++} method.
+Leon was able to verify our condition immediately.
+
+We tried made several failed attempts to verify the following properties of the algorithm:
+\begin{itemize}
+    \item \emph{All points were of same color.}
+
+        Even though \texttt{sameColorNeighborPoints} had a post condition that
+        all the points had the same color, Leon could not verify this property.
+        This was perhaps our biggest disappointment in this case study.
+
+    \item \emph{All points have a path to the root.}
+
+        We implemented a \texttt{isConnected(u, v)}, which we used in our
+        postcondition to verify that all points in the result were connected to
+        the root.  We made several attempt in this direction but with no
+        success.  We believe that difficulty lied in that fact that the
+        relation from \texttt{isConnected} is transitive, which we struggled
+        forward to Leon.
+
+    \item \emph{The component is maximal}
+
+        We tried to verify that there was no stone left on the board that was
+        not part of the result but had a connection to the component.
+        Given our poor results from the other verification attempts, we had
+        little time to explore this condition further.
+    \item The root is in the component --- SUCCESS
+    \item All points are on the board --- SUCCESS
+\end{itemize}
 
 % section Connected Component (end)
 
@@ -134,18 +189,10 @@ In the verification of game rules, the most difficult part is the \emph{depth
 first search} of connected component. The verification result of the DFS
 algorithm is as follows:
 
-\begin{itemize}
-\item All points are connected  --- FAIL
-\item The component is maximal  --- FAIL
-\item The root is in the component --- SUCCESS
-\item All points are of same color --- FAIL
-\item All points are on the board --- SUCCESS
-\end{itemize}
 
-The difficulty lies in that the relation \emph{connected} is transitive, but
-Leon knows nothing about that. The DFS algorithm looks like follows:
+ The DFS algorithm looks like follows:
 
-\lstinputlisting{code/cc.scala}
+% \lstinputlisting{code/cc.scala}
 
 
 \section{Github issues} % (fold)
