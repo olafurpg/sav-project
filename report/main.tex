@@ -64,94 +64,50 @@
     Still, we consider that Leon has plenty of room for improvement to make it easier for a programmer to verify non-trivial properties about her programs.
 \end{abstract}
 
-\tableofcontents
+% \tableofcontents
 
 \section{Contributions}
-Our main contributions in this project are the following:
+The main contributions of this project are the following:
 \begin{itemize}
-    \item Set up a productive developer workflow combining Leon verification
-        and Scala unit testing (see Section~\ref{sec:Developer_workflow}).
-    \item A case study of the connected component algorithm (see Section~\ref{sec:Connected_Component}).
-    \item Verified several properties of our implementation of the board game Go (see Section~\ref{sec:Verification}).
-    \item Identified a few issues in Leon and reported on Github (see Section~\ref{sec:Bugs}).
+    \item We found a productive developer workflow combining Leon verification and Scala
+        unit testing (see Section~\ref{sec:Developer_workflow}).
+    \item We did a minor case study of the connected component algorithm (see Section~\ref{sec:Connected_Component}).
+    \item We verified several properties of our implementation of the board game Go (see Section~\ref{sec:Verification}).
+    \item We identified a few issues in Leon, which we reported on Github (see Section~\ref{sec:Bugs}).
 \end{itemize}
-
-\section{Design} % (fold)
-\label{sec:Design}
-
-% section Design (end)
-Various iterations.
-
-\subsection{Game}
-
-Because Leon doesn't support side effects, the first task of the project is to
-make a purely functional design. To achieve this goal, we modeled the game as a
-finite list of board states as follows:
-
-\lstinputlisting{code/board.scala}
-
-The type \emph{Cell} represents the color of the stone, it's defined as
-follows:
-
-\lstinputlisting{code/cell.scala}
-
-The type \emph{Step} represents an action that can be taken by the player, it's
-defined as follows:
-
-\lstinputlisting{code/step.scala}
-
-The type \emph{PlayerType} represents the two sides of a game, it's defined as
-follows:
-
-\lstinputlisting{code/player-type.scala}
-
-\subsection{Rules}
-
-Each game has rules that should be observed by the players. Inside the world of
-Go, there're several popular rules, such as Chinese rule, Japanese rule, etc.
-In order to decouple rules from the game, we implemented the rules in
-\emph{RuleEngine}, so that it's possible to implement different sets of rules.
-The object \emph{RuleEngine} is defined as follows:
-
-\lstinputlisting{code/rule-engine.scala}
-
-There could be several types of move errors, which are defined as follows:
-
-\lstinputlisting{code/move-error.scala}
-
-\subsection{Player}
-
-There are several types of players in the game, such as computer players, human
-players, etc. We impose that all kinds of player should implement following
-interface:
-
-\lstinputlisting{code/player.scala}
-
-When the method \emph{move} is called, the player should decide an action based
-on the given state of the game. Currently we implemented three types of players
-in the game:
-
-\begin{itemize}
-\item HumanPlayer: make a move from user input in the console
-\item ComputerPlayer: make a move based on MinMax algorithm
-\item RandomPlayer: make a random move
-\end{itemize}
-
-\subsection{Driver}
-
-The game is driven by the driver. An example driver is as follows:
-
-\lstinputlisting{code/driver.scala}
-
-With the driver defined as above, it's easy to run a game like following:
-
-\lstinputlisting{code/run.scala}
 
 \section{Developer workflow} % (fold)
 \label{sec:Developer_workflow}
-We set the requirement for our project that we wanted to be able to run our Go program with Scala in the command line.
-This requirement for
+Although we wanted to verify certain properties in Leon, we set the requirement for our project that we also wanted to be able to run our Go program with Scala in the command line.
+This requirement forced us to set up a productive developer workflow that executed both the Scala and Leon versions of our code.
 
+A common developer workflow with Scala is to have an \emph{sbt} shell open inside your project and execute the command \texttt{$\sim$test}.
+On every file save, sbt will then recompile your project and execute your unit tests.
+The benefit to this workflow is that the code-compile-run-debug cycle is as short as possible.
+When starting on our project, we quickly realized that we missed this productive workflow.
+
+We were able to accomplish the same productive workflow with Leon by making a few minor changes to our \texttt{build.sbt} file.
+The key idea was to make a new sbt task, which we named \emph{verify}.
+The verify task was defined with the following snippet of code in our \texttt{build.sbt} definitions.
+\lstinputlisting{code/build.sbt}
+This snippet adds the bash script \texttt{leonVerify.sh} to the files that are watched by sbt.
+The implementation of the task simply runs the unit tests and then if the all unit tests compile and pass, we run the Leon verification.
+The contents of the \texttt{leonVerify.sh} script is then:
+\lstinputlisting{code/leonVerify.sh}
+Instead of running \texttt{$\sim$test} in the sbt shell, we now ran \texttt{$\sim$verify}.
+Whenever we modified our code or tweaked the parameters supplied to Leon in the \texttt{leonVerify.sh} script, the task was re-executed.
+
+This setup greatly helped us keep the codebase compatible with both Scala and Leon.
+Although Leon aims to be a strict subset of Scala, there are a few minor discrepancies between the two langauges.
+Such an example includes \texttt{Nil[T]()}, which compiles with Leon but does not compile with Scala since \texttt{scala.Nil} is a singleton type.
+Moreover, there are many methods in Scala collection libraries that are yet to be added to the Leon collections.
+Some additional benefits to using this developer workflow include:
+\begin{itemize}
+    \item Compilation errors are detected faster with scalac, due to sbt's incremental compilation.
+    \item Obvious bugs are caught faster by the unit tests than verification.
+    \item Not so obvious corner cases were detected by our unit tests while Leon timed out.
+    \item Obviously non-terminating programs failed the unit tests before verification was executed.
+\end{itemize}
 % section Developer workflow (end)
 
 \section{Connected Component} % (fold)
@@ -202,7 +158,9 @@ We reported the following issues on Github:
 
 
 % section Bugs (end)
-\section{Lessons Learned}
+
+
+\section{Conclusion}
 
 During the project, we learned some lessons about Leon and verification in
 general.
@@ -227,15 +185,8 @@ Following are two examples.
 
 \lstinputlisting{code/surprise.scala}
 
-\subsection{Suggestions} % (fold)
-\label{sub:Suggestions}
-
 \begin{itemize}
     \item Publish leon dummies to Maven.
 \end{itemize}
-
-% subsection Suggestions (end)
-
-
 
 \end{document}
